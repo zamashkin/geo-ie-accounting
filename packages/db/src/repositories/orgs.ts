@@ -9,8 +9,8 @@ export type OrganizationWithRole = OrganizationRow & { role: Role };
 
 export interface NewOrganization {
   name: string;
-  taxId?: string | null;
-  sbsEffectiveFrom?: string | null;
+  taxId?: string | null | undefined;
+  sbsEffectiveFrom?: string | null | undefined;
 }
 
 /**

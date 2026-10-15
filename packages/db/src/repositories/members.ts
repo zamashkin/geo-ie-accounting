@@ -55,6 +55,28 @@ export async function listMembers(
     .limit(page.limit);
 }
 
+/** The member of the org with this email, if any (emails compared lower-cased). */
+export async function findMemberByEmail(
+  db: DbOrTx,
+  orgId: string,
+  email: string,
+): Promise<MemberRow | null> {
+  const [row] = await db
+    .select({
+      userId: memberships.userId,
+      email: users.email,
+      name: users.name,
+      role: memberships.role,
+      createdAt: memberships.createdAt,
+    })
+    .from(memberships)
+    .innerJoin(users, eq(users.id, memberships.userId))
+    .where(
+      and(eq(memberships.orgId, orgId), eq(sql`lower(${users.email})`, normaliseEmail(email))),
+    );
+  return row ?? null;
+}
+
 export async function addMember(
   db: DbOrTx,
   orgId: string,
