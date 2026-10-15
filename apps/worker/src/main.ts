@@ -1,6 +1,7 @@
 import { pino } from 'pino';
 import { loadEnv } from './env';
 import { jobs } from './jobs/index';
+import { scheduleRatesSync } from './jobs/rates/index';
 import { startWorker } from './worker';
 
 const env = loadEnv();
@@ -11,6 +12,7 @@ const log = pino({
 });
 
 const worker = await startWorker({ connectionString: env.DATABASE_URL, log, jobs });
+await scheduleRatesSync(worker.boss);
 
 if (env.WORKER_SMOKE_JOB) {
   const id = await worker.boss.send('noop', { message: 'boot smoke test' });
