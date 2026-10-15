@@ -1,12 +1,11 @@
-// packages/importers: pure statement parsers. No I/O.
-// WS-03 implements the parsers; the interface below is ARCHITECTURE §6.
-import type { ParseOptions, ParseResult, ParserId } from '@ie-ledger/contracts';
+// packages/importers: pure statement parsers, (file bytes, options) -> ParseResult. No I/O.
+// Parser contract: ARCHITECTURE §6. Formats: fixtures/statements/<bank>/FORMAT.md.
 
-export interface StatementParser {
-  id: ParserId;
-  /** Confidence 0..1 that this parser understands the file. */
-  detect(file: Uint8Array, fileName: string): number;
-  parse(file: Uint8Array, opts: ParseOptions): ParseResult;
-}
-
-export const parsers: readonly StatementParser[] = [];
+export type { StatementParser } from './parser';
+export { parsers, parserById, detect, detectBest, MIN_CONFIDENCE } from './registry';
+export type { Detection } from './registry';
+export { bogXlsx } from './bog/xlsx';
+export { bogCsv } from './bog/csv';
+export { genericCsv } from './generic/csv';
+export { WARNING_CODES } from './warnings';
+export type { WarningCode } from './warnings';
