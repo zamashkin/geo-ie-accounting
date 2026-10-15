@@ -1,0 +1,36 @@
+{
+  "name": "@ie-ledger/config",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./tsconfig/base.json": "./tsconfig/base.json",
+    "./tsconfig/node.json": "./tsconfig/node.json",
+    "./tsconfig/nextjs.json": "./tsconfig/nextjs.json",
+    "./eslint": "./eslint/index.js",
+    "./boundaries": "./eslint/boundaries.js",
+    "./prettier": "./prettier/index.js",
+    "./vitest": "./vitest/index.js"
+  },
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json",
+    "lint": "eslint .",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@eslint/js": "10.0.1",
+    "eslint-config-prettier": "10.1.8",
+    "globals": "17.13.0",
+    "typescript-eslint": "8.71.2"
+  },
+  "peerDependencies": {
+    "eslint": "^10.0.0",
+    "vitest": "^5.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "26.6.5",
+    "eslint": "10.12.0",
+    "typescript": "6.0.3",
+    "vitest": "5.0.5"
+  }
+}
