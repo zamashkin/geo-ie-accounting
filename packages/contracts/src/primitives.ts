@@ -10,20 +10,16 @@ const INT64_MAX = 2n ** 63n - 1n;
 /** Signed integer string: no leading zeros, no plus sign, no "-0", no decimals. */
 export const MinorUnitsString = z
   .string()
-  .regex(/^(0|-?[1-9][0-9]*)$/,'Expected an integer amount in minor units, as a string')
+  .regex(/^(0|-?[1-9][0-9]*)$/, 'Expected an integer amount in minor units, as a string')
   .meta({
     description: 'Integer amount in minor units (e.g. tetri, cents), as a decimal string.',
     examples: ['125000', '-69085'],
   });
 
-export const MinorUnits = z.codec(
-  MinorUnitsString,
-  z.bigint().min(INT64_MIN).max(INT64_MAX),
-  {
-    decode: (s) => BigInt(s),
-    encode: (n) => n.toString(),
-  },
-);
+export const MinorUnits = z.codec(MinorUnitsString, z.bigint().min(INT64_MIN).max(INT64_MAX), {
+  decode: (s) => BigInt(s),
+  encode: (n) => n.toString(),
+});
 export type MinorUnits = z.output<typeof MinorUnits>;
 
 /**

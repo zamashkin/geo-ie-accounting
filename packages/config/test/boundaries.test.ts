@@ -117,9 +117,9 @@ describe('workspace dependency rules (ARCHITECTURE §2)', () => {
   });
 
   it('dynamic imports are checked as well', async () => {
-    expect(await lint('web', "export const m = () => import('../../../packages/db/src');\n")).toContain(
-      'ie-ledger/no-cross-package-relative',
-    );
+    expect(
+      await lint('web', "export const m = () => import('../../../packages/db/src');\n"),
+    ).toContain('ie-ledger/no-cross-package-relative');
   });
 });
 

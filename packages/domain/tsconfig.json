@@ -1,7 +1,4 @@
 {
   "extends": "@ie-ledger/config/tsconfig/base.json",
-  "include": [
-    "src",
-    "*.ts"
-  ]
+  "include": ["src", "*.ts"]
 }

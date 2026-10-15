@@ -29,9 +29,7 @@ export const Problem = z
     code: ProblemCode,
     requestId: z.string(),
     /** Field-level validation issues for `validation_failed`. */
-    errors: z
-      .array(z.object({ path: z.string(), message: z.string() }))
-      .optional(),
+    errors: z.array(z.object({ path: z.string(), message: z.string() })).optional(),
   })
   .meta({ id: 'Problem' });
 export type Problem = z.output<typeof Problem>;

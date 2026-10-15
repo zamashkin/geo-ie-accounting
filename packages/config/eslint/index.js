@@ -5,7 +5,12 @@ import globals from 'globals';
 import tseslint from 'typescript-eslint';
 import { boundaries } from './boundaries.js';
 
-export { boundaries, WORKSPACE_DEPS, FORBIDDEN_MODULES, forbiddenWorkspaceDeps } from './boundaries.js';
+export {
+  boundaries,
+  WORKSPACE_DEPS,
+  FORBIDDEN_MODULES,
+  forbiddenWorkspaceDeps,
+} from './boundaries.js';
 
 const MONEY_MESSAGE =
   'Money is bigint minor units. Parse decimal strings with the helpers in packages/domain, never with floats.';
@@ -41,23 +46,22 @@ export function ieLedger({ pkg, root, typeChecked = true, extra = [] }) {
         ecmaVersion: 2024,
         sourceType: 'module',
         globals: { ...globals.node },
-        ...(typeChecked
-          ? { parserOptions: { projectService: true, tsconfigRootDir: root } }
-          : {}),
+        ...(typeChecked ? { parserOptions: { projectService: true, tsconfigRootDir: root } } : {}),
       },
       linterOptions: { reportUnusedDisableDirectives: 'error' },
     },
     {
       name: 'ie-ledger/rules',
       rules: {
-        'no-restricted-globals': [
-          'error',
-          { name: 'parseFloat', message: MONEY_MESSAGE },
-        ],
+        'no-restricted-globals': ['error', { name: 'parseFloat', message: MONEY_MESSAGE }],
         'no-restricted-properties': [
           'error',
           { object: 'Number', property: 'parseFloat', message: MONEY_MESSAGE },
-          { object: 'Math', property: 'round', message: 'Rounding money goes through packages/domain.' },
+          {
+            object: 'Math',
+            property: 'round',
+            message: 'Rounding money goes through packages/domain.',
+          },
         ],
         eqeqeq: ['error', 'always'],
         'no-console': 'error',
