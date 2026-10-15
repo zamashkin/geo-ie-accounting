@@ -41,7 +41,7 @@ Phase 1 and later briefs are written against the contracts produced in WS-00. Co
 | WS | Title | Status | Branch |
 |---|---|---|---|
 | 00 | Foundation | merged | ws/00-foundation |
-| 01 | Domain core | in progress | ws/01-domain |
+| 01 | Domain core | merged | ws/01-domain |
 | 02 | NBG rates | in progress | ws/02-nbg-rates |
 | 03 | Statement parsers | in progress (BoG; TBC waits for fixtures) | ws/03-importers |
 | 04 | Web shell + UI kit | in progress | ws/04-web-shell |
