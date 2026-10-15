@@ -1,0 +1,76 @@
+# Local development services. `docker compose up -d` then `pnpm db:migrate && pnpm db:seed`.
+# Credentials here are for local use only.
+name: ie-ledger
+
+services:
+  postgres:
+    image: postgres:17.11-alpine
+    environment:
+      POSTGRES_USER: ie_ledger
+      POSTGRES_PASSWORD: ie_ledger
+      POSTGRES_DB: ie_ledger
+    ports:
+      - '5432:5432'
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U ie_ledger -d ie_ledger']
+      interval: 2s
+      timeout: 3s
+      retries: 30
+
+  # S3-compatible object storage. ARCHITECTURE names MinIO, but MinIO no longer publishes
+  # community images (docker.io/minio/minio is gone, quay.io requires auth), so RustFS stands in:
+  # Apache-2.0, S3 API compatible, supports default bucket encryption. See ADR 0006.
+  s3:
+    image: rustfs/rustfs:1.0.1
+    environment:
+      RUSTFS_ACCESS_KEY: ie_ledger
+      RUSTFS_SECRET_KEY: ie_ledger_secret
+    ports:
+      - '9000:9000' # S3 API
+      - '9001:9001' # web console
+    volumes:
+      - s3data:/data
+    healthcheck:
+      test: ['CMD', 'curl', '-fsS', 'http://localhost:9000/health']
+      interval: 2s
+      timeout: 3s
+      retries: 30
+
+  # One-shot: creates the statements bucket with default server-side encryption (SPEC §4).
+  s3-init:
+    image: amazon/aws-cli:2.38.1
+    depends_on:
+      s3:
+        condition: service_healthy
+    environment:
+      AWS_ACCESS_KEY_ID: ie_ledger
+      AWS_SECRET_ACCESS_KEY: ie_ledger_secret
+      AWS_DEFAULT_REGION: us-east-1
+      BUCKET: ie-ledger-statements
+    entrypoint: ['/bin/sh', '-c']
+    command:
+      - |
+        set -e
+        S3="aws --endpoint-url http://s3:9000 s3api"
+        $$S3 head-bucket --bucket "$$BUCKET" 2>/dev/null || $$S3 create-bucket --bucket "$$BUCKET"
+        $$S3 put-bucket-encryption --bucket "$$BUCKET" \
+          --server-side-encryption-configuration '{"Rules":[{"ApplyServerSideEncryptionByDefault":{"SSEAlgorithm":"AES256"}}]}'
+        echo "bucket $$BUCKET ready (SSE AES256)"
+    restart: 'no'
+
+  mailpit:
+    image: axllent/mailpit:v1.31.6
+    ports:
+      - '1025:1025' # SMTP
+      - '8025:8025' # web UI
+    healthcheck:
+      test: ['CMD', '/mailpit', 'readyz']
+      interval: 2s
+      timeout: 3s
+      retries: 30
+
+volumes:
+  pgdata:
+  s3data:
