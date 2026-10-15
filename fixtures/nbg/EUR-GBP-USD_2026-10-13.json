@@ -1,0 +1,40 @@
+[
+  {
+    "date": "2026-10-13T00:00:00.000Z",
+    "currencies": [
+      {
+        "code": "EUR",
+        "quantity": 1,
+        "rateFormated": "2.9066",
+        "diffFormated": "0.0088",
+        "rate": 2.9066,
+        "name": "Euro",
+        "diff": -0.0088,
+        "date": "2026-10-12T17:01:08.293Z",
+        "validFromDate": "2026-10-13T00:00:00.000Z"
+      },
+      {
+        "code": "GBP",
+        "quantity": 1,
+        "rateFormated": "3.4395",
+        "diffFormated": "0.0020",
+        "rate": 3.4395,
+        "name": "United Kingdom Pound",
+        "diff": -0.002,
+        "date": "2026-10-12T17:01:08.293Z",
+        "validFromDate": "2026-10-13T00:00:00.000Z"
+      },
+      {
+        "code": "USD",
+        "quantity": 1,
+        "rateFormated": "2.5994",
+        "diffFormated": "0.0011",
+        "rate": 2.5994,
+        "name": "US Dollar",
+        "diff": -0.0011,
+        "date": "2026-10-12T17:01:08.293Z",
+        "validFromDate": "2026-10-13T00:00:00.000Z"
+      }
+    ]
+  }
+]

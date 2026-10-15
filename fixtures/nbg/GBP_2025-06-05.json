@@ -1,0 +1,18 @@
+[
+  {
+    "date": "2025-06-05T00:00:00.000Z",
+    "currencies": [
+      {
+        "code": "GBP",
+        "quantity": 1,
+        "rateFormated": "3.6948",
+        "diffFormated": "0.0024",
+        "rate": 3.6948,
+        "name": "United Kingdom Pound",
+        "diff": 0.0024,
+        "date": "2025-06-04T17:01:13.750Z",
+        "validFromDate": "2025-06-05T00:00:00.000Z"
+      }
+    ]
+  }
+]
