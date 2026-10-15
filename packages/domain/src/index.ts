@@ -8,3 +8,5 @@ export * from './money';
 export * from './fx';
 export * from './date';
 export * from './ledger';
+export * from './tax/rules';
+export * from './tax/declaration';
