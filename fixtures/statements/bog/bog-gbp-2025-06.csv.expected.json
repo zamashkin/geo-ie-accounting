@@ -1,0 +1,118 @@
+{
+  "parserId": "bog-csv",
+  "meta": {
+    "accountIban": "GE59BG0000000123456789",
+    "currency": "GBP",
+    "periodFrom": "2025-05-15",
+    "periodTo": "2025-06-15",
+    "openingBalanceMinor": "4",
+    "closingBalanceMinor": "36419"
+  },
+  "rows": [
+    {
+      "rowIndex": 0,
+      "bookedOn": "2025-06-04",
+      "amountMinor": "118000",
+      "currency": "GBP",
+      "counterparty": "EXAMPLE CLIENT LIMITED",
+      "counterpartyAccount": "0F1E2D3C4B5A69788796A5B4C3D2E1F0",
+      "description": "PETROV NIKOLAI SERGEEVICH PETROV NI\\KOLAI SERGEEVICH: Incoming Transfer - Amount: GBP1,180.00; Sender: EXAMPLE CLIENT LIMITED\\1 SAMPLE STREET, LONDON, ENGLAND,1 \\SAMPLE STREET, LONDON, ENGLAND,GB; Account: 0F1E2D3C4B5A69788796A5B4C3D2E1F0; Bank: PAYRNET LIMITED PAYRGB2L; Details: PETROV NIKOLAI SERGEEVICH PETROV NI\\KOLAI SERGEEVICH",
+      "bankReference": null,
+      "documentNumber": "PMI100000001",
+      "operationType": "incoming_payment",
+      "bankOperationCode": null,
+      "bankGelAmountMinor": "435703",
+      "counterAmountMinor": null,
+      "counterCurrency": null,
+      "raw": {
+        "TariRi": "04.06.2025",
+        "sabuTis #": "PMI100000001",
+        "mokorespondento angariSi": "0F1E2D3C4B5A69788796A5B4C3D2E1F0",
+        "debeti": null,
+        "krediti": "1180.0",
+        "kursi": "3.6924",
+        "eqv.lari": "4357.03",
+        "operaciis Sinaarsi": "PETROV NIKOLAI SERGEEVICH PETROV NI\\KOLAI SERGEEVICH: \r\n\t  Incoming Transfer - Amount: GBP1,180.00; Sender: EXAMPLE CLIENT LIMITED\\1 SAMPLE STREET, LONDON, ENGLAND,1 \\SAMPLE STREET, LONDON, ENGLAND,GB; Account: 0F1E2D3C4B5A69788796A5B4C3D2E1F0; Bank: PAYRNET LIMITED PAYRGB2L; Details: PETROV NIKOLAI SERGEEVICH PETROV NI\\KOLAI SERGEEVICH"
+      }
+    },
+    {
+      "rowIndex": 1,
+      "bookedOn": "2025-06-05",
+      "amountMinor": "-69085",
+      "currency": "GBP",
+      "counterparty": null,
+      "counterpartyAccount": "GE59BG0000000123456789USD",
+      "description": "Payment - Amount GBP690.85; Foreign Exchange. FX Rate:1.302736. Counter-amount: USD900.. Currency Exchange",
+      "bankReference": null,
+      "documentNumber": "2506050610000032",
+      "operationType": "fx_conversion",
+      "bankOperationCode": null,
+      "bankGelAmountMinor": "-255255",
+      "counterAmountMinor": "90000",
+      "counterCurrency": "USD",
+      "raw": {
+        "TariRi": "05.06.2025",
+        "sabuTis #": "2506050610000032",
+        "mokorespondento angariSi": "GE59BG0000000123456789USD",
+        "debeti": "690.85",
+        "krediti": null,
+        "kursi": "1.302736",
+        "eqv.lari": "2552.55",
+        "operaciis Sinaarsi": " Payment - Amount GBP690.85; Foreign Exchange. FX Rate:1.302736. Counter-amount: USD900.. Currency Exchange"
+      }
+    },
+    {
+      "rowIndex": 2,
+      "bookedOn": "2025-06-05",
+      "amountMinor": "-48900",
+      "currency": "GBP",
+      "counterparty": null,
+      "counterpartyAccount": "GE59BG0000000123456789GEL",
+      "description": "Payment - Amount GBP489.00; Foreign Exchange. FX Rate:3.652. Counter-amount: GEL1,785.83. Currency Exchange",
+      "bankReference": null,
+      "documentNumber": "2506050610000080",
+      "operationType": "fx_conversion",
+      "bankOperationCode": null,
+      "bankGelAmountMinor": "-180676",
+      "counterAmountMinor": "178583",
+      "counterCurrency": "GEL",
+      "raw": {
+        "TariRi": "05.06.2025",
+        "sabuTis #": "2506050610000080",
+        "mokorespondento angariSi": "GE59BG0000000123456789GEL",
+        "debeti": "489.0",
+        "krediti": null,
+        "kursi": "3.652",
+        "eqv.lari": "1806.76",
+        "operaciis Sinaarsi": " Payment - Amount GBP489.00; Foreign Exchange. FX Rate:3.652. Counter-amount: GEL1,785.83. Currency Exchange"
+      }
+    },
+    {
+      "rowIndex": 3,
+      "bookedOn": "2025-06-11",
+      "amountMinor": "36400",
+      "currency": "GBP",
+      "counterparty": "EXAMPLE CLIENT LIMITED",
+      "counterpartyAccount": "0F1E2D3C4B5A69788796A5B4C3D2E1F0",
+      "description": "PETROV NIKOLAI SERGEEVICH PETROV NI\\KOLAI SERGEEVICH: Incoming Transfer - Amount: GBP364.00; Sender: EXAMPLE CLIENT LIMITED\\1 SAMPLE STREET, LONDON, ENGLAND,1 \\SAMPLE STREET, LONDON, ENGLAND,GB; Account: 0F1E2D3C4B5A69788796A5B4C3D2E1F0; Bank: PAYRNET LIMITED PAYRGB2L; Details: PETROV NIKOLAI SERGEEVICH PETROV NI\\KOLAI SERGEEVICH",
+      "bankReference": null,
+      "documentNumber": "PMI100000002",
+      "operationType": "incoming_payment",
+      "bankOperationCode": null,
+      "bankGelAmountMinor": "134163",
+      "counterAmountMinor": null,
+      "counterCurrency": null,
+      "raw": {
+        "TariRi": "11.06.2025",
+        "sabuTis #": "PMI100000002",
+        "mokorespondento angariSi": "0F1E2D3C4B5A69788796A5B4C3D2E1F0",
+        "debeti": null,
+        "krediti": "364.0",
+        "kursi": "3.6858",
+        "eqv.lari": "1341.63",
+        "operaciis Sinaarsi": "PETROV NIKOLAI SERGEEVICH PETROV NI\\KOLAI SERGEEVICH: \r\n\t  Incoming Transfer - Amount: GBP364.00; Sender: EXAMPLE CLIENT LIMITED\\1 SAMPLE STREET, LONDON, ENGLAND,1 \\SAMPLE STREET, LONDON, ENGLAND,GB; Account: 0F1E2D3C4B5A69788796A5B4C3D2E1F0; Bank: PAYRNET LIMITED PAYRGB2L; Details: PETROV NIKOLAI SERGEEVICH PETROV NI\\KOLAI SERGEEVICH"
+      }
+    }
+  ],
+  "warnings": []
+}
