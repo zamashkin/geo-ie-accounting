@@ -12,6 +12,9 @@
     "./prettier": "./prettier/index.js",
     "./vitest": "./vitest/index.js"
   },
+  "bin": {
+    "ie-build-node-app": "./bin/build-node-app.mjs"
+  },
   "scripts": {
     "typecheck": "tsc -p tsconfig.json",
     "lint": "eslint .",
@@ -19,6 +22,7 @@
   },
   "dependencies": {
     "@eslint/js": "10.0.1",
+    "esbuild": "0.28.2",
     "eslint-config-prettier": "10.1.8",
     "globals": "17.13.0",
     "typescript-eslint": "8.71.2"

@@ -64,6 +64,8 @@ export function ieLedger({ pkg, root, typeChecked = true, extra = [] }) {
           },
         ],
         eqeqeq: ['error', 'always'],
+        // Fastify plugins and hooks are async by signature even when they do not await.
+        '@typescript-eslint/require-await': 'off',
         'no-console': 'error',
         '@typescript-eslint/consistent-type-imports': 'error',
         '@typescript-eslint/no-unused-vars': [

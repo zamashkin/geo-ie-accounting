@@ -4,5 +4,5 @@
     "allowJs": true,
     "checkJs": true
   },
-  "include": ["eslint", "prettier", "vitest", "test", "*.js", "*.ts"]
+  "include": ["eslint", "prettier", "vitest", "test", "bin", "*.js", "*.ts"]
 }

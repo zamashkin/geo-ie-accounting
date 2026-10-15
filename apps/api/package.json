@@ -1,0 +1,37 @@
+{
+  "name": "@ie-ledger/api",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node --watch --env-file-if-exists=.env --import tsx src/main.ts",
+    "start": "node --env-file-if-exists=.env dist/main.js",
+    "build": "ie-build-node-app src/main.ts",
+    "openapi": "tsx scripts/generate-openapi.ts",
+    "typecheck": "tsc -p tsconfig.json",
+    "lint": "eslint .",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@fastify/cors": "11.3.1",
+    "@fastify/swagger": "9.9.2",
+    "@ie-ledger/contracts": "workspace:*",
+    "@ie-ledger/db": "workspace:*",
+    "@ie-ledger/domain": "workspace:*",
+    "@ie-ledger/nbg": "workspace:*",
+    "drizzle-orm": "0.45.4",
+    "fastify": "5.12.7",
+    "fastify-type-provider-zod": "7.0.0",
+    "pino": "10.4.0",
+    "zod": "4.6.7"
+  },
+  "devDependencies": {
+    "@ie-ledger/config": "workspace:*",
+    "@types/node": "26.6.5",
+    "eslint": "10.12.0",
+    "pino-pretty": "13.2.0",
+    "tsx": "4.23.15",
+    "typescript": "6.0.3",
+    "vitest": "5.0.5"
+  }
+}

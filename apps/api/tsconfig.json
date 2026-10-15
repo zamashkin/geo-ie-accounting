@@ -1,0 +1,4 @@
+{
+  "extends": "@ie-ledger/config/tsconfig/node.json",
+  "include": ["src", "scripts", "*.ts"]
+}
