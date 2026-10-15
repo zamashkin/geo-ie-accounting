@@ -41,11 +41,11 @@ Phase 1 and later briefs are written against the contracts produced in WS-00. Co
 | WS | Title | Status | Branch |
 |---|---|---|---|
 | 00 | Foundation | in review | ws/00-foundation |
-| 01 | Domain core | todo | |
-| 02 | NBG rates | todo | |
-| 03 | Statement parsers | todo (BoG ready, TBC missing) | |
-| 04 | Web shell + UI kit | todo | |
-| 05 | Auth + tenancy | todo | |
+| 01 | Domain core | in progress | ws/01-domain |
+| 02 | NBG rates | in progress | ws/02-nbg-rates |
+| 03 | Statement parsers | in progress (BoG; TBC waits for fixtures) | ws/03-importers |
+| 04 | Web shell + UI kit | in progress | ws/04-web-shell |
+| 05 | Auth + tenancy | in progress | ws/05-auth-tenancy |
 | 06 | Ledger API + UI | todo | |
 | 07 | Import pipeline | todo | |
 | 08 | Declarations + dashboard | todo | |
