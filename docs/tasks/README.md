@@ -42,7 +42,7 @@ Phase 1 and later briefs are written against the contracts produced in WS-00. Co
 |---|---|---|---|
 | 00 | Foundation | merged | ws/00-foundation |
 | 01 | Domain core | merged | ws/01-domain |
-| 02 | NBG rates | in progress | ws/02-nbg-rates |
+| 02 | NBG rates | merged | ws/02-nbg-rates |
 | 03 | Statement parsers | merged for BoG + generic CSV; TBC waits for fixtures | ws/03-importers |
 | 04 | Web shell + UI kit | in progress | ws/04-web-shell |
 | 05 | Auth + tenancy | in progress | ws/05-auth-tenancy |
@@ -70,3 +70,8 @@ These don't block Phase 0 or the BoG parsers. Add files to `fixtures/statements/
 - WS-03: `packages/importers/src/lib/{decimal,currency}.ts` duplicate helpers that now exist in `packages/domain` (merged in parallel). Switch importers to the domain helpers and delete the copies.
 - WS-03: unverified BoG cases (overdrawn balances in the CSV, outgoing payments, GEL/USD accounts, the credit side of conversions) need the extra statements listed under "Inputs needed".
 - WS-07: the dedupe hash differs between BoG CSV (no operation ID) and XLSX for the same operation. Match across formats on date + amount + document number. Match bank accounts on IBAN + currency, because BoG uses one IBAN for all of a client's currency accounts.
+- WS-02: `POST /v1/rates/backfill` uses a stub `x-admin-token` guard (`STUB(WS-05)`). Replace it with a real admin role. Rates are global, so this route has no audit row or `Idempotency-Key`, because both tables require an `org_id`. Decide how global admin actions are audited.
+- WS-02: SPEC §2.3 asks to store the requested date as well as `valid_from`; v0 stores only `valid_from`. Proposed: an `exchange_rate_lookups(currency, requested_date, valid_from)` table, so gaps are found in the database rather than with an NBG call.
+- WS-02: worker `JobContext` has no db handle; the rates jobs open their own pool, which is never closed on shutdown. Add `db` to `JobContext` (WS-07 needs it too).
+- WS-02: WS-07 must call `resolveRate` before each chunk's DB transaction (it may call NBG) and store the row id as `postings.rate_id`.
+- CI: `@ie-ledger/worker#test` failed once under a full parallel turbo run, then passed alone and on re-run. Watch for flakiness.
