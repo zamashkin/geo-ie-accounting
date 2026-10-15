@@ -8,6 +8,10 @@ const env = loadEnv();
 const { db, close: closeDb } = createDb({
   connectionString: env.DATABASE_URL,
   applicationName: 'ie-ledger-api',
+  // Runs only after startup, by which time `app` exists.
+  onIdleClientError: (err) => {
+    app.log.warn({ err }, 'idle database connection failed; the pool will reconnect');
+  },
 });
 
 const app = await buildApp(
