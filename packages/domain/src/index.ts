@@ -1,5 +1,15 @@
 // packages/domain: pure business logic (money, FX, ledger, tax rules, dedupe). No I/O.
-// WS-01 fills this package; see docs/tasks/WS-01-domain.md.
+// Money is always bigint minor units; see ARCHITECTURE §3–4 and ADR 0007 for rounding.
 
-/** Sign convention for postings (ARCHITECTURE §4): positive = debit, negative = credit. */
-export const POSTING_SIGN = { debit: 1n, credit: -1n } as const;
+export * from './errors';
+export * from './currency';
+export * from './rounding';
+export * from './money';
+export * from './fx';
+export * from './date';
+export * from './ledger';
+export * from './tax/rules';
+export * from './tax/declaration';
+export * from './dedupe';
+export * from './format';
+export { sha256Hex, utf8Encode } from './sha256';
