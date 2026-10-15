@@ -6,8 +6,9 @@ import { defineConfig, mergeConfig } from 'vitest/config';
 
 // Two projects:
 //   unit       pure helpers (money parsing, nav matching) in Node. `pnpm test`.
-//   storybook  every story as a test in headless Chromium: renders, runs its play function
-//              (interaction test) and runs axe through addon-a11y. `pnpm test:storybook`.
+//   storybook  every story as a test in headless Chromium: renders it, runs its play function
+//              (interaction test) and axe through addon-a11y. `pnpm test:storybook`.
+//              Stories pick a viewport with `globals.viewport` (e.g. the 360px shell story).
 export default defineConfig({
   test: {
     projects: [

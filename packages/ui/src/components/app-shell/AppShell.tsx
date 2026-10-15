@@ -51,7 +51,11 @@ export function AppShell({
   mainId = 'main',
 }: AppShellProps) {
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
-  const ctx: ShellContextValue = { closeMobileNav: () => setMobileNavOpen(false) };
+  const ctx: ShellContextValue = {
+    closeMobileNav: () => {
+      setMobileNavOpen(false);
+    },
+  };
 
   const sidebarBody = (
     <div className="flex h-full flex-col gap-4">
@@ -83,7 +87,9 @@ export function AppShell({
         <header className="sticky top-0 z-20 flex h-topbar items-center gap-2 border-b border-line bg-surface/90 px-3 backdrop-blur-sm sm:px-4 lg:px-6">
           <AriaButton
             aria-label="Open navigation"
-            onPress={() => setMobileNavOpen(true)}
+            onPress={() => {
+              setMobileNavOpen(true);
+            }}
             className={cx(
               focusRing,
               'flex size-10 items-center justify-center rounded-md text-fg-muted data-[hovered]:bg-surface-muted data-[hovered]:text-fg lg:hidden',

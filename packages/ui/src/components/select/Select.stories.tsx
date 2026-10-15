@@ -22,8 +22,8 @@ export const Default: Story = {
   play: async ({ canvas, userEvent, args }) => {
     const trigger = canvas.getByRole('button', { name: /payment method/i });
     await userEvent.click(trigger);
-    const listbox = await screen.findByRole('listbox');
-    await expect(listbox).toBeVisible();
+    await screen.findByRole('listbox');
+    await expect(trigger).toHaveAttribute('aria-expanded', 'true');
     await userEvent.click(screen.getByRole('option', { name: /POS terminal/ }));
     await expect(args.onChange).toHaveBeenCalledWith('pos');
     await expect(trigger).toHaveTextContent('POS terminal');

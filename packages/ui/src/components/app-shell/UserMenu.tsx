@@ -41,13 +41,13 @@ export function UserMenu({ user, theme, onThemeChange, onSignOut, accountHref }:
   return (
     <MenuTrigger>
       <AriaButton
-        aria-label={`Account menu for ${user.name}`}
         className={cx(
           focusRing,
           'flex size-9 items-center justify-center rounded-full bg-surface-muted text-xs font-semibold text-fg ring-1 ring-line data-[hovered]:ring-line-strong',
         )}
       >
         <span aria-hidden>{initials(user.name)}</span>
+        <span className="sr-only">Account menu for {user.name}</span>
       </AriaButton>
       <Menu
         aria-label="Account"

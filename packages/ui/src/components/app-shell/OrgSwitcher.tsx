@@ -55,7 +55,6 @@ export function OrgSwitcher({ orgs, currentOrgId, getOrgHref, createHref }: OrgS
   return (
     <MenuTrigger>
       <AriaButton
-        aria-label={`Workspace: ${name}. Switch workspace`}
         className={cx(
           focusRing,
           'flex w-full items-center gap-2.5 rounded-md border border-line bg-surface px-2 py-1.5 text-start data-[hovered]:bg-surface-muted data-[pressed]:bg-surface-muted',
@@ -72,6 +71,7 @@ export function OrgSwitcher({ orgs, currentOrgId, getOrgHref, createHref }: OrgS
             <span className="truncate text-xs text-fg-muted capitalize">{current.role}</span>
           ) : null}
         </span>
+        <span className="sr-only">, switch workspace</span>
         <ChevronsUpDown aria-hidden className="size-4 shrink-0 text-fg-muted" />
       </AriaButton>
       <Menu

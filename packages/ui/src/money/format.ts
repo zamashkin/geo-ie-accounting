@@ -126,7 +126,7 @@ export function parseMoneyInput(
   opts: ParseMoneyOptions = {},
 ): ParseMoneyResult {
   const exponent = minorUnitExponent(currency);
-  const cleaned = text.trim().replace(/[\s  ,']/g, '');
+  const cleaned = text.trim().replace(/[\s\u00a0\u202f,']/g, '');
   if (cleaned === '' || cleaned === '-') return { ok: false, reason: 'empty' };
   const match = /^(-)?([0-9]*)(?:\.([0-9]*))?$/.exec(cleaned);
   if (!match) return { ok: false, reason: 'invalid' };

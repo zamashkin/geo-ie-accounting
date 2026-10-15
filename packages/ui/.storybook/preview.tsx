@@ -21,6 +21,25 @@ const preview: Preview = {
   initialGlobals: { theme: 'light' },
   parameters: {
     layout: 'padded',
+    viewport: {
+      options: {
+        mobile360: {
+          name: 'Small phone (360)',
+          styles: { width: '360px', height: '740px' },
+          type: 'mobile',
+        },
+        tablet: {
+          name: 'Tablet (768)',
+          styles: { width: '768px', height: '1024px' },
+          type: 'tablet',
+        },
+        desktop: {
+          name: 'Desktop (1280)',
+          styles: { width: '1280px', height: '800px' },
+          type: 'desktop',
+        },
+      },
+    },
     controls: { expanded: true },
     // Every story is an accessibility test: axe violations fail `pnpm test:storybook`.
     a11y: {

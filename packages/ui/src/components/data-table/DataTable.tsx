@@ -180,6 +180,8 @@ export function DataTable<T extends RowData>({
     .join(' ');
 
   const scrollRef = useRef<HTMLDivElement>(null);
+  // The virtualizer is read fresh on every render here; nothing memoises its methods.
+  // eslint-disable-next-line react-hooks/incompatible-library
   const virtualizer = useVirtualizer({
     count: rows.length,
     getScrollElement: () => scrollRef.current,
@@ -264,7 +266,9 @@ export function DataTable<T extends RowData>({
     >
       <div
         ref={scrollRef}
-        // Keyboard users must be able to scroll; when rows are focusable they provide that.
+        // Keyboard users must be able to scroll (WCAG 2.1.1); when rows are focusable they
+        // provide that. A focusable scroll region is what axe's scrollable-region-focusable asks.
+        // eslint-disable-next-line jsx-a11y-x/no-noninteractive-tabindex
         tabIndex={interactive && rows.length > 0 ? undefined : 0}
         role="region"
         aria-label={`${label}, scrollable`}
@@ -287,6 +291,8 @@ export function DataTable<T extends RowData>({
               </tr>
             ))}
           </thead>
+          {/* Arrow keys for the roving tabindex on interactive rows, delegated to tbody. */}
+          {/* eslint-disable-next-line jsx-a11y-x/no-noninteractive-element-interactions */}
           <tbody
             className="relative grid"
             style={{ height: showEmpty || isLoading ? undefined : virtualizer.getTotalSize() }}
@@ -329,8 +335,20 @@ export function DataTable<T extends RowData>({
                         interactive && getRowLabel ? getRowLabel(row.original) : undefined
                       }
                       tabIndex={interactive ? (isActive ? 0 : -1) : undefined}
-                      onClick={interactive ? () => onRowAction(row.original) : undefined}
-                      onFocus={interactive ? () => setActiveIndex(item.index) : undefined}
+                      onClick={
+                        interactive
+                          ? () => {
+                              onRowAction(row.original);
+                            }
+                          : undefined
+                      }
+                      onFocus={
+                        interactive
+                          ? () => {
+                              setActiveIndex(item.index);
+                            }
+                          : undefined
+                      }
                       className={cx(
                         'absolute inset-x-0 top-0 border-b border-line text-fg',
                         interactive &&
@@ -385,11 +403,7 @@ export function DataTable<T extends RowData>({
   );
 }
 
-function HeaderCell<T extends RowData>({
-  header,
-}: {
-  header: Header<DataTableFeatures, T, unknown>;
-}) {
+function HeaderCell<T extends RowData>({ header }: { header: Header<DataTableFeatures, T> }) {
   const column = header.column;
   const meta = column.columnDef.meta;
   const canSort = column.getCanSort();

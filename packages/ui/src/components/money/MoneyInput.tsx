@@ -73,18 +73,22 @@ export function MoneyInput({
   ...props
 }: MoneyInputProps) {
   const [text, setText] = useState(() => display(value, currency));
-  const [syncedValue, setSyncedValue] = useState(value);
+  const [prevValue, setPrevValue] = useState(value);
   const [parseError, setParseError] = useState<string | null>(null);
 
-  // Adopt a new value from the parent (form reset, programmatic change) during render.
-  if (value !== syncedValue) {
-    setSyncedValue(value);
-    const current = parseMoneyInput(text, currency, { allowNegative });
-    const sameAmount =
-      current.ok && value !== null && value !== undefined && current.amountMinor === toMinor(value);
-    if (!sameAmount) {
-      setText(display(value, currency));
-      setParseError(null);
+  // Controlled: adopt a new value from the parent (form reset, programmatic change) during
+  // render, unless it is just the echo of what the user typed.
+  if (value !== prevValue) {
+    setPrevValue(value);
+    if (value !== undefined) {
+      const current = parseMoneyInput(text, currency, { allowNegative });
+      const echo = current.ok
+        ? value !== null && current.amountMinor === toMinor(value)
+        : value === null;
+      if (!echo) {
+        setText(display(value, currency));
+        setParseError(null);
+      }
     }
   }
 
@@ -93,12 +97,9 @@ export function MoneyInput({
     const result = parseMoneyInput(next, currency, { allowNegative });
     if (result.ok) {
       setParseError(null);
-      const minor = result.amountMinor.toString();
-      setSyncedValue(minor);
-      onChange?.(minor);
+      onChange?.(result.amountMinor.toString());
     } else if (result.reason === 'empty') {
       setParseError(null);
-      setSyncedValue(null);
       onChange?.(null);
     } else {
       setParseError(REASONS[result.reason](currency));

@@ -67,7 +67,9 @@ function PendingDemo() {
       isPending={pending}
       onPress={() => {
         setPending(true);
-        setTimeout(() => setPending(false), 300);
+        setTimeout(() => {
+          setPending(false);
+        }, 300);
       }}
     >
       Commit import

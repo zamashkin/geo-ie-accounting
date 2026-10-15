@@ -35,7 +35,7 @@ export function MoneyText({
     >
       {parts.map((part, i) =>
         part.type === 'currency' ? (
-          <span key={i} className="text-[0.85em] font-normal opacity-75">
+          <span key={i} className="text-[0.85em] font-normal">
             {part.value}
           </span>
         ) : (

@@ -38,7 +38,12 @@ export const Invalid: Story = {
 export const RequiredWithNativeValidation: Story = {
   args: { isRequired: true, description: undefined, errorMessage: 'Email is required' },
   render: (args) => (
-    <form onSubmit={(e) => e.preventDefault()} className="flex flex-col gap-3">
+    <form
+      onSubmit={(e) => {
+        e.preventDefault();
+      }}
+      className="flex flex-col gap-3"
+    >
       <TextField {...args} />
       <button
         type="submit"

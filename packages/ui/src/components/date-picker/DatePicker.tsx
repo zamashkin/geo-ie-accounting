@@ -83,7 +83,11 @@ export function DatePicker({
       {...(min ? { minValue: min } : {})}
       {...(max ? { maxValue: max } : {})}
       {...(onChange
-        ? { onChange: (d: CalendarDate | null) => onChange(d ? d.toString() : null) }
+        ? {
+            onChange: (d: CalendarDate | null) => {
+              onChange(d ? d.toString() : null);
+            },
+          }
         : {})}
       className={cx('group flex flex-col gap-1.5', className)}
     >

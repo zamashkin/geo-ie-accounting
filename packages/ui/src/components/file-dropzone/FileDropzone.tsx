@@ -187,7 +187,9 @@ export function FileDropzone({
               <AriaButton
                 aria-label={`Remove ${file.name}`}
                 className={closeButtonClass}
-                onPress={() => onChange(value.filter((_, i) => i !== index))}
+                onPress={() => {
+                  onChange(value.filter((_, i) => i !== index));
+                }}
               >
                 <X aria-hidden className="size-4" />
               </AriaButton>

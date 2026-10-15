@@ -54,8 +54,15 @@ export function Combobox<K extends Key = string>({
     <AriaComboBox<SelectOption<K>>
       {...props}
       {...(value !== undefined ? { value } : {})}
-      {...(onChange ? { onChange: (key: Key | null) => onChange(key as K | null) } : {})}
+      {...(onChange
+        ? {
+            onChange: (key: Key | null) => {
+              onChange(key as K | null);
+            },
+          }
+        : {})}
       defaultItems={options}
+      allowsEmptyCollection
       className={cx('group flex flex-col gap-1.5', className)}
     >
       {label ? <Label>{label}</Label> : null}

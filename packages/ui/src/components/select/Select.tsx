@@ -51,7 +51,13 @@ export function Select<K extends Key = string>({
     <AriaSelect<SelectOption<K>>
       {...props}
       {...(value !== undefined ? { value } : {})}
-      {...(onChange ? { onChange: (key: Key | null) => onChange(key as K | null) } : {})}
+      {...(onChange
+        ? {
+            onChange: (key: Key | null) => {
+              onChange(key as K | null);
+            },
+          }
+        : {})}
       placeholder={placeholder ?? 'Select…'}
       className={cx('group flex flex-col gap-1.5', className)}
     >
