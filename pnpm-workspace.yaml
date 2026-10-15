@@ -1,6 +1,11 @@
 packages:
   - apps/*
   - packages/*
+allowBuilds:
+  cpu-features: false
+  esbuild: true
+  protobufjs: false
+  ssh2: false
 minimumReleaseAgeExclude:
   - '@vitest/mocker@5.0.5'
   - '@vitest/spy@5.0.5'

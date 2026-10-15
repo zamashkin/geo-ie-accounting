@@ -1,0 +1,42 @@
+{
+  "name": "@ie-ledger/db",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Drizzle schema, migrations, seed, repositories and tenancy helpers.",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./schema": "./src/schema/index.ts",
+    "./testing": "./src/testing/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json",
+    "lint": "eslint .",
+    "test": "vitest run",
+    "test:integration": "vitest run --config vitest.integration.config.ts",
+    "db:generate": "drizzle-kit generate",
+    "db:check": "drizzle-kit check",
+    "db:migrate": "node --env-file-if-exists=.env --import tsx src/scripts/migrate.ts",
+    "db:seed": "node --env-file-if-exists=.env --import tsx src/scripts/seed.ts"
+  },
+  "dependencies": {
+    "@ie-ledger/contracts": "workspace:*",
+    "@ie-ledger/domain": "workspace:*",
+    "drizzle-orm": "0.45.4",
+    "pg": "8.23.1",
+    "uuidv7": "1.2.1",
+    "zod": "4.6.7"
+  },
+  "devDependencies": {
+    "@ie-ledger/config": "workspace:*",
+    "@testcontainers/postgresql": "12.2.1",
+    "@types/node": "26.6.5",
+    "@types/pg": "8.23.1",
+    "drizzle-kit": "0.31.11",
+    "eslint": "10.12.0",
+    "testcontainers": "12.2.1",
+    "tsx": "4.23.15",
+    "typescript": "6.0.3",
+    "vitest": "5.0.5"
+  }
+}
