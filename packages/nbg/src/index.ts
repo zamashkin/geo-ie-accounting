@@ -1,5 +1,18 @@
-// packages/nbg: NBG exchange-rate client. WS-02 implements it (SPEC §2.3).
-
-/** Rates endpoint checked on 2026-10-15. Query: `?currencies=USD&date=YYYY-MM-DD`. */
-export const NBG_RATES_ENDPOINT =
-  'https://nbg.gov.ge/gw/api/ct/monetarypolicy/currencies/en/json/' as const;
+// packages/nbg: National Bank of Georgia exchange-rate client (SPEC §2.3).
+export {
+  createNbgClient,
+  nbgRatesUrl,
+  NBG_RATES_ENDPOINT,
+  type NbgClient,
+  type NbgClientOptions,
+} from './client';
+export { NbgResponseBody, nbgSetTimeToUtc, parseNbgResponse, type NbgRate } from './parse';
+export {
+  NbgError,
+  NbgHttpError,
+  NbgMissingCurrencyError,
+  NbgNetworkError,
+  NbgResponseError,
+  NbgTimeoutError,
+} from './errors';
+export { addDays, daysBetween, eachDay, NBG_TIME_ZONE, NBG_UTC_OFFSET, tbilisiDate } from './dates';

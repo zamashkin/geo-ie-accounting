@@ -5,16 +5,19 @@
   "description": "National Bank of Georgia exchange-rate client.",
   "type": "module",
   "exports": {
-    ".": "./src/index.ts"
+    ".": "./src/index.ts",
+    "./testing": "./src/testing.ts"
   },
   "scripts": {
     "typecheck": "tsc -p tsconfig.json",
     "lint": "eslint .",
-    "test": "vitest run"
+    "test": "vitest run",
+    "record-fixtures": "node scripts/record-fixtures.ts"
   },
   "dependencies": {
     "@ie-ledger/contracts": "workspace:*",
-    "@ie-ledger/domain": "workspace:*"
+    "@ie-ledger/domain": "workspace:*",
+    "zod": "4.6.7"
   },
   "devDependencies": {
     "@ie-ledger/config": "workspace:*",
