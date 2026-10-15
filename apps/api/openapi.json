@@ -2433,6 +2433,128 @@
           "checks"
         ]
       },
+      "ParseWarningCodeInput": {
+        "type": "string",
+        "enum": [
+          "unreadable_file",
+          "encoding_fallback",
+          "unterminated_quote",
+          "header_not_found",
+          "missing_column",
+          "mapping_required",
+          "unparseable_row",
+          "ambiguous_debit_credit",
+          "amount_mismatch",
+          "amount_rounded",
+          "unknown_operation_type",
+          "unexpected_direction",
+          "currency_mismatch",
+          "invalid_currency",
+          "reconciliation_mismatch",
+          "reconciliation_unavailable",
+          "running_balance_mismatch",
+          "turnover_mismatch",
+          "no_rows",
+          "date_outside_period",
+          "internal_error"
+        ]
+      },
+      "StatementDetectionInput": {
+        "type": "object",
+        "properties": {
+          "parserId": {
+            "type": "string",
+            "enum": [
+              "tbc-csv",
+              "tbc-xlsx",
+              "bog-csv",
+              "bog-xlsx",
+              "generic-csv"
+            ]
+          },
+          "confidence": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          }
+        },
+        "required": [
+          "parserId",
+          "confidence"
+        ]
+      },
+      "ListRatesResponseInput": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ExchangeRateInput"
+            }
+          },
+          "nextCursor": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "required": [
+          "items",
+          "nextCursor"
+        ]
+      },
+      "BackfillRatesRequestInput": {
+        "type": "object",
+        "properties": {
+          "from": {
+            "type": "string",
+            "format": "date",
+            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+          },
+          "to": {
+            "type": "string",
+            "format": "date",
+            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+          },
+          "currencies": {
+            "minItems": 1,
+            "maxItems": 20,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^[A-Z]{3}$",
+              "examples": [
+                "GEL",
+                "USD",
+                "EUR",
+                "GBP"
+              ]
+            }
+          }
+        },
+        "required": [
+          "from",
+          "to",
+          "currencies"
+        ]
+      },
+      "BackfillRatesResponseInput": {
+        "type": "object",
+        "properties": {
+          "jobId": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "const": "queued"
+          }
+        },
+        "required": [
+          "jobId",
+          "status"
+        ]
+      },
       "Problem": {
         "type": "object",
         "properties": {
@@ -4900,6 +5022,132 @@
           "checks"
         ],
         "additionalProperties": false
+      },
+      "ParseWarningCode": {
+        "type": "string",
+        "enum": [
+          "unreadable_file",
+          "encoding_fallback",
+          "unterminated_quote",
+          "header_not_found",
+          "missing_column",
+          "mapping_required",
+          "unparseable_row",
+          "ambiguous_debit_credit",
+          "amount_mismatch",
+          "amount_rounded",
+          "unknown_operation_type",
+          "unexpected_direction",
+          "currency_mismatch",
+          "invalid_currency",
+          "reconciliation_mismatch",
+          "reconciliation_unavailable",
+          "running_balance_mismatch",
+          "turnover_mismatch",
+          "no_rows",
+          "date_outside_period",
+          "internal_error"
+        ]
+      },
+      "StatementDetection": {
+        "type": "object",
+        "properties": {
+          "parserId": {
+            "type": "string",
+            "enum": [
+              "tbc-csv",
+              "tbc-xlsx",
+              "bog-csv",
+              "bog-xlsx",
+              "generic-csv"
+            ]
+          },
+          "confidence": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          }
+        },
+        "required": [
+          "parserId",
+          "confidence"
+        ],
+        "additionalProperties": false
+      },
+      "ListRatesResponse": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ExchangeRate"
+            }
+          },
+          "nextCursor": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "required": [
+          "items",
+          "nextCursor"
+        ],
+        "additionalProperties": false
+      },
+      "BackfillRatesRequest": {
+        "type": "object",
+        "properties": {
+          "from": {
+            "type": "string",
+            "format": "date",
+            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+          },
+          "to": {
+            "type": "string",
+            "format": "date",
+            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+          },
+          "currencies": {
+            "minItems": 1,
+            "maxItems": 20,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^[A-Z]{3}$",
+              "examples": [
+                "GEL",
+                "USD",
+                "EUR",
+                "GBP"
+              ]
+            }
+          }
+        },
+        "required": [
+          "from",
+          "to",
+          "currencies"
+        ],
+        "additionalProperties": false
+      },
+      "BackfillRatesResponse": {
+        "type": "object",
+        "properties": {
+          "jobId": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "const": "queued"
+          }
+        },
+        "required": [
+          "jobId",
+          "status"
+        ],
+        "additionalProperties": false
       }
     }
   },
@@ -4928,6 +5176,155 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/HealthResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error (RFC 9457 problem details)",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/rates": {
+      "get": {
+        "operationId": "listRates",
+        "summary": "NBG exchange rates, newest first",
+        "tags": [
+          "rates"
+        ],
+        "description": "GEL per `quantity` units, one row per day a rate starts (`validFrom`). The rate for a date is the row with the greatest `validFrom` on or before it (SPEC §2.3).",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            },
+            "in": "query",
+            "name": "cursor",
+            "required": false
+          },
+          {
+            "schema": {
+              "default": 50,
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 200
+            },
+            "in": "query",
+            "name": "limit",
+            "required": false
+          },
+          {
+            "schema": {
+              "type": "string",
+              "pattern": "^[A-Z]{3}$"
+            },
+            "examples": {
+              "GEL": {
+                "value": "GEL"
+              },
+              "USD": {
+                "value": "USD"
+              },
+              "EUR": {
+                "value": "EUR"
+              },
+              "GBP": {
+                "value": "GBP"
+              }
+            },
+            "in": "query",
+            "name": "currency",
+            "required": false
+          },
+          {
+            "schema": {
+              "type": "string",
+              "format": "date",
+              "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+            },
+            "in": "query",
+            "name": "from",
+            "required": false
+          },
+          {
+            "schema": {
+              "type": "string",
+              "format": "date",
+              "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+            },
+            "in": "query",
+            "name": "to",
+            "required": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListRatesResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error (RFC 9457 problem details)",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/rates/backfill": {
+      "post": {
+        "operationId": "backfillRates",
+        "summary": "Queue a backfill of NBG rates for a date range (admin)",
+        "tags": [
+          "rates"
+        ],
+        "description": "Idempotent: dates already stored are not duplicated. Emits `rates.backfilled` when done. Temporary admin check: the `x-admin-token` header (replaced by WS-05).",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BackfillRatesRequestInput"
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "in": "header",
+            "name": "x-admin-token",
+            "required": false
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BackfillRatesResponse"
                 }
               }
             }

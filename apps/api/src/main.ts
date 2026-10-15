@@ -2,6 +2,7 @@ import { createDb } from '@ie-ledger/db';
 import { sql } from 'drizzle-orm';
 import { buildApp, LOG_REDACT_PATHS } from './app';
 import { loadEnv } from './env';
+import { createRatesRouteDeps } from './routes/rates/index';
 
 const env = loadEnv();
 
@@ -33,6 +34,7 @@ const app = await buildApp(
         return false;
       }
     },
+    rates: createRatesRouteDeps({ db, connectionString: env.DATABASE_URL }),
   },
 );
 

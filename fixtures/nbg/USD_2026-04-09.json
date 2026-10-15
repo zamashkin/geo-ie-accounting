@@ -1,0 +1,18 @@
+[
+  {
+    "date": "2026-04-09T00:00:00.000Z",
+    "currencies": [
+      {
+        "code": "USD",
+        "quantity": 1,
+        "rateFormated": "2.6965",
+        "diffFormated": "0.0005",
+        "rate": 2.6965,
+        "name": "US Dollar",
+        "diff": -0.0005,
+        "date": "2026-04-08T17:01:01.272Z",
+        "validFromDate": "2026-04-09T00:00:00.000Z"
+      }
+    ]
+  }
+]

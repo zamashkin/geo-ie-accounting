@@ -8,3 +8,4 @@ export {
 } from './chart-of-accounts';
 export { DbEnv, loadDbEnv } from './env';
 export { DEMO, seedDemo, type SeedResult } from './seed';
+export * from './repositories/rates';

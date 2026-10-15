@@ -10,6 +10,7 @@ import {
 import { jsonSchemaTransform, jsonSchemaTransformObject } from './openapi';
 import { registerProblemHandlers } from './problem';
 import { healthRoutes } from './routes/health';
+import { ratesRoutes, unavailableRatesDeps, type RatesRouteDeps } from './routes/rates/index';
 
 export interface AppConfig {
   version: string;
@@ -20,6 +21,7 @@ export interface AppConfig {
 /** External dependencies, injected so tests and the OpenAPI script can run without a database. */
 export interface AppDeps {
   checkDatabase: () => Promise<boolean>;
+  rates?: RatesRouteDeps;
 }
 
 const REQUEST_ID_HEADER = 'x-request-id';
@@ -80,6 +82,7 @@ export async function buildApp(config: AppConfig, deps: AppDeps) {
     version: config.version,
     checkDatabase: deps.checkDatabase,
   });
+  await app.register(ratesRoutes, { deps: deps.rates ?? unavailableRatesDeps });
 
   return app;
 }
