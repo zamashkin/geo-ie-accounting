@@ -44,8 +44,8 @@ describe('utf8Encode', () => {
     );
   });
 
-  it('encodes Georgian text and astral characters', () => {
-    expect(Buffer.from(utf8Encode('ქ€😀'))).toEqual(Buffer.from('ქ€😀', 'utf8'));
+  it('encodes 1- to 4-byte sequences: ASCII, Latin-1, Georgian, emoji', () => {
+    expect(Buffer.from(utf8Encode('aéქ€😀'))).toEqual(Buffer.from('aéქ€😀', 'utf8'));
   });
 });
 
