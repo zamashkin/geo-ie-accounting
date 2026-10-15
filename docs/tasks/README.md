@@ -40,7 +40,7 @@ Phase 1 and later briefs are written against the contracts produced in WS-00. Co
 
 | WS | Title | Status | Branch |
 |---|---|---|---|
-| 00 | Foundation | todo | |
+| 00 | Foundation | in review | ws/00-foundation |
 | 01 | Domain core | todo | |
 | 02 | NBG rates | todo | |
 | 03 | Statement parsers | todo (BoG ready, TBC missing) | |

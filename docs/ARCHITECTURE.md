@@ -15,13 +15,13 @@ Read `SPEC.md` first. Decisions with alternatives considered live in `docs/adr/`
 | Jobs | pg-boss (Postgres-backed queue, no Redis) | 0004 |
 | Realtime | Server-Sent Events from API; worker → API via Postgres `LISTEN/NOTIFY` | 0005 |
 | Auth | Better Auth in the API (email+password, magic link), httpOnly session cookie | — |
-| Object storage | S3-compatible (MinIO locally), server-side encryption | — |
+| Object storage | S3-compatible (RustFS locally), server-side encryption | 0006 |
 | Validation / contracts | Zod schemas in `packages/contracts`, shared by api, web, worker | — |
 | PDF | `@react-pdf/renderer` in worker | — |
 | Testing | Vitest (unit + integration with Testcontainers Postgres), Playwright (e2e), Storybook (UI) | — |
 | Observability | OpenTelemetry (traces), pino (logs), Sentry (errors, web + api + worker) | — |
 | CI | GitHub Actions | — |
-| Local env | Docker Compose: postgres, minio, mailpit | — |
+| Local env | Docker Compose: postgres, s3 (RustFS), mailpit | 0006 |
 
 Pin exact versions in M0 and record them in the root `package.json`. Agents must check current docs for the pinned versions rather than relying on memory.
 
@@ -47,7 +47,7 @@ ie-ledger/
   docker-compose.yml
 ```
 
-**Dependency rule** (enforced by eslint `import/no-restricted-paths` or dependency-cruiser):
+**Dependency rule** (enforced by `packages/config/eslint/boundaries.js`, see ADR 0001):
 
 ```
 web      -> contracts, ui, domain (formatting only)
@@ -55,6 +55,8 @@ api      -> contracts, domain, db, nbg
 worker   -> contracts, domain, db, importers, nbg
 db       -> domain, contracts
 importers-> contracts, domain
+nbg      -> contracts, domain
+ui       -> domain (formatting only)
 domain   -> (nothing)
 contracts-> (nothing but zod)
 ```
@@ -93,6 +95,8 @@ Posted transactions are **immutable**. The DB rejects UPDATE/DELETE on `postings
 ## 5. Data model (`packages/db`)
 
 All tables have `id uuid` (v7), `created_at`, and tenant tables have `org_id` with FK and index. Names are snake_case.
+
+The schema in `packages/db/src/schema` is the source of truth. Beyond the sketch below it has: Better Auth's tables (`auth_sessions`, `auth_accounts`, `auth_verifications`, plus `email_verified`, `image`, `updated_at` on `users`); `org_id` on every child table (`postings`, `import_rows`, `invoice_lines`, `invoice_payments`) for RLS later; `import_rows.operation_type`, `counterparty_account`, `bank_gel_amount_minor`, `counter_amount_minor`, `counter_currency` (ParsedRow fields from `fixtures/statements/bog/FORMAT.md`); `invitations.invited_by/revoked_at`; `invoices.notes` with `number` null until issued; `declarations.has_drift` and `computed_at`; `import_batches.updated_at`.
 
 ```
 users(id, email unique, name, created_at)
@@ -266,7 +270,7 @@ Jobs on PR: `install` (pnpm cache) → parallel `typecheck`, `lint`, `unit`, `in
 
 ```
 pnpm i
-docker compose up -d        # postgres, minio, mailpit
+docker compose up -d --wait # postgres, s3 (RustFS), mailpit
 pnpm db:migrate && pnpm db:seed
 pnpm dev                    # turbo: web :3000, api :4000, worker
 ```
