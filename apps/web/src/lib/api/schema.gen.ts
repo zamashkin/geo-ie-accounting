@@ -21,6 +21,46 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/rates": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * NBG exchange rates, newest first
+         * @description GEL per `quantity` units, one row per day a rate starts (`validFrom`). The rate for a date is the row with the greatest `validFrom` on or before it (SPEC §2.3).
+         */
+        get: operations["listRates"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/rates/backfill": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Queue a backfill of NBG rates for a date range (admin)
+         * @description Idempotent: dates already stored are not duplicated. Emits `rates.backfilled` when done. Temporary admin check: the `x-admin-token` header (replaced by WS-05).
+         */
+        post: operations["backfillRates"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -607,6 +647,22 @@ export interface components {
                 database: "ok" | "fail";
             };
         };
+        ListRatesResponseInput: {
+            items: components["schemas"]["ExchangeRateInput"][];
+            nextCursor: string | null;
+        };
+        BackfillRatesRequestInput: {
+            /** Format: date */
+            from: string;
+            /** Format: date */
+            to: string;
+            currencies: string[];
+        };
+        BackfillRatesResponseInput: {
+            jobId: string;
+            /** @constant */
+            status: "queued";
+        };
         Problem: {
             /** @description URI reference identifying the problem type. */
             type: string;
@@ -1189,6 +1245,22 @@ export interface components {
                 database: "ok" | "fail";
             };
         };
+        ListRatesResponse: {
+            items: components["schemas"]["ExchangeRate"][];
+            nextCursor: string | null;
+        };
+        BackfillRatesRequest: {
+            /** Format: date */
+            from: string;
+            /** Format: date */
+            to: string;
+            currencies: string[];
+        };
+        BackfillRatesResponse: {
+            jobId: string;
+            /** @constant */
+            status: "queued";
+        };
     };
     responses: never;
     parameters: never;
@@ -1223,6 +1295,76 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HealthResponse"];
+                };
+            };
+            /** @description Error (RFC 9457 problem details) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    listRates: {
+        parameters: {
+            query?: {
+                cursor?: string;
+                limit?: number;
+                currency?: string;
+                from?: string;
+                to?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Default Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ListRatesResponse"];
+                };
+            };
+            /** @description Error (RFC 9457 problem details) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    backfillRates: {
+        parameters: {
+            query?: never;
+            header?: {
+                "x-admin-token"?: string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["BackfillRatesRequestInput"];
+            };
+        };
+        responses: {
+            /** @description Default Response */
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BackfillRatesResponse"];
                 };
             };
             /** @description Error (RFC 9457 problem details) */
