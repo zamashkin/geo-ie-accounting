@@ -13,3 +13,6 @@ next-env.d.ts
 .DS_Store
 # Real bank statements must never be committed un-anonymised
 fixtures/statements/raw/
+
+# Agent worktrees
+.claude/worktrees/
