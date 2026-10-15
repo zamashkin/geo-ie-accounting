@@ -1,4 +1,4 @@
-import { PARSER_IDS } from '@ie-ledger/contracts';
+import { PARSER_IDS, StatementDetection } from '@ie-ledger/contracts';
 import { describe, expect, it } from 'vitest';
 import { buildXlsx } from './test/build-xlsx';
 import { detect, detectBest, MIN_CONFIDENCE, parserById, parsers } from './registry';
@@ -16,6 +16,12 @@ describe('registry', () => {
   it('falls back to generic-csv for an unknown table, below the confidence bar', () => {
     const best = detectBest(enc('date;amount\n2025-01-01;1,00\n'), 'export.csv');
     expect(best?.parserId).toBe('generic-csv');
+    expect(
+      StatementDetection.parse({ parserId: best?.parserId, confidence: best?.confidence }),
+    ).toEqual({
+      parserId: 'generic-csv',
+      confidence: 0.3,
+    });
     expect(best!.confidence).toBeLessThan(MIN_CONFIDENCE);
   });
 

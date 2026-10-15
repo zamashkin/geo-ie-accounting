@@ -7,5 +7,4 @@ export type { Detection } from './registry';
 export { bogXlsx } from './bog/xlsx';
 export { bogCsv } from './bog/csv';
 export { genericCsv } from './generic/csv';
-export { WARNING_CODES } from './warnings';
-export type { WarningCode } from './warnings';
+// Warning codes: contracts `PARSE_WARNING_CODES` / `ParseWarningCode`.
