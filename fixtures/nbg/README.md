@@ -17,7 +17,7 @@ File names are `<codes joined by ->_<requested date>.json`. Each body is NBG's J
 | `EUR-GBP-USD_2026-10-13` | Plain weekday: Tuesday's rate was set Monday at 17:01, valid from Tuesday. |
 | `EUR-GBP-USD_2026-10-10` … `_2026-10-12` | Weekend and the Monday after it. All three return the rate set on Friday 9 Oct, with `validFromDate` Saturday 10 Oct. |
 | `EUR-GBP-USD_2026-10-15` | Day after a public holiday (14 Oct, Svetitskhovloba). No rate was set on the 14th, so the 15th still uses the rate valid from the 14th. |
-| `USD_2026-04-08` … `_2026-04-15` | 9 April (National Unity Day) and Orthodox Easter (10–13 April). The rate set on 8 April is valid from 9 April through 14 April. |
+| `USD_2026-04-08` … `_2026-04-15` | 9 April (National Unity Day) and Orthodox Easter (10 to 13 April). The rate set on 8 April is valid from 9 April through 14 April. |
 | `GBP_2025-06-04`, `_05`, `_11` | GBP 3.6924, 3.6948 and 3.6858, the rates the BoG statement fixture relies on. |
 | `AMD-JPY-USD_2026-10-14` | Rates quoted per 1000 units (AMD) and per 100 units (JPY). |
 | `XXX_2026-10-14` | A code NBG does not publish: HTTP 200 with `[]`. |
