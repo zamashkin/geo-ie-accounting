@@ -7,3 +7,4 @@ export * from './entities';
 export * from './jobs';
 export * from './events';
 export * from './health';
+export * from './auth';
