@@ -43,7 +43,7 @@ Phase 1 and later briefs are written against the contracts produced in WS-00. Co
 | 00 | Foundation | merged | ws/00-foundation |
 | 01 | Domain core | merged | ws/01-domain |
 | 02 | NBG rates | in progress | ws/02-nbg-rates |
-| 03 | Statement parsers | in progress (BoG; TBC waits for fixtures) | ws/03-importers |
+| 03 | Statement parsers | merged for BoG + generic CSV; TBC waits for fixtures | ws/03-importers |
 | 04 | Web shell + UI kit | in progress | ws/04-web-shell |
 | 05 | Auth + tenancy | in progress | ws/05-auth-tenancy |
 | 06 | Ledger API + UI | todo | |
@@ -67,3 +67,6 @@ These don't block Phase 0 or the BoG parsers. Add files to `fixtures/statements/
 - WS-01: the Order N38 rule set starts 2026-03-01, but the order came into force around 2026-03-07/08 (30 days after publication on 06.02.2026). Confirm the exact date with the accountant (Q3) and adjust `effectiveFrom`. It only matters for SBS applications filed 1–7 March 2026.
 - WS-01: deadlines don't move when the 15th falls on a weekend or public holiday. Ask the accountant whether they should.
 - WS-08: add a test in db or api that the domain and contracts enum lists match.
+- WS-03: `packages/importers/src/lib/{decimal,currency}.ts` duplicate helpers that now exist in `packages/domain` (merged in parallel). Switch importers to the domain helpers and delete the copies.
+- WS-03: unverified BoG cases (overdrawn balances in the CSV, outgoing payments, GEL/USD accounts, the credit side of conversions) need the extra statements listed under "Inputs needed".
+- WS-07: the dedupe hash differs between BoG CSV (no operation ID) and XLSX for the same operation. Match across formats on date + amount + document number. Match bank accounts on IBAN + currency, because BoG uses one IBAN for all of a client's currency accounts.
