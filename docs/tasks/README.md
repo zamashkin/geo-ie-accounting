@@ -61,3 +61,9 @@ These don't block Phase 0 or the BoG parsers. Add files to `fixtures/statements/
 - [ ] A statement with outgoing payments (so far only incoming transfers and conversions have been seen). Needed for unknown `Operation Type` codes and the recipient columns.
 - [ ] Decide whether fixtures keep real amounts or get synthetic ones (matters if the repo goes public).
 - [ ] Accountant check of the *secondary* tax rules (SPEC Q3) before the M3 release.
+
+## Follow-ups found in review
+
+- WS-01: the Order N38 rule set starts 2026-03-01, but the order came into force around 2026-03-07/08 (30 days after publication on 06.02.2026). Confirm the exact date with the accountant (Q3) and adjust `effectiveFrom`. It only matters for SBS applications filed 1–7 March 2026.
+- WS-01: deadlines don't move when the 15th falls on a weekend or public holiday. Ask the accountant whether they should.
+- WS-08: add a test in db or api that the domain and contracts enum lists match.
