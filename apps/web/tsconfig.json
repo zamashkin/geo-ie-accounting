@@ -1,0 +1,10 @@
+{
+  "extends": "@ie-ledger/config/tsconfig/nextjs.json",
+  "compilerOptions": {
+    "paths": {
+      "@/*": ["./src/*"]
+    }
+  },
+  "include": ["next-env.d.ts", "app", "src", "*.ts", "*.mjs", ".next/types/**/*.ts"],
+  "exclude": ["node_modules"]
+}
