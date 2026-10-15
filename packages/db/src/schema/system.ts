@@ -1,4 +1,4 @@
-import { index, integer, jsonb, pgTable, primaryKey, text, uuid } from 'drizzle-orm/pg-core';
+import { index, integer, jsonb, pgTable, text, unique, uuid } from 'drizzle-orm/pg-core';
 import { createdAt, id, timestamptz } from './_columns';
 import { users } from './auth';
 import { organizations } from './tenancy';
@@ -24,19 +24,31 @@ export const auditLog = pgTable(
   (t) => [index('audit_log_org_at_idx').on(t.orgId, t.at)],
 );
 
-/** Stored responses for `Idempotency-Key` (ARCHITECTURE §7). */
+/**
+ * Stored responses for `Idempotency-Key` (ARCHITECTURE §7, ADR 0010).
+ *
+ * A key is scoped to (org, user). `org_id` is null for mutations that have no org yet
+ * (`POST /v1/orgs`, accepting an invitation); NULLS NOT DISTINCT keeps (null, user, key) unique.
+ * The row is inserted in the request's own transaction before the handler runs, so a concurrent
+ * request with the same key waits on the unique index until the first commits or rolls back.
+ */
 export const idempotencyKeys = pgTable(
   'idempotency_keys',
   {
-    orgId: uuid('org_id')
+    id: id(),
+    orgId: uuid('org_id').references(() => organizations.id, { onDelete: 'cascade' }),
+    userId: uuid('user_id')
       .notNull()
-      .references(() => organizations.id, { onDelete: 'cascade' }),
+      .references(() => users.id, { onDelete: 'cascade' }),
     key: text('key').notNull(),
     requestHash: text('request_hash').notNull(),
-    /** null while the first request is still in flight. */
+    /** null only inside the transaction that is still running the request. */
     statusCode: integer('status_code'),
     response: jsonb('response'),
     createdAt: createdAt(),
   },
-  (t) => [primaryKey({ columns: [t.orgId, t.key] })],
+  (t) => [
+    unique('idempotency_keys_scope_key_uq').on(t.orgId, t.userId, t.key).nullsNotDistinct(),
+    index('idempotency_keys_created_at_idx').on(t.createdAt),
+  ],
 );

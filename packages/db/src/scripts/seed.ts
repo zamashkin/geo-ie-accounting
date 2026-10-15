@@ -1,6 +1,6 @@
 import { createDb } from '../client';
 import { loadDbEnv } from '../env';
-import { seedDemo } from '../seed';
+import { DEMO, seedDemo } from '../seed';
 
 const { DATABASE_URL } = loadDbEnv();
 const handle = createDb({
@@ -14,6 +14,9 @@ try {
     result.createdOrg
       ? `Seeded demo org ${result.orgId} with ${result.accounts} accounts.`
       : `Demo org ${result.orgId} already exists; nothing to do.`,
+  );
+  console.log(
+    `${result.createdLogin ? 'Created' : 'Kept'} demo login ${DEMO.userEmail} / ${DEMO.password} (local only).`,
   );
 } finally {
   await handle.close();
