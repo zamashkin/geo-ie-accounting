@@ -65,7 +65,7 @@ const captureIdempotency: preValidationAsyncHookHandler = async (req) => {
 };
 
 type Outcome =
-  | { kind: 'replay'; statusCode: number; body: unknown }
+  | { kind: 'replay'; statusCode: number; body: string | undefined }
   | { kind: 'fresh'; body: string | undefined };
 
 function wrapHandler(handler: RouteHandlerMethod, mustAudit: boolean): RouteHandlerMethod {
@@ -97,7 +97,7 @@ function wrapHandler(handler: RouteHandlerMethod, mustAudit: boolean): RouteHand
             return {
               kind: 'replay',
               statusCode: claim.record.statusCode,
-              body: claim.record.response,
+              body: (claim.record.response as { body?: string } | null)?.body,
             };
           }
         }
@@ -118,12 +118,14 @@ function wrapHandler(handler: RouteHandlerMethod, mustAudit: boolean): RouteHand
           payload === undefined || payload === null
             ? undefined
             : (reply.serialize(payload) as string);
+        // The serialised body is stored as a string so the replay is byte-identical (a jsonb
+        // object would reorder keys).
         if (scope) {
           await completeIdempotencyKey(
             tx,
             scope,
             reply.statusCode,
-            body === undefined ? null : (JSON.parse(body) as unknown),
+            body === undefined ? null : { body },
           );
         }
         return { kind: 'fresh', body };
@@ -134,11 +136,11 @@ function wrapHandler(handler: RouteHandlerMethod, mustAudit: boolean): RouteHand
 
     if (outcome.kind === 'replay') {
       reply.code(outcome.statusCode).header(REPLAYED_HEADER, 'true');
-      if (outcome.body === null) return reply.send();
+      if (typeof outcome.body !== 'string') return reply.send();
       return reply
         .type('application/json; charset=utf-8')
         .serializer((p: unknown) => p as string)
-        .send(JSON.stringify(outcome.body));
+        .send(outcome.body);
     }
     if (outcome.body === undefined) return reply.send();
     return reply

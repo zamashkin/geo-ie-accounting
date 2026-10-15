@@ -84,6 +84,10 @@ export function createAuth(opts: CreateAuthOptions) {
     ],
     rateLimit: { enabled: opts.rateLimit },
     advanced: {
+      // Better Auth skips origin/callback-URL validation when NODE_ENV=test unless these are
+      // set explicitly. Pin them so tests exercise exactly what production runs.
+      disableOriginCheck: false,
+      disableCSRFCheck: false,
       cookiePrefix: COOKIE_PREFIX,
       useSecureCookies: opts.secureCookies,
       // Better Auth's defaults are already httpOnly + SameSite=Lax; stated here because the
