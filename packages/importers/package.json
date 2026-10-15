@@ -1,0 +1,25 @@
+{
+  "name": "@ie-ledger/importers",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Pure statement parsers: (file bytes, options) -> ParsedRow[]. No I/O.",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json",
+    "lint": "eslint .",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@ie-ledger/contracts": "workspace:*",
+    "@ie-ledger/domain": "workspace:*"
+  },
+  "devDependencies": {
+    "@ie-ledger/config": "workspace:*",
+    "eslint": "10.12.0",
+    "typescript": "6.0.3",
+    "vitest": "5.0.5"
+  }
+}

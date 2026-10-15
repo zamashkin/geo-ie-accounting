@@ -1,0 +1,21 @@
+{
+  "name": "@ie-ledger/domain",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Pure business logic: money, FX, ledger and tax rules. No I/O.",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json",
+    "lint": "eslint .",
+    "test": "vitest run"
+  },
+  "devDependencies": {
+    "@ie-ledger/config": "workspace:*",
+    "eslint": "10.12.0",
+    "typescript": "6.0.3",
+    "vitest": "5.0.5"
+  }
+}
