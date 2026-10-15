@@ -2,7 +2,8 @@
   "extends": "@ie-ledger/config/tsconfig/base.json",
   "compilerOptions": {
     "lib": ["ES2024", "DOM", "DOM.Iterable"],
-    "jsx": "react-jsx"
+    "jsx": "react-jsx",
+    "types": ["vite/client"]
   },
-  "include": ["src", "*.ts"]
+  "include": ["src", ".storybook", "*.ts"]
 }

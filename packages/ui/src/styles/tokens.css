@@ -1,0 +1,147 @@
+/*
+ * IE Ledger design tokens. Plain CSS custom properties, so anything (Tailwind utilities,
+ * inline styles, charts) can read them. Light is the default; dark applies when the OS asks
+ * for it, unless the page pins a theme with <html data-theme="light|dark">.
+ *
+ * Contrast targets (WCAG 2.2 AA): fg and fg-muted >= 4.5:1 on surface, canvas and
+ * surface-muted; status "-fg" colours >= 4.5:1 on their "-soft" background; accent-fg on accent
+ * >= 4.5:1; line-strong (form control borders) >= 3:1 on surface.
+ */
+
+:root {
+  color-scheme: light;
+
+  /* Neutrals: a cool grey with a hint of blue. */
+  --ui-canvas: oklch(0.982 0.003 250);
+  --ui-surface: oklch(1 0 0);
+  --ui-surface-muted: oklch(0.965 0.004 250);
+  --ui-surface-raised: oklch(1 0 0);
+  --ui-line: oklch(0.912 0.006 250);
+  --ui-line-strong: oklch(0.62 0.012 255);
+  --ui-fg: oklch(0.235 0.018 260);
+  --ui-fg-muted: oklch(0.47 0.018 260);
+  --ui-fg-subtle: oklch(0.53 0.016 260);
+  --ui-overlay: oklch(0.2 0.02 260 / 0.45);
+
+  /* Accent: a deep, quiet blue. */
+  --ui-accent: oklch(0.47 0.135 258);
+  --ui-accent-hover: oklch(0.41 0.13 258);
+  --ui-accent-fg: oklch(0.99 0 0);
+  --ui-accent-soft: oklch(0.955 0.025 258);
+  --ui-accent-soft-fg: oklch(0.4 0.13 258);
+
+  /* Status. */
+  --ui-positive: oklch(0.52 0.12 158);
+  --ui-positive-soft: oklch(0.96 0.035 158);
+  --ui-positive-fg: oklch(0.4 0.09 158);
+  --ui-negative: oklch(0.53 0.19 27);
+  --ui-negative-hover: oklch(0.47 0.18 27);
+  --ui-negative-soft: oklch(0.96 0.025 27);
+  --ui-negative-fg: oklch(0.45 0.17 27);
+  --ui-warning: oklch(0.72 0.15 75);
+  --ui-warning-soft: oklch(0.965 0.045 85);
+  --ui-warning-fg: oklch(0.45 0.1 65);
+  --ui-info: oklch(0.55 0.11 230);
+  --ui-info-soft: oklch(0.96 0.025 230);
+  --ui-info-fg: oklch(0.42 0.1 235);
+
+  --ui-focus: oklch(0.55 0.16 258);
+
+  /* Elevation. */
+  --ui-shadow-sm: 0 1px 2px oklch(0.2 0.02 260 / 0.06);
+  --ui-shadow-md:
+    0 4px 12px -2px oklch(0.2 0.02 260 / 0.1), 0 2px 4px -2px oklch(0.2 0.02 260 / 0.06);
+  --ui-shadow-lg:
+    0 16px 40px -8px oklch(0.2 0.02 260 / 0.22), 0 4px 12px -4px oklch(0.2 0.02 260 / 0.08);
+
+  /* Shape and type. */
+  --ui-radius-sm: 0.375rem;
+  --ui-radius-md: 0.5rem;
+  --ui-radius-lg: 0.75rem;
+  --ui-font-sans:
+    ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial,
+    'Noto Sans', 'Noto Sans Georgian', sans-serif;
+  --ui-font-mono: ui-monospace, 'SF Mono', 'Cascadia Mono', 'Roboto Mono', Menlo, monospace;
+
+  /* Layout. */
+  --ui-sidebar-width: 15rem;
+  --ui-topbar-height: 3.5rem;
+}
+
+/*
+ * The dark palette, applied by OS preference (unless pinned light) or by data-theme="dark".
+ * The two blocks below must stay identical; tokens.test.ts checks that they do.
+ */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    color-scheme: dark;
+    --ui-canvas: oklch(0.165 0.012 260);
+    --ui-surface: oklch(0.205 0.014 260);
+    --ui-surface-muted: oklch(0.24 0.015 260);
+    --ui-surface-raised: oklch(0.25 0.016 260);
+    --ui-line: oklch(0.31 0.015 260);
+    --ui-line-strong: oklch(0.56 0.015 260);
+    --ui-fg: oklch(0.95 0.005 260);
+    --ui-fg-muted: oklch(0.76 0.012 260);
+    --ui-fg-subtle: oklch(0.7 0.012 260);
+    --ui-overlay: oklch(0.05 0.01 260 / 0.65);
+    --ui-accent: oklch(0.72 0.12 258);
+    --ui-accent-hover: oklch(0.78 0.1 258);
+    --ui-accent-fg: oklch(0.18 0.03 260);
+    --ui-accent-soft: oklch(0.3 0.06 258);
+    --ui-accent-soft-fg: oklch(0.86 0.07 258);
+    --ui-positive: oklch(0.72 0.13 158);
+    --ui-positive-soft: oklch(0.29 0.05 158);
+    --ui-positive-fg: oklch(0.85 0.1 158);
+    --ui-negative: oklch(0.7 0.16 25);
+    --ui-negative-hover: oklch(0.76 0.13 25);
+    --ui-negative-soft: oklch(0.3 0.07 25);
+    --ui-negative-fg: oklch(0.86 0.08 25);
+    --ui-warning: oklch(0.8 0.14 80);
+    --ui-warning-soft: oklch(0.31 0.05 75);
+    --ui-warning-fg: oklch(0.88 0.1 85);
+    --ui-info: oklch(0.72 0.1 230);
+    --ui-info-soft: oklch(0.29 0.05 235);
+    --ui-info-fg: oklch(0.86 0.07 230);
+    --ui-focus: oklch(0.76 0.12 258);
+    --ui-shadow-sm: 0 1px 2px oklch(0 0 0 / 0.3);
+    --ui-shadow-md: 0 4px 12px -2px oklch(0 0 0 / 0.4);
+    --ui-shadow-lg: 0 16px 40px -8px oklch(0 0 0 / 0.6);
+  }
+}
+
+:root[data-theme='dark'] {
+  color-scheme: dark;
+  --ui-canvas: oklch(0.165 0.012 260);
+  --ui-surface: oklch(0.205 0.014 260);
+  --ui-surface-muted: oklch(0.24 0.015 260);
+  --ui-surface-raised: oklch(0.25 0.016 260);
+  --ui-line: oklch(0.31 0.015 260);
+  --ui-line-strong: oklch(0.56 0.015 260);
+  --ui-fg: oklch(0.95 0.005 260);
+  --ui-fg-muted: oklch(0.76 0.012 260);
+  --ui-fg-subtle: oklch(0.7 0.012 260);
+  --ui-overlay: oklch(0.05 0.01 260 / 0.65);
+  --ui-accent: oklch(0.72 0.12 258);
+  --ui-accent-hover: oklch(0.78 0.1 258);
+  --ui-accent-fg: oklch(0.18 0.03 260);
+  --ui-accent-soft: oklch(0.3 0.06 258);
+  --ui-accent-soft-fg: oklch(0.86 0.07 258);
+  --ui-positive: oklch(0.72 0.13 158);
+  --ui-positive-soft: oklch(0.29 0.05 158);
+  --ui-positive-fg: oklch(0.85 0.1 158);
+  --ui-negative: oklch(0.7 0.16 25);
+  --ui-negative-hover: oklch(0.76 0.13 25);
+  --ui-negative-soft: oklch(0.3 0.07 25);
+  --ui-negative-fg: oklch(0.86 0.08 25);
+  --ui-warning: oklch(0.8 0.14 80);
+  --ui-warning-soft: oklch(0.31 0.05 75);
+  --ui-warning-fg: oklch(0.88 0.1 85);
+  --ui-info: oklch(0.72 0.1 230);
+  --ui-info-soft: oklch(0.29 0.05 235);
+  --ui-info-fg: oklch(0.86 0.07 230);
+  --ui-focus: oklch(0.76 0.12 258);
+  --ui-shadow-sm: 0 1px 2px oklch(0 0 0 / 0.3);
+  --ui-shadow-md: 0 4px 12px -2px oklch(0 0 0 / 0.4);
+  --ui-shadow-lg: 0 16px 40px -8px oklch(0 0 0 / 0.6);
+}
