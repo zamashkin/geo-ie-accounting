@@ -1,0 +1,13 @@
+name: Setup
+description: Node, pnpm (version from package.json "packageManager") and a frozen install.
+runs:
+  using: composite
+  steps:
+    - uses: pnpm/action-setup@v6.1.0
+    - uses: actions/setup-node@v7.1.0
+      with:
+        node-version-file: .nvmrc
+        cache: pnpm
+    - name: Install
+      shell: bash
+      run: pnpm install --frozen-lockfile

@@ -18,7 +18,8 @@
     },
     "test:integration": {
       "cache": false,
-      "outputs": []
+      "outputs": [],
+      "passThroughEnv": ["TEST_DATABASE_URL", "DOCKER_HOST", "TESTCONTAINERS_*"]
     },
     "dev": {
       "cache": false,

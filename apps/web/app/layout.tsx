@@ -4,7 +4,8 @@ import './globals.css';
 
 export const metadata: Metadata = {
   title: 'IE Ledger',
-  description: 'Bookkeeping and 1% small-business tax figures for Georgian individual entrepreneurs.',
+  description:
+    'Bookkeeping and 1% small-business tax figures for Georgian individual entrepreneurs.',
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {

@@ -1,0 +1,130 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+env:
+  TURBO_TELEMETRY_DISABLED: '1'
+  NEXT_TELEMETRY_DISABLED: '1'
+
+jobs:
+  # Warms the pnpm store cache once; the parallel jobs below restore it.
+  install:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - uses: ./.github/actions/setup
+
+  typecheck:
+    needs: install
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - uses: ./.github/actions/setup
+      - run: pnpm turbo run typecheck
+
+  lint:
+    needs: install
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - uses: ./.github/actions/setup
+      - run: pnpm turbo run lint
+      - run: pnpm format:check
+
+  unit:
+    needs: install
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - uses: ./.github/actions/setup
+      - run: pnpm turbo run test
+
+  integration:
+    needs: install
+    runs-on: ubuntu-24.04
+    services:
+      postgres:
+        image: postgres:17.11-alpine
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 2s
+          --health-timeout 3s
+          --health-retries 30
+    env:
+      # Each test file creates and drops its own database on this server (packages/db/src/testing).
+      TEST_DATABASE_URL: postgres://postgres:postgres@localhost:5432/postgres
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - uses: ./.github/actions/setup
+      - run: pnpm test:integration
+
+  openapi-drift:
+    needs: install
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - uses: ./.github/actions/setup
+      - run: pnpm gen:api
+      - name: Committed OpenAPI spec and web client types are current
+        run: |
+          git status --porcelain -- apps/api/openapi.json apps/web/src/lib/api
+          git diff --exit-code -- apps/api/openapi.json apps/web/src/lib/api
+
+  migration-check:
+    needs: install
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - uses: ./.github/actions/setup
+      - run: pnpm --filter @ie-ledger/db db:check
+      - run: pnpm db:generate
+      - name: Schema and committed migrations agree
+        run: |
+          if [ -n "$(git status --porcelain -- packages/db/drizzle)" ]; then
+            git status --porcelain -- packages/db/drizzle
+            echo "::error::Drizzle schema changed without a migration. Run pnpm db:generate and commit it."
+            exit 1
+          fi
+
+  build:
+    needs: install
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - uses: ./.github/actions/setup
+      - run: pnpm turbo run build
+
+  # Placeholder until the Playwright suite lands (WS-04/WS-06): boots the compose stack.
+  e2e:
+    needs: [build]
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - name: Start services
+        run: docker compose up -d --wait
+      - run: echo "e2e suite not implemented yet (placeholder)"
+      - if: always()
+        run: docker compose down -v
+
+  # Placeholder until Lighthouse CI and bundle budgets land (WS-10).
+  perf:
+    needs: [build]
+    runs-on: ubuntu-24.04
+    steps:
+      - run: echo "perf budget check not implemented yet (placeholder)"
