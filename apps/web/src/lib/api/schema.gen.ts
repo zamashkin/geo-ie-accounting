@@ -4,6 +4,153 @@
  */
 
 export interface paths {
+    "/v1/me": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Signed-in user and the organizations they belong to */
+        get: operations["getMe"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/orgs": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Organizations the caller is a member of */
+        get: operations["listOrganizations"];
+        put?: never;
+        /**
+         * Create an organization; the caller becomes its owner
+         * @description Seeds the default chart of accounts in the same transaction.
+         */
+        post: operations["createOrganization"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/orgs/{orgId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** One organization with the caller’s role */
+        get: operations["getOrganization"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/orgs/{orgId}/members": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Members of the organization */
+        get: operations["listMembers"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/orgs/{orgId}/invitations": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Pending invitations */
+        get: operations["listInvitations"];
+        put?: never;
+        /**
+         * Invite someone by email
+         * @description Emails a single-use link to `<web>/invite/<token>`, valid for 7 days. The token is never returned or stored in clear.
+         */
+        post: operations["createInvitation"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/orgs/{orgId}/invitations/{invitationId}/revoke": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Revoke a pending invitation */
+        post: operations["revokeInvitation"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/invitations/preview": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** What an invitation token is for */
+        post: operations["previewInvitation"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/invitations/accept": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Accept an invitation as the signed-in user
+         * @description The signed-in email must match the invited email.
+         */
+        post: operations["acceptInvitation"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/healthz": {
         parameters: {
             query?: never;
@@ -607,6 +754,97 @@ export interface components {
                 database: "ok" | "fail";
             };
         };
+        SessionUserInput: {
+            /** Format: uuid */
+            id: string;
+            /** Format: email */
+            email: string;
+            name: string;
+            /** Format: date-time */
+            createdAt: string;
+            emailVerified: boolean;
+        };
+        MembershipSummaryInput: {
+            /** Format: uuid */
+            orgId: string;
+            orgName: string;
+            /** @enum {string} */
+            role: "owner" | "accountant" | "viewer";
+        };
+        MeResponseInput: {
+            user: components["schemas"]["SessionUserInput"];
+            memberships: components["schemas"]["MembershipSummaryInput"][];
+        };
+        CreateOrganizationRequestInput: {
+            name: string;
+            taxId?: string | null;
+            sbsEffectiveFrom?: string | null;
+        };
+        OrganizationWithRoleInput: {
+            /** Format: uuid */
+            id: string;
+            name: string;
+            taxId: string | null;
+            /** @constant */
+            baseCurrency: "GEL";
+            sbsEffectiveFrom: string | null;
+            /** @enum {string} */
+            accountingMethod: "cash";
+            /** Format: date-time */
+            createdAt: string;
+            /** @enum {string} */
+            role: "owner" | "accountant" | "viewer";
+        };
+        OrganizationListInput: {
+            items: components["schemas"]["OrganizationWithRoleInput"][];
+            nextCursor: string | null;
+        };
+        MemberInput: {
+            /** Format: uuid */
+            userId: string;
+            /** Format: email */
+            email: string;
+            name: string;
+            /** @enum {string} */
+            role: "owner" | "accountant" | "viewer";
+            /** Format: date-time */
+            createdAt: string;
+        };
+        MemberListInput: {
+            items: components["schemas"]["MemberInput"][];
+            nextCursor: string | null;
+        };
+        CreateInvitationRequestInput: {
+            /** Format: email */
+            email: string;
+            /** @enum {string} */
+            role: "owner" | "accountant" | "viewer";
+        };
+        InvitationListInput: {
+            items: components["schemas"]["InvitationInput"][];
+            nextCursor: string | null;
+        };
+        InvitationTokenRequestInput: {
+            token: string;
+        };
+        InvitationPreviewInput: {
+            orgName: string;
+            /** Format: email */
+            email: string;
+            /** @enum {string} */
+            role: "owner" | "accountant" | "viewer";
+            /** @enum {string} */
+            status: "pending" | "accepted" | "revoked" | "expired";
+            /** Format: date-time */
+            expiresAt: string;
+        };
+        AcceptInvitationResponseInput: {
+            /** Format: uuid */
+            orgId: string;
+            orgName: string;
+            /** @enum {string} */
+            role: "owner" | "accountant" | "viewer";
+        };
         Problem: {
             /** @description URI reference identifying the problem type. */
             type: string;
@@ -1189,6 +1427,97 @@ export interface components {
                 database: "ok" | "fail";
             };
         };
+        SessionUser: {
+            /** Format: uuid */
+            id: string;
+            /** Format: email */
+            email: string;
+            name: string;
+            /** Format: date-time */
+            createdAt: string;
+            emailVerified: boolean;
+        };
+        MembershipSummary: {
+            /** Format: uuid */
+            orgId: string;
+            orgName: string;
+            /** @enum {string} */
+            role: "owner" | "accountant" | "viewer";
+        };
+        MeResponse: {
+            user: components["schemas"]["SessionUser"];
+            memberships: components["schemas"]["MembershipSummary"][];
+        };
+        CreateOrganizationRequest: {
+            name: string;
+            taxId?: string | null;
+            sbsEffectiveFrom?: string | null;
+        };
+        OrganizationWithRole: {
+            /** Format: uuid */
+            id: string;
+            name: string;
+            taxId: string | null;
+            /** @constant */
+            baseCurrency: "GEL";
+            sbsEffectiveFrom: string | null;
+            /** @enum {string} */
+            accountingMethod: "cash";
+            /** Format: date-time */
+            createdAt: string;
+            /** @enum {string} */
+            role: "owner" | "accountant" | "viewer";
+        };
+        OrganizationList: {
+            items: components["schemas"]["OrganizationWithRole"][];
+            nextCursor: string | null;
+        };
+        Member: {
+            /** Format: uuid */
+            userId: string;
+            /** Format: email */
+            email: string;
+            name: string;
+            /** @enum {string} */
+            role: "owner" | "accountant" | "viewer";
+            /** Format: date-time */
+            createdAt: string;
+        };
+        MemberList: {
+            items: components["schemas"]["Member"][];
+            nextCursor: string | null;
+        };
+        CreateInvitationRequest: {
+            /** Format: email */
+            email: string;
+            /** @enum {string} */
+            role: "owner" | "accountant" | "viewer";
+        };
+        InvitationList: {
+            items: components["schemas"]["Invitation"][];
+            nextCursor: string | null;
+        };
+        InvitationTokenRequest: {
+            token: string;
+        };
+        InvitationPreview: {
+            orgName: string;
+            /** Format: email */
+            email: string;
+            /** @enum {string} */
+            role: "owner" | "accountant" | "viewer";
+            /** @enum {string} */
+            status: "pending" | "accepted" | "revoked" | "expired";
+            /** Format: date-time */
+            expiresAt: string;
+        };
+        AcceptInvitationResponse: {
+            /** Format: uuid */
+            orgId: string;
+            orgName: string;
+            /** @enum {string} */
+            role: "owner" | "accountant" | "viewer";
+        };
     };
     responses: never;
     parameters: never;
@@ -1198,6 +1527,341 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
+    getMe: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Default Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MeResponse"];
+                };
+            };
+            /** @description Error (RFC 9457 problem details) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    listOrganizations: {
+        parameters: {
+            query?: {
+                cursor?: string;
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Default Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OrganizationList"];
+                };
+            };
+            /** @description Error (RFC 9457 problem details) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    createOrganization: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description Client-chosen key; replays return the stored response for 24 h. */
+                "idempotency-key"?: string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateOrganizationRequestInput"];
+            };
+        };
+        responses: {
+            /** @description Default Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OrganizationWithRole"];
+                };
+            };
+            /** @description Error (RFC 9457 problem details) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    getOrganization: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                orgId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Default Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OrganizationWithRole"];
+                };
+            };
+            /** @description Error (RFC 9457 problem details) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    listMembers: {
+        parameters: {
+            query?: {
+                cursor?: string;
+                limit?: number;
+            };
+            header?: never;
+            path: {
+                orgId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Default Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MemberList"];
+                };
+            };
+            /** @description Error (RFC 9457 problem details) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    listInvitations: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                orgId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Default Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InvitationList"];
+                };
+            };
+            /** @description Error (RFC 9457 problem details) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    createInvitation: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description Client-chosen key; replays return the stored response for 24 h. */
+                "idempotency-key"?: string;
+            };
+            path: {
+                orgId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateInvitationRequestInput"];
+            };
+        };
+        responses: {
+            /** @description Default Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Invitation"];
+                };
+            };
+            /** @description Error (RFC 9457 problem details) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    revokeInvitation: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description Client-chosen key; replays return the stored response for 24 h. */
+                "idempotency-key"?: string;
+            };
+            path: {
+                orgId: string;
+                invitationId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Default Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Invitation"];
+                };
+            };
+            /** @description Error (RFC 9457 problem details) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    previewInvitation: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["InvitationTokenRequestInput"];
+            };
+        };
+        responses: {
+            /** @description Default Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InvitationPreview"];
+                };
+            };
+            /** @description Error (RFC 9457 problem details) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    acceptInvitation: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description Client-chosen key; replays return the stored response for 24 h. */
+                "idempotency-key"?: string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["InvitationTokenRequestInput"];
+            };
+        };
+        responses: {
+            /** @description Default Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AcceptInvitationResponse"];
+                };
+            };
+            /** @description Error (RFC 9457 problem details) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
     getHealth: {
         parameters: {
             query?: never;
