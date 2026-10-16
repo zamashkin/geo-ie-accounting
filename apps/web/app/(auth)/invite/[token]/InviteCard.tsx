@@ -57,8 +57,7 @@ export function InviteCard({ token }: { token: string }) {
       <div className="flex flex-col gap-1">
         <h1 className="text-xl font-semibold tracking-tight">Join {inv.orgName}</h1>
         <p className="text-sm text-fg-muted">
-          {inv.invitedByName ?? 'The workspace owner'} invited{' '}
-          <strong className="text-fg">{inv.email}</strong>.
+          This invitation is for <strong className="text-fg">{inv.email}</strong>.
         </p>
       </div>
       <dl className="grid grid-cols-[auto_1fr] items-center gap-x-4 gap-y-2 text-sm">

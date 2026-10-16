@@ -3,9 +3,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { PASSWORD_MIN_LENGTH, SignUpBody } from '@ie-ledger/contracts';
 import { Button, Card, TextField } from '@ie-ledger/ui';
-import type { Route } from 'next';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { authClient } from '@/lib/auth/client';
@@ -24,8 +22,8 @@ const FIELDS = [
 ] as const;
 
 export function SignUpForm({ next }: { next: string }) {
-  const router = useRouter();
   const [formError, setFormError] = useState<string | null>(null);
+  const [sentTo, setSentTo] = useState<string | null>(null);
   const { control, handleSubmit, setError, formState } = useForm<SignUpBody>({
     resolver: zodResolver(SignUpBody),
     defaultValues: { name: '', email: '', password: '' },
@@ -34,13 +32,31 @@ export function SignUpForm({ next }: { next: string }) {
   const onSubmit = handleSubmit(async (values) => {
     setFormError(null);
     try {
-      await authClient().signUp(values);
-      router.replace(next as Route);
-      router.refresh();
+      // The API sends a verification email; the link signs the user in and lands on `next`.
+      await authClient().signUp({ ...values, callbackURL: next });
+      setSentTo(values.email);
     } catch (err) {
       setFormError(applyApiError(err, setError, ['name', 'email', 'password']));
     }
   });
+
+  if (sentTo) {
+    return (
+      <Card className="flex flex-col gap-4 p-5 sm:p-6">
+        <h1 className="text-xl font-semibold tracking-tight">Check your email</h1>
+        <FormAlert tone="success">
+          We sent a verification link to <strong>{sentTo}</strong>. Open it to finish creating your
+          account.
+        </FormAlert>
+        <Link
+          href="/sign-in"
+          className="text-sm font-medium text-accent underline-offset-4 hover:underline"
+        >
+          Back to sign in
+        </Link>
+      </Card>
+    );
+  }
 
   return (
     <Card className="p-5 sm:p-6">

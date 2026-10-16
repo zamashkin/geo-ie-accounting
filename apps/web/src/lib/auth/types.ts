@@ -14,6 +14,7 @@ import type {
  */
 export interface AuthClient {
   signIn(body: SignInBody): Promise<void>;
+  /** Creates the account and sends a verification email. No session until verified. */
   signUp(body: SignUpBody): Promise<void>;
   /** Sends a one-time sign-in link by email. Resolves even for unknown emails. */
   requestMagicLink(body: MagicLinkBody): Promise<void>;

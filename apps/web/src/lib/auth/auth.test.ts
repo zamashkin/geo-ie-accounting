@@ -36,6 +36,19 @@ describe('MockAuthClient', () => {
     });
   });
 
+  it('creates no session on sign-up (verification email first)', async () => {
+    const auth = new MockAuthClient({ delayMs: 0, cookies: memoryCookies() });
+    await auth.signUp({ email: 'new@example.ge', name: 'New', password: 'long-enough-pw' });
+    expect(await auth.getSession()).toBeNull();
+  });
+
+  it('rejects unverified emails with 403', async () => {
+    const auth = new MockAuthClient({ delayMs: 0, cookies: memoryCookies() });
+    await expect(
+      auth.signIn({ email: 'unverified@example.ge', password: 'x' }),
+    ).rejects.toMatchObject({ status: 403 });
+  });
+
   it('returns field errors for a taken email', async () => {
     const auth = new MockAuthClient({ delayMs: 0, cookies: memoryCookies() });
     const err: unknown = await auth

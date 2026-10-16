@@ -41,7 +41,9 @@ export interface MockAuthOptions {
 
 /**
  * Local stand-in for Better Auth (WS-05). Rules, so every UI state can be reached:
- * - password `wrong-password` → 401; email `taken@example.ge` on sign-up → 409;
+ * - password `wrong-password` → 401; email `unverified@example.ge` → 403 (like Better Auth
+ *   with required email verification); email `taken@example.ge` on sign-up → 422;
+ * - sign-up sends a (pretend) verification email and creates no session, as WS-05 does;
  * - anything else signs in as a demo user with three workspaces.
  */
 export class MockAuthClient implements AuthClient {
@@ -80,10 +82,18 @@ export class MockAuthClient implements AuthClient {
         'Invalid email or password.',
       );
     }
+    if (email === 'unverified@example.ge') {
+      throw problem(
+        403,
+        'forbidden',
+        'Email not verified',
+        'Verify your email first: check your inbox for the link.',
+      );
+    }
     this.setUser({ email, name: nameFromEmail(email) });
   }
 
-  async signUp({ email, name }: SignUpBody): Promise<void> {
+  async signUp({ email }: SignUpBody): Promise<void> {
     await this.wait();
     if (email === 'taken@example.ge') {
       throw new ApiError(
@@ -99,7 +109,7 @@ export class MockAuthClient implements AuthClient {
         'problem',
       );
     }
-    this.setUser({ email, name });
+    // No session until the email is verified (WS-05 behaviour).
   }
 
   async requestMagicLink(): Promise<void> {
@@ -140,6 +150,6 @@ export class MockAuthClient implements AuthClient {
         `This invitation is ${invitation.status}.`,
       );
     }
-    return { orgId: DEMO_ORGS[0].orgId, role: invitation.role };
+    return { orgId: DEMO_ORGS[0].orgId, orgName: invitation.orgName, role: invitation.role };
   }
 }

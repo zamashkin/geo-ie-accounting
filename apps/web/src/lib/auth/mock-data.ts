@@ -17,9 +17,13 @@ export const DEMO_ORGS = [
 
 export function demoSession(user: { email: string; name: string }): SessionResponse {
   return {
-    user: { id: '0199f2a0-0000-7000-8000-0000000000aa', ...user },
+    user: {
+      id: '0199f2a0-0000-7000-8000-0000000000aa',
+      ...user,
+      emailVerified: true,
+      createdAt: '2026-10-01T10:00:00.000Z',
+    },
     memberships: [...DEMO_ORGS],
-    expiresAt: new Date(Date.now() + 7 * 86_400_000).toISOString(),
   };
 }
 
@@ -29,7 +33,6 @@ export const MOCK_INVITATIONS: Record<string, InvitationPreview> = {
     orgName: 'Nino Beridze IE',
     email: 'accountant@example.ge',
     role: 'accountant',
-    invitedByName: 'Nino Beridze',
     expiresAt: '2026-12-31T20:00:00.000Z',
     status: 'pending',
   },
@@ -37,7 +40,6 @@ export const MOCK_INVITATIONS: Record<string, InvitationPreview> = {
     orgName: 'Nino Beridze IE',
     email: 'accountant@example.ge',
     role: 'viewer',
-    invitedByName: 'Nino Beridze',
     expiresAt: '2026-01-01T00:00:00.000Z',
     status: 'expired',
   },

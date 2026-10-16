@@ -20,11 +20,16 @@ describe('auth contracts', () => {
 
   it('parses a session with memberships', () => {
     const session = SessionResponse.parse({
-      user: { id: '0199e8a0-0000-7000-8000-000000000001', email: 'nino@example.ge', name: 'Nino' },
+      user: {
+        id: '0199e8a0-0000-7000-8000-000000000001',
+        email: 'nino@example.ge',
+        name: 'Nino',
+        emailVerified: true,
+        createdAt: '2026-10-01T10:00:00.000Z',
+      },
       memberships: [
         { orgId: '0199e8a0-0000-7000-8000-000000000002', orgName: 'Nino IE', role: 'owner' },
       ],
-      expiresAt: '2026-11-15T10:00:00.000Z',
     });
     expect(session.memberships[0]?.role).toBe('owner');
   });
@@ -35,7 +40,6 @@ describe('auth contracts', () => {
         orgName: 'Nino IE',
         email: 'acc@example.ge',
         role: 'accountant',
-        invitedByName: null,
         expiresAt: '2026-11-15T10:00:00.000Z',
         status: 'lost',
       }).success,
