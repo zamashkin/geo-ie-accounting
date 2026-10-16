@@ -23,6 +23,7 @@ const row: Schemas['ImportRowView'] = {
   dedupeHash: 'h',
   status: 'new',
   suggestedAccountId: 'income',
+  suggestedRuleId: null,
   chosenAccountId: null,
   transactionId: null,
   accountId: 'income',

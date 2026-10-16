@@ -16,16 +16,28 @@ export type UploadStatementResponse = Schemas['UploadStatementResponse'];
 export type TransactionView = Schemas['TransactionView'];
 export type TransactionSource = TransactionView['source'];
 
+export type AccountBalanceList = Schemas['AccountBalanceList'];
+export type AccountBalance = Schemas['AccountBalance'];
+export type Rule = Schemas['CategorizationRule'];
+export type RuleInput = Schemas['CreateRuleRequestInput'];
+export type CreateTransactionInput = Schemas['CreateTransactionRequestInput'];
+export type TransactionPreview = Schemas['TransactionPreview'];
+
 export interface TransactionFilters {
   from?: string | undefined;
   to?: string | undefined;
   accountId?: string | undefined;
   source?: TransactionSource | undefined;
+  q?: string | undefined;
+  taxable?: boolean | undefined;
 }
 
 export const ledgerKeys = {
   org: (orgId: string) => ['org', orgId] as const,
   accounts: (orgId: string) => ['org', orgId, 'accounts'] as const,
+  allAccounts: (orgId: string) => ['org', orgId, 'accounts', 'all'] as const,
+  accountBalances: (orgId: string) => ['org', orgId, 'accounts', 'balances'] as const,
+  rules: (orgId: string) => ['org', orgId, 'rules'] as const,
   imports: (orgId: string) => ['org', orgId, 'imports'] as const,
   importBatch: (orgId: string, batchId: string) => ['org', orgId, 'imports', batchId] as const,
   importRows: (orgId: string, batchId: string) =>
@@ -53,6 +65,162 @@ export function accountsQuery(orgId: string) {
       ).items,
     staleTime: 5 * 60_000,
   });
+}
+
+/** Active and archived accounts, for the accounts page. */
+export function allAccountsQuery(orgId: string) {
+  return queryOptions({
+    queryKey: ledgerKeys.allAccounts(orgId),
+    queryFn: async ({ signal }) =>
+      (
+        await unwrap(
+          api().GET('/v1/orgs/{orgId}/accounts', {
+            params: { path: { orgId }, query: { includeArchived: 'true' } },
+            signal,
+          }),
+        )
+      ).items,
+  });
+}
+
+export function accountBalancesQuery(orgId: string) {
+  return queryOptions({
+    queryKey: ledgerKeys.accountBalances(orgId),
+    queryFn: ({ signal }) =>
+      unwrap(
+        api().GET('/v1/orgs/{orgId}/accounts/balances', { params: { path: { orgId } }, signal }),
+      ),
+  });
+}
+
+export function createAccount(
+  orgId: string,
+  body: Schemas['CreateAccountRequestInput'],
+  key: string,
+) {
+  return unwrap(
+    api().POST('/v1/orgs/{orgId}/accounts', {
+      params: { path: { orgId } },
+      headers: idempotencyHeaders(key),
+      body,
+    }),
+  );
+}
+
+export function updateAccount(
+  orgId: string,
+  accountId: string,
+  body: Schemas['UpdateAccountRequestInput'],
+  key: string,
+) {
+  return unwrap(
+    api().PATCH('/v1/orgs/{orgId}/accounts/{accountId}', {
+      params: { path: { orgId, accountId } },
+      headers: idempotencyHeaders(key),
+      body,
+    }),
+  );
+}
+
+export function rulesQuery(orgId: string) {
+  return queryOptions({
+    queryKey: ledgerKeys.rules(orgId),
+    queryFn: async ({ signal }) =>
+      (await unwrap(api().GET('/v1/orgs/{orgId}/rules', { params: { path: { orgId } }, signal })))
+        .items,
+  });
+}
+
+export function createRule(orgId: string, body: RuleInput, key: string) {
+  return unwrap(
+    api().POST('/v1/orgs/{orgId}/rules', {
+      params: { path: { orgId } },
+      headers: idempotencyHeaders(key),
+      body,
+    }),
+  );
+}
+
+export function updateRule(
+  orgId: string,
+  ruleId: string,
+  body: Schemas['UpdateRuleRequestInput'],
+  key: string,
+) {
+  return unwrap(
+    api().PATCH('/v1/orgs/{orgId}/rules/{ruleId}', {
+      params: { path: { orgId, ruleId } },
+      headers: idempotencyHeaders(key),
+      body,
+    }),
+  );
+}
+
+export function deleteRule(orgId: string, ruleId: string, key: string) {
+  return unwrap(
+    api().DELETE('/v1/orgs/{orgId}/rules/{ruleId}', {
+      params: { path: { orgId, ruleId } },
+      headers: idempotencyHeaders(key),
+    }),
+  );
+}
+
+export function reorderRules(orgId: string, ruleIds: string[], key: string) {
+  return unwrap(
+    api().POST('/v1/orgs/{orgId}/rules/reorder', {
+      params: { path: { orgId } },
+      headers: idempotencyHeaders(key),
+      body: { ruleIds },
+    }),
+  );
+}
+
+export function applyImportRules(orgId: string, batchId: string, key: string) {
+  return unwrap(
+    api().POST('/v1/orgs/{orgId}/imports/{batchId}/apply-rules', {
+      params: { path: { orgId, batchId } },
+      headers: idempotencyHeaders(key),
+    }),
+  );
+}
+
+export function bulkUpdateImportRows(
+  orgId: string,
+  batchId: string,
+  body: Schemas['BulkUpdateImportRowsRequestInput'],
+  key: string,
+) {
+  return unwrap(
+    api().POST('/v1/orgs/{orgId}/imports/{batchId}/rows/bulk', {
+      params: { path: { orgId, batchId } },
+      headers: idempotencyHeaders(key),
+      body,
+    }),
+  );
+}
+
+export function previewTransaction(
+  orgId: string,
+  body: CreateTransactionInput,
+  signal?: AbortSignal,
+) {
+  return unwrap(
+    api().POST('/v1/orgs/{orgId}/transactions/preview', {
+      params: { path: { orgId } },
+      body,
+      ...(signal ? { signal } : {}),
+    }),
+  );
+}
+
+export function createTransaction(orgId: string, body: CreateTransactionInput, key: string) {
+  return unwrap(
+    api().POST('/v1/orgs/{orgId}/transactions', {
+      params: { path: { orgId } },
+      headers: idempotencyHeaders(key),
+      body,
+    }),
+  );
 }
 
 export function importsQuery(orgId: string) {
@@ -167,6 +335,8 @@ export function transactionsQuery(orgId: string, filters: TransactionFilters) {
               ...(filters.to ? { to: filters.to } : {}),
               ...(filters.accountId ? { accountId: filters.accountId } : {}),
               ...(filters.source ? { source: filters.source } : {}),
+              ...(filters.q ? { q: filters.q } : {}),
+              ...(filters.taxable ? { taxable: 'true' as const } : {}),
             },
           },
           signal,
