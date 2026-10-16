@@ -33,8 +33,15 @@
     {
       "idx": 4,
       "version": "7",
-      "when": 1792186652028,
-      "tag": "0004_rules_accounts",
+      "when": 1792186642560,
+      "tag": "0004_declarations",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1792187916226,
+      "tag": "0005_rules_accounts",
       "breakpoints": true
     }
   ]

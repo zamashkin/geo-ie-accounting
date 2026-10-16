@@ -2,7 +2,6 @@ import {
   ACCOUNT_KINDS,
   ACCOUNTING_METHODS,
   BANKS,
-  DECLARATION_STATUSES,
   IMPORT_BATCH_STATUSES,
   IMPORT_ROW_STATUSES,
   INCOME_CLASSES,
@@ -31,4 +30,3 @@ export const importRowStatusEnum = pgEnum('import_row_status', IMPORT_ROW_STATUS
 export const operationTypeEnum = pgEnum('operation_type', OPERATION_TYPES);
 export const ruleDirectionEnum = pgEnum('rule_direction', RULE_DIRECTIONS);
 export const invoiceStatusEnum = pgEnum('invoice_status', INVOICE_STATUSES);
-export const declarationStatusEnum = pgEnum('declaration_status', DECLARATION_STATUSES);

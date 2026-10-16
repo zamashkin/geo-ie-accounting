@@ -96,7 +96,7 @@ Posted transactions are **immutable**. The DB rejects UPDATE/DELETE on `postings
 
 All tables have `id uuid` (v7), `created_at`, and tenant tables have `org_id` with FK and index. Names are snake_case.
 
-The schema in `packages/db/src/schema` is the source of truth. Beyond the sketch below it has: Better Auth's tables (`auth_sessions`, `auth_accounts`, `auth_verifications`, plus `email_verified`, `image`, `updated_at` on `users`); `org_id` on every child table (`postings`, `import_rows`, `invoice_lines`, `invoice_payments`) for RLS later; `import_rows.operation_type`, `counterparty_account`, `bank_gel_amount_minor`, `counter_amount_minor`, `counter_currency` (ParsedRow fields from `fixtures/statements/bog/FORMAT.md`); `invitations.invited_by/revoked_at`; `invoices.notes` with `number` null until issued; `declarations.has_drift` and `computed_at`; `import_batches.updated_at`.
+The schema in `packages/db/src/schema` is the source of truth. Beyond the sketch below it has: Better Auth's tables (`auth_sessions`, `auth_accounts`, `auth_verifications`, plus `email_verified`, `image`, `updated_at` on `users`); `org_id` on every child table (`postings`, `import_rows`, `invoice_lines`, `invoice_payments`) for RLS later; `import_rows.operation_type`, `counterparty_account`, `bank_gel_amount_minor`, `counter_amount_minor`, `counter_currency` (ParsedRow fields from `fixtures/statements/bog/FORMAT.md`); `invitations.invited_by/revoked_at`; `invoices.notes` with `number` null until issued; `import_batches.updated_at`.
 
 ```
 users(id, email unique, name, created_at)
@@ -144,10 +144,13 @@ invoices(id, org_id, client_id, number int, issue_date, due_date, currency,
 invoice_lines(id, invoice_id, description, quantity numeric, unit_price_minor bigint)
 invoice_payments(invoice_id, transaction_id, amount_minor)
 
-declarations(id, org_id, period char(7) 'YYYY-MM', status enum[draft|filed],
-             turnover_gel_minor, ytd_gel_minor, rate_bp int,   -- 100 = 1%, 300 = 3%
-             by_payment_method jsonb, tax_gel_minor, rules_version, snapshot jsonb,
-             filed_at null, filed_by null, unique(org_id, period))
+declaration_filings(id, org_id, period char(7) 'YYYY-MM', version int, supersedes_id null,
+             rules_version, income_gel_minor, ytd_gel_minor, rate_bp int,  -- 100 = 1%, 300 = 3%
+             by_payment_method jsonb, tax_gel_minor, zero_return, transaction_ids uuid[],
+             snapshot jsonb, rs_reference null, filed_by, filed_at,
+             unique(org_id, period, version))
+  -- insert-only (trigger); a refiling is a correction with version + 1 (ADR 0013).
+  -- Live declaration figures are never stored: computed from postings on every read.
 
 audit_log(id, org_id, actor_id, action, entity, entity_id, before jsonb, after jsonb,
           request_id, at)
@@ -222,7 +225,7 @@ GET    /v1/orgs/:orgId/audit-log
 | `rates.backfill` | api / import.commit | Date range; idempotent upsert. Emits `rates.backfilled`. |
 | `import.parse` | api | See §6. |
 | `import.commit` | api | See §6. |
-| `declaration.recompute` | after commit / reversal / backfill | Recompute draft periods; flag filed periods whose live figures differ. |
+| ~~`declaration.recompute`~~ | — | Not needed: figures and drift are computed on read (ADR 0013). |
 | `invoice.render_pdf` | api | Upload to S3, emit `invoice.pdf_ready`. |
 
 All job payloads are Zod schemas in `contracts/jobs.ts`. Retries with exponential backoff; after max retries, dead-letter queue + Sentry event.

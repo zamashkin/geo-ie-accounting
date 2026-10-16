@@ -1,5 +1,5 @@
 {
-  "id": "8a1cb552-4212-40e7-8cc6-8c8ba8c2d9bb",
+  "id": "e50b8930-7918-4e88-9e0b-caea80d93929",
   "prevId": "8907649e-f16b-4f5e-8a8f-475093f891fd",
   "version": "7",
   "dialect": "postgresql",
@@ -1287,12 +1287,6 @@
           "primaryKey": false,
           "notNull": true
         },
-        "name": {
-          "name": "name",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
         "priority": {
           "name": "priority",
           "type": "integer",
@@ -1300,42 +1294,25 @@
           "notNull": true,
           "default": 100
         },
-        "counterparty_contains": {
-          "name": "counterparty_contains",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "description_contains": {
-          "name": "description_contains",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "direction": {
-          "name": "direction",
-          "type": "rule_direction",
+        "field": {
+          "name": "field",
+          "type": "rule_field",
           "typeSchema": "public",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true
         },
-        "currency": {
-          "name": "currency",
-          "type": "char(3)",
+        "op": {
+          "name": "op",
+          "type": "rule_op",
+          "typeSchema": "public",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true
         },
-        "amount_min_minor": {
-          "name": "amount_min_minor",
-          "type": "bigint",
+        "value": {
+          "name": "value",
+          "type": "text",
           "primaryKey": false,
-          "notNull": false
-        },
-        "amount_max_minor": {
-          "name": "amount_max_minor",
-          "type": "bigint",
-          "primaryKey": false,
-          "notNull": false
+          "notNull": true
         },
         "target_account_id": {
           "name": "target_account_id",
@@ -1352,13 +1329,6 @@
         },
         "created_at": {
           "name": "created_at",
-          "type": "timestamp with time zone",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "now()"
-        },
-        "updated_at": {
-          "name": "updated_at",
           "type": "timestamp with time zone",
           "primaryKey": false,
           "notNull": true,
@@ -1402,17 +1372,15 @@
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
-        "categorization_rules_target_account_fk": {
-          "name": "categorization_rules_target_account_fk",
+        "categorization_rules_target_account_id_accounts_id_fk": {
+          "name": "categorization_rules_target_account_id_accounts_id_fk",
           "tableFrom": "categorization_rules",
           "tableTo": "accounts",
           "columnsFrom": [
-            "target_account_id",
-            "org_id"
+            "target_account_id"
           ],
           "columnsTo": [
-            "id",
-            "org_id"
+            "id"
           ],
           "onDelete": "no action",
           "onUpdate": "no action"
@@ -1421,16 +1389,7 @@
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},
       "policies": {},
-      "checkConstraints": {
-        "categorization_rules_amount_range": {
-          "name": "categorization_rules_amount_range",
-          "value": "(\"categorization_rules\".\"amount_min_minor\" is null and \"categorization_rules\".\"amount_max_minor\" is null) or \"categorization_rules\".\"currency\" is not null"
-        },
-        "categorization_rules_amount_order": {
-          "name": "categorization_rules_amount_order",
-          "value": "\"categorization_rules\".\"amount_min_minor\" is null or \"categorization_rules\".\"amount_max_minor\" is null or \"categorization_rules\".\"amount_min_minor\" <= \"categorization_rules\".\"amount_max_minor\""
-        }
-      },
+      "checkConstraints": {},
       "isRLSEnabled": false
     },
     "public.column_mappings": {
@@ -1863,12 +1822,6 @@
           "primaryKey": false,
           "notNull": false
         },
-        "suggested_rule_id": {
-          "name": "suggested_rule_id",
-          "type": "uuid",
-          "primaryKey": false,
-          "notNull": false
-        },
         "chosen_account_id": {
           "name": "chosen_account_id",
           "type": "uuid",
@@ -1965,19 +1918,6 @@
             "id"
           ],
           "onDelete": "no action",
-          "onUpdate": "no action"
-        },
-        "import_rows_suggested_rule_id_categorization_rules_id_fk": {
-          "name": "import_rows_suggested_rule_id_categorization_rules_id_fk",
-          "tableFrom": "import_rows",
-          "tableTo": "categorization_rules",
-          "columnsFrom": [
-            "suggested_rule_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "set null",
           "onUpdate": "no action"
         },
         "import_rows_chosen_account_id_accounts_id_fk": {
@@ -2556,8 +2496,8 @@
       },
       "isRLSEnabled": false
     },
-    "public.declarations": {
-      "name": "declarations",
+    "public.declaration_filings": {
+      "name": "declaration_filings",
       "schema": "",
       "columns": {
         "id": {
@@ -2578,16 +2518,26 @@
           "primaryKey": false,
           "notNull": true
         },
-        "status": {
-          "name": "status",
-          "type": "declaration_status",
-          "typeSchema": "public",
+        "version": {
+          "name": "version",
+          "type": "integer",
           "primaryKey": false,
-          "notNull": true,
-          "default": "'draft'"
+          "notNull": true
         },
-        "turnover_gel_minor": {
-          "name": "turnover_gel_minor",
+        "supersedes_id": {
+          "name": "supersedes_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "rules_version": {
+          "name": "rules_version",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "income_gel_minor": {
+          "name": "income_gel_minor",
           "type": "bigint",
           "primaryKey": false,
           "notNull": true
@@ -2598,15 +2548,15 @@
           "primaryKey": false,
           "notNull": true
         },
-        "rate_bp": {
-          "name": "rate_bp",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true
-        },
         "by_payment_method": {
           "name": "by_payment_method",
           "type": "jsonb",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "rate_bp": {
+          "name": "rate_bp",
+          "type": "integer",
           "primaryKey": false,
           "notNull": true
         },
@@ -2616,9 +2566,15 @@
           "primaryKey": false,
           "notNull": true
         },
-        "rules_version": {
-          "name": "rules_version",
-          "type": "text",
+        "zero_return": {
+          "name": "zero_return",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "transaction_ids": {
+          "name": "transaction_ids",
+          "type": "uuid[]",
           "primaryKey": false,
           "notNull": true
         },
@@ -2626,25 +2582,11 @@
           "name": "snapshot",
           "type": "jsonb",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true
         },
-        "has_drift": {
-          "name": "has_drift",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": true,
-          "default": false
-        },
-        "computed_at": {
-          "name": "computed_at",
-          "type": "timestamp with time zone",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "now()"
-        },
-        "filed_at": {
-          "name": "filed_at",
-          "type": "timestamp with time zone",
+        "rs_reference": {
+          "name": "rs_reference",
+          "type": "text",
           "primaryKey": false,
           "notNull": false
         },
@@ -2652,12 +2594,19 @@
           "name": "filed_by",
           "type": "uuid",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true
+        },
+        "filed_at": {
+          "name": "filed_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
         }
       },
       "indexes": {
-        "declarations_org_period_uq": {
-          "name": "declarations_org_period_uq",
+        "declaration_filings_org_period_version_uq": {
+          "name": "declaration_filings_org_period_version_uq",
           "columns": [
             {
               "expression": "org_id",
@@ -2670,18 +2619,40 @@
               "isExpression": false,
               "asc": true,
               "nulls": "last"
+            },
+            {
+              "expression": "version",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
             }
           ],
           "isUnique": true,
           "concurrently": false,
           "method": "btree",
           "with": {}
+        },
+        "declaration_filings_supersedes_uq": {
+          "name": "declaration_filings_supersedes_uq",
+          "columns": [
+            {
+              "expression": "supersedes_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "where": "\"declaration_filings\".\"supersedes_id\" is not null",
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
         }
       },
       "foreignKeys": {
-        "declarations_org_id_organizations_id_fk": {
-          "name": "declarations_org_id_organizations_id_fk",
-          "tableFrom": "declarations",
+        "declaration_filings_org_id_organizations_id_fk": {
+          "name": "declaration_filings_org_id_organizations_id_fk",
+          "tableFrom": "declaration_filings",
           "tableTo": "organizations",
           "columnsFrom": [
             "org_id"
@@ -2689,12 +2660,12 @@
           "columnsTo": [
             "id"
           ],
-          "onDelete": "cascade",
+          "onDelete": "restrict",
           "onUpdate": "no action"
         },
-        "declarations_filed_by_users_id_fk": {
-          "name": "declarations_filed_by_users_id_fk",
-          "tableFrom": "declarations",
+        "declaration_filings_filed_by_users_id_fk": {
+          "name": "declaration_filings_filed_by_users_id_fk",
+          "tableFrom": "declaration_filings",
           "tableTo": "users",
           "columnsFrom": [
             "filed_by"
@@ -2704,23 +2675,47 @@
           ],
           "onDelete": "no action",
           "onUpdate": "no action"
+        },
+        "declaration_filings_supersedes_fk": {
+          "name": "declaration_filings_supersedes_fk",
+          "tableFrom": "declaration_filings",
+          "tableTo": "declaration_filings",
+          "columnsFrom": [
+            "supersedes_id",
+            "org_id"
+          ],
+          "columnsTo": [
+            "id",
+            "org_id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
         }
       },
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
+      "uniqueConstraints": {
+        "declaration_filings_id_org_id_uq": {
+          "name": "declaration_filings_id_org_id_uq",
+          "nullsNotDistinct": false,
+          "columns": [
+            "id",
+            "org_id"
+          ]
+        }
+      },
       "policies": {},
       "checkConstraints": {
-        "declarations_period_format": {
-          "name": "declarations_period_format",
-          "value": "\"declarations\".\"period\" ~ '^[0-9]{4}-(0[1-9]|1[0-2])$'"
+        "declaration_filings_period_format": {
+          "name": "declaration_filings_period_format",
+          "value": "\"declaration_filings\".\"period\" ~ '^[0-9]{4}-(0[1-9]|1[0-2])$'"
         },
-        "declarations_rate_bp_nonnegative": {
-          "name": "declarations_rate_bp_nonnegative",
-          "value": "\"declarations\".\"rate_bp\" >= 0"
+        "declaration_filings_rate_bp_nonnegative": {
+          "name": "declaration_filings_rate_bp_nonnegative",
+          "value": "\"declaration_filings\".\"rate_bp\" >= 0"
         },
-        "declarations_filed_fields": {
-          "name": "declarations_filed_fields",
-          "value": "(\"declarations\".\"status\" = 'filed') = (\"declarations\".\"filed_at\" is not null and \"declarations\".\"snapshot\" is not null)"
+        "declaration_filings_version_chain": {
+          "name": "declaration_filings_version_chain",
+          "value": "(\"declaration_filings\".\"version\" = 1) = (\"declaration_filings\".\"supersedes_id\" is null) and \"declaration_filings\".\"version\" >= 1"
         }
       },
       "isRLSEnabled": false
@@ -2992,14 +2987,6 @@
         "other"
       ]
     },
-    "public.declaration_status": {
-      "name": "declaration_status",
-      "schema": "public",
-      "values": [
-        "draft",
-        "filed"
-      ]
-    },
     "public.import_batch_status": {
       "name": "import_batch_status",
       "schema": "public",
@@ -3080,12 +3067,21 @@
         "viewer"
       ]
     },
-    "public.rule_direction": {
-      "name": "rule_direction",
+    "public.rule_field": {
+      "name": "rule_field",
       "schema": "public",
       "values": [
-        "in",
-        "out"
+        "counterparty",
+        "description"
+      ]
+    },
+    "public.rule_op": {
+      "name": "rule_op",
+      "schema": "public",
+      "values": [
+        "contains",
+        "equals",
+        "regex"
       ]
     },
     "public.transaction_source": {

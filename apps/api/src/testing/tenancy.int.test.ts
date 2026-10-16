@@ -51,6 +51,9 @@ describe('cross-tenant harness', () => {
         'POST /v1/orgs/:orgId/rules/reorder',
         'POST /v1/orgs/:orgId/imports/:batchId/rows/bulk',
         'POST /v1/orgs/:orgId/imports/:batchId/apply-rules',
+        // WS-08 declarations.
+        'GET /v1/orgs/:orgId/declarations/:period',
+        'POST /v1/orgs/:orgId/declarations/:period/file',
       ]),
     );
   });

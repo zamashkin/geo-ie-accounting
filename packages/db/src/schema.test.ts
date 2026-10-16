@@ -16,7 +16,8 @@ describe('schema', () => {
       schema.postings.amountMinor,
       schema.postings.gelAmountMinor,
       schema.importRows.amountMinor,
-      schema.declarations.taxGelMinor,
+      schema.declarationFilings.taxGelMinor,
+      schema.declarationFilings.ytdGelMinor,
       schema.invoiceLines.unitPriceMinor,
     ];
     for (const col of moneyColumns) {

@@ -1,7 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { z } from 'zod';
 import {
-  Declaration,
   JOB_NAMES,
   OrgEvent,
   ParsedRow,
@@ -54,29 +53,6 @@ describe('Posting', () => {
     const json = JSON.parse(JSON.stringify(z.encode(Posting, posting))) as Record<string, unknown>;
     expect(json.amountMinor).toBe('100000');
     expect(json.gelAmountMinor).toBe('271230');
-  });
-});
-
-describe('Declaration', () => {
-  it('carries rate in basis points and income by payment method', () => {
-    const d = Declaration.parse({
-      id: uuid,
-      orgId: uuid,
-      period: '2026-09',
-      status: 'draft',
-      turnoverGelMinor: '1000000',
-      ytdGelMinor: '5000000',
-      rateBp: 100,
-      byPaymentMethod: { cash_register: '0', pos: '0', bank: '1000000', other: '0' },
-      taxGelMinor: '10000',
-      rulesVersion: '2024-01-01',
-      snapshot: null,
-      hasDrift: false,
-      computedAt: '2026-10-15T10:00:00.000Z',
-      filedAt: null,
-      filedBy: null,
-    });
-    expect(d.byPaymentMethod.bank).toBe(1000000n);
   });
 });
 

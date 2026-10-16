@@ -42,6 +42,10 @@ const CONSTRAINT_DETAIL: Record<string, string> = {
   idempotency_keys_scope_key_uq: 'This Idempotency-Key is being used by another request.',
   accounts_org_system_key_uq: 'The organization already has this system account.',
   accounts_org_iban_currency_uq: 'An account with this IBAN and currency already exists.',
+  // Declaration filings (packages/db/drizzle/0004_declarations.sql)
+  declaration_filings_org_period_version_uq:
+    'This return was filed again in the meantime. Reload to see the latest filing.',
+  declaration_filings_supersedes_uq: 'That filing has already been corrected. Reload first.',
 };
 
 export function problemFromDbError(err: unknown): DbProblem | null {

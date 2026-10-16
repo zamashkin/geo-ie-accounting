@@ -10,6 +10,7 @@ export * from './date';
 export * from './ledger';
 export * from './tax/rules';
 export * from './tax/declaration';
+export * from './tax/filing';
 export * from './dedupe';
 export * from './categorisation';
 export * from './format';

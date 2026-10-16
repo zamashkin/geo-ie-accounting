@@ -3,7 +3,6 @@ import {
   AccountingMethod,
   AccountKind,
   Bank,
-  DeclarationStatus,
   ImportBatchStatus,
   ImportRowStatus,
   IncomeClass,
@@ -23,7 +22,6 @@ import {
   IsoDate,
   JsonObject,
   MinorUnits,
-  Period,
   QuantityDecimal,
   RateDecimal,
   Timestamp,
@@ -351,32 +349,6 @@ export const IncomeByPaymentMethod = z
   })
   .meta({ id: 'IncomeByPaymentMethod' });
 export type IncomeByPaymentMethod = z.output<typeof IncomeByPaymentMethod>;
-
-export const Declaration = z
-  .object({
-    id: Uuid,
-    orgId: Uuid,
-    period: Period,
-    status: DeclarationStatus,
-    /** SBS income of the month, GEL minor units. */
-    turnoverGelMinor: MinorUnits,
-    /** Cumulative SBS income since 1 January (return line 15). */
-    ytdGelMinor: MinorUnits,
-    /** Basis points: 100 = 1%, 300 = 3%. */
-    rateBp: z.int().nonnegative(),
-    byPaymentMethod: IncomeByPaymentMethod,
-    taxGelMinor: MinorUnits,
-    rulesVersion: z.string(),
-    /** Immutable once filed. */
-    snapshot: JsonObject.nullable(),
-    /** Live figures differ from the filed snapshot. */
-    hasDrift: z.boolean(),
-    computedAt: Timestamp,
-    filedAt: Timestamp.nullable(),
-    filedBy: Uuid.nullable(),
-  })
-  .meta({ id: 'Declaration' });
-export type Declaration = z.output<typeof Declaration>;
 
 // ── Cross-cutting ───────────────────────────────────────────────────────────────────────
 

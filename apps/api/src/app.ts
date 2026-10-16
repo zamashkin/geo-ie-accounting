@@ -16,10 +16,11 @@ import { REPLAYED_HEADER } from './plugins/mutations';
 import { registerProblemHandlers } from './problem';
 import { healthRoutes } from './routes/health';
 import { accountRoutes } from './routes/accounts/index';
+import { dashboardRoutes } from './routes/dashboard/index';
+import { declarationRoutes } from './routes/declarations/index';
 import { importRoutes } from './routes/imports/index';
 import { offlineLedgerDeps, type LedgerDeps } from './routes/ledger-deps';
 import { ratesRoutes, unavailableRatesDeps, type RatesRouteDeps } from './routes/rates/index';
-import { reportRoutes } from './routes/reports/index';
 import { ruleRoutes } from './routes/rules/index';
 import { transactionRoutes } from './routes/transactions/index';
 
@@ -100,7 +101,7 @@ export async function buildApp(config: AppConfig, deps: AppDeps) {
         { name: 'imports', description: 'Bank statement imports: upload, preview, commit' },
         { name: 'transactions', description: 'Ledger transactions and reversals' },
         { name: 'rules', description: 'Categorisation rules for statement imports' },
-        { name: 'declarations', description: 'Monthly SBS declaration figures' },
+        { name: 'declarations', description: 'Monthly SBS declaration figures and filings' },
         { name: 'dashboard', description: 'Year-to-date summary' },
       ],
     },
@@ -126,7 +127,8 @@ export async function buildApp(config: AppConfig, deps: AppDeps) {
   await app.register(importRoutes, { deps: ledger });
   await app.register(transactionRoutes, { deps: ledger });
   await app.register(ruleRoutes);
-  await app.register(reportRoutes, { deps: ledger });
+  await app.register(declarationRoutes, { deps: ledger });
+  await app.register(dashboardRoutes, { deps: ledger });
 
   return app;
 }

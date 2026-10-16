@@ -4,4752 +4,5314 @@
  */
 
 export interface paths {
-  '/v1/me': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/v1/me": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Signed-in user and the organizations they belong to */
+        get: operations["getMe"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /** Signed-in user and the organizations they belong to */
-    get: operations['getMe'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/v1/orgs': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/v1/orgs": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Organizations the caller is a member of */
+        get: operations["listOrganizations"];
+        put?: never;
+        /**
+         * Create an organization; the caller becomes its owner
+         * @description Seeds the default chart of accounts in the same transaction.
+         */
+        post: operations["createOrganization"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /** Organizations the caller is a member of */
-    get: operations['listOrganizations'];
-    put?: never;
-    /**
-     * Create an organization; the caller becomes its owner
-     * @description Seeds the default chart of accounts in the same transaction.
-     */
-    post: operations['createOrganization'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/v1/orgs/{orgId}': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/v1/orgs/{orgId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** One organization with the caller’s role */
+        get: operations["getOrganization"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /**
+         * Update the organization’s name, tax id or small-business status start date
+         * @description Changing `sbsEffectiveFrom` changes which income counts in the declarations (they are computed on request).
+         */
+        patch: operations["updateOrganization"];
+        trace?: never;
     };
-    /** One organization with the caller’s role */
-    get: operations['getOrganization'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    /**
-     * Update the organization’s name, tax id or small-business status start date
-     * @description Changing `sbsEffectiveFrom` changes which income counts in the declarations (they are computed on request).
-     */
-    patch: operations['updateOrganization'];
-    trace?: never;
-  };
-  '/v1/orgs/{orgId}/members': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/v1/orgs/{orgId}/members": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Members of the organization */
+        get: operations["listMembers"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /** Members of the organization */
-    get: operations['listMembers'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/v1/orgs/{orgId}/invitations': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/v1/orgs/{orgId}/invitations": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Pending invitations */
+        get: operations["listInvitations"];
+        put?: never;
+        /**
+         * Invite someone by email
+         * @description Emails a single-use link to `<web>/invite/<token>`, valid for 7 days. The token is never returned or stored in clear.
+         */
+        post: operations["createInvitation"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /** Pending invitations */
-    get: operations['listInvitations'];
-    put?: never;
-    /**
-     * Invite someone by email
-     * @description Emails a single-use link to `<web>/invite/<token>`, valid for 7 days. The token is never returned or stored in clear.
-     */
-    post: operations['createInvitation'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/v1/orgs/{orgId}/invitations/{invitationId}/revoke': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/v1/orgs/{orgId}/invitations/{invitationId}/revoke": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Revoke a pending invitation */
+        post: operations["revokeInvitation"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get?: never;
-    put?: never;
-    /** Revoke a pending invitation */
-    post: operations['revokeInvitation'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/v1/invitations/preview': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/v1/invitations/preview": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** What an invitation token is for */
+        post: operations["previewInvitation"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get?: never;
-    put?: never;
-    /** What an invitation token is for */
-    post: operations['previewInvitation'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/v1/invitations/accept': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/v1/invitations/accept": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Accept an invitation as the signed-in user
+         * @description The signed-in email must match the invited email.
+         */
+        post: operations["acceptInvitation"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get?: never;
-    put?: never;
-    /**
-     * Accept an invitation as the signed-in user
-     * @description The signed-in email must match the invited email.
-     */
-    post: operations['acceptInvitation'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/healthz': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/healthz": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Liveness and dependency checks */
+        get: operations["getHealth"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /** Liveness and dependency checks */
-    get: operations['getHealth'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/v1/rates': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/v1/rates": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * NBG exchange rates, newest first
+         * @description GEL per `quantity` units, one row per day a rate starts (`validFrom`). The rate for a date is the row with the greatest `validFrom` on or before it (SPEC §2.3).
+         */
+        get: operations["listRates"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /**
-     * NBG exchange rates, newest first
-     * @description GEL per `quantity` units, one row per day a rate starts (`validFrom`). The rate for a date is the row with the greatest `validFrom` on or before it (SPEC §2.3).
-     */
-    get: operations['listRates'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/v1/rates/backfill': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/v1/rates/backfill": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Queue a backfill of NBG rates for a date range (admin)
+         * @description Idempotent: dates already stored are not duplicated. Emits `rates.backfilled` when done. Temporary admin check: the `x-admin-token` header (replaced by WS-05).
+         */
+        post: operations["backfillRates"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get?: never;
-    put?: never;
-    /**
-     * Queue a backfill of NBG rates for a date range (admin)
-     * @description Idempotent: dates already stored are not duplicated. Emits `rates.backfilled` when done. Temporary admin check: the `x-admin-token` header (replaced by WS-05).
-     */
-    post: operations['backfillRates'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/v1/orgs/{orgId}/accounts': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/v1/orgs/{orgId}/accounts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Accounts of the organization (chart of accounts and bank accounts)
+         * @description Active accounts, oldest first; `includeArchived=true` adds archived ones.
+         */
+        get: operations["listAccounts"];
+        put?: never;
+        /** Create an account (a bank account needs a currency; the IBAN is optional) */
+        post: operations["createAccount"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /**
-     * Accounts of the organization (chart of accounts and bank accounts)
-     * @description Active accounts, oldest first; `includeArchived=true` adds archived ones.
-     */
-    get: operations['listAccounts'];
-    put?: never;
-    /** Create an account (a bank account needs a currency; the IBAN is optional) */
-    post: operations['createAccount'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/v1/orgs/{orgId}/accounts/balances': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/v1/orgs/{orgId}/accounts/balances": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Balance of every account per currency, and bank accounts in GEL
+         * @description Balances are on the normal side of the account (credit for liability, equity and income). Bank accounts are also valued in GEL at the latest stored NBG rate; no NBG request is made.
+         */
+        get: operations["listAccountBalances"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /**
-     * Balance of every account per currency, and bank accounts in GEL
-     * @description Balances are on the normal side of the account (credit for liability, equity and income). Bank accounts are also valued in GEL at the latest stored NBG rate; no NBG request is made.
-     */
-    get: operations['listAccountBalances'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/v1/orgs/{orgId}/accounts/{accountId}': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/v1/orgs/{orgId}/accounts/{accountId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /**
+         * Rename, archive or restore an account
+         * @description Archived accounts are hidden from pickers but keep their history. A bank account can only be archived at a zero balance; system accounts cannot be archived.
+         */
+        patch: operations["updateAccount"];
+        trace?: never;
     };
-    get?: never;
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    /**
-     * Rename, archive or restore an account
-     * @description Archived accounts are hidden from pickers but keep their history. A bank account can only be archived at a zero balance; system accounts cannot be archived.
-     */
-    patch: operations['updateAccount'];
-    trace?: never;
-  };
-  '/v1/orgs/{orgId}/imports': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/v1/orgs/{orgId}/imports": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Import batches, newest first */
+        get: operations["listImports"];
+        put?: never;
+        /**
+         * Upload a bank statement and get a preview batch
+         * @description Detects the format, parses the file, matches or creates the bank account on IBAN + currency and marks rows already in the ledger (or repeated in the file) as `duplicate`. The file itself is not stored. At most 5 MB.
+         */
+        post: operations["uploadStatement"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /** Import batches, newest first */
-    get: operations['listImports'];
-    put?: never;
-    /**
-     * Upload a bank statement and get a preview batch
-     * @description Detects the format, parses the file, matches or creates the bank account on IBAN + currency and marks rows already in the ledger (or repeated in the file) as `duplicate`. The file itself is not stored. At most 5 MB.
-     */
-    post: operations['uploadStatement'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/v1/orgs/{orgId}/imports/{batchId}': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/v1/orgs/{orgId}/imports/{batchId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** One import batch with its bank account */
+        get: operations["getImport"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /** One import batch with its bank account */
-    get: operations['getImport'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/v1/orgs/{orgId}/imports/{batchId}/rows': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/v1/orgs/{orgId}/imports/{batchId}/rows": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Parsed rows of a batch in statement order (the preview) */
+        get: operations["listImportRows"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /** Parsed rows of a batch in statement order (the preview) */
-    get: operations['listImportRows'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/v1/orgs/{orgId}/imports/{batchId}/rows/{rowId}': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/v1/orgs/{orgId}/imports/{batchId}/rows/{rowId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Choose the account a preview row books against, or skip it */
+        patch: operations["updateImportRow"];
+        trace?: never;
     };
-    get?: never;
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    /** Choose the account a preview row books against, or skip it */
-    patch: operations['updateImportRow'];
-    trace?: never;
-  };
-  '/v1/orgs/{orgId}/imports/{batchId}/rows/bulk': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/v1/orgs/{orgId}/imports/{batchId}/rows/bulk": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Set the account of several preview rows, or skip them, at once
+         * @description Same rules as `PATCH .../rows/:rowId`, all or nothing. Duplicate rows are left as they are and listed in `ignored`.
+         */
+        post: operations["bulkUpdateImportRows"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get?: never;
-    put?: never;
-    /**
-     * Set the account of several preview rows, or skip them, at once
-     * @description Same rules as `PATCH .../rows/:rowId`, all or nothing. Duplicate rows are left as they are and listed in `ignored`.
-     */
-    post: operations['bulkUpdateImportRows'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/v1/orgs/{orgId}/imports/{batchId}/apply-rules': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/v1/orgs/{orgId}/imports/{batchId}/apply-rules": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Re-apply the categorisation rules to the unedited rows of a preview
+         * @description Rows with an account the user chose, and duplicates, keep what they have. The others get the first matching rule, else the fixed suggestion. Returns every row.
+         */
+        post: operations["applyImportRules"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get?: never;
-    put?: never;
-    /**
-     * Re-apply the categorisation rules to the unedited rows of a preview
-     * @description Rows with an account the user chose, and duplicates, keep what they have. The others get the first matching rule, else the fixed suggestion. Returns every row.
-     */
-    post: operations['applyImportRules'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/v1/orgs/{orgId}/imports/{batchId}/commit': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/v1/orgs/{orgId}/imports/{batchId}/commit": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Book every new row of a preview batch, one transaction per row
+         * @description Each row is converted to GEL at the NBG rate of its booked date. Fails with 422 if a `new` row has no account (pick one or skip the row). Rows found in the ledger since the upload are marked `duplicate` instead of being booked. `warnings` lists booked rows whose GEL equivalent on the statement differs from ours by more than 1 tetri.
+         */
+        post: operations["commitImport"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get?: never;
-    put?: never;
-    /**
-     * Book every new row of a preview batch, one transaction per row
-     * @description Each row is converted to GEL at the NBG rate of its booked date. Fails with 422 if a `new` row has no account (pick one or skip the row). Rows found in the ledger since the upload are marked `duplicate` instead of being booked. `warnings` lists booked rows whose GEL equivalent on the statement differs from ours by more than 1 tetri.
-     */
-    post: operations['commitImport'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/v1/orgs/{orgId}/transactions/preview': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/v1/orgs/{orgId}/transactions/preview": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * What a manual transaction would book, with GEL equivalents, without booking
+         * @description Same body and checks as `POST /transactions`. A missing NBG rate is `503 rate_unavailable`.
+         */
+        post: operations["previewTransaction"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get?: never;
-    put?: never;
-    /**
-     * What a manual transaction would book, with GEL equivalents, without booking
-     * @description Same body and checks as `POST /transactions`. A missing NBG rate is `503 rate_unavailable`.
-     */
-    post: operations['previewTransaction'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/v1/orgs/{orgId}/transactions': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/v1/orgs/{orgId}/transactions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Transactions with postings, GEL equivalents and NBG rates, newest first */
+        get: operations["listTransactions"];
+        put?: never;
+        /**
+         * Book a manual transaction from one of the canonical events
+         * @description Income receipt, expense, owner draw or contribution, transfer, currency exchange or tax payment; `postings` (raw, signed, balanced per currency) is for the owner only. Every posting is converted to GEL at the NBG rate of `occurredOn`; a missing rate is `503 rate_unavailable`. Source `manual`.
+         */
+        post: operations["createTransaction"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /** Transactions with postings, GEL equivalents and NBG rates, newest first */
-    get: operations['listTransactions'];
-    put?: never;
-    /**
-     * Book a manual transaction from one of the canonical events
-     * @description Income receipt, expense, owner draw or contribution, transfer, currency exchange or tax payment; `postings` (raw, signed, balanced per currency) is for the owner only. Every posting is converted to GEL at the NBG rate of `occurredOn`; a missing rate is `503 rate_unavailable`. Source `manual`.
-     */
-    post: operations['createTransaction'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/v1/orgs/{orgId}/transactions/{transactionId}': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/v1/orgs/{orgId}/transactions/{transactionId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** One transaction with its postings and rates */
+        get: operations["getTransaction"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /** One transaction with its postings and rates */
-    get: operations['getTransaction'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/v1/orgs/{orgId}/transactions/{transactionId}/reverse': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/v1/orgs/{orgId}/transactions/{transactionId}/reverse": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Post the reversing transaction (every posting negated)
+         * @description Posted transactions never change; a reversal is the only correction. Same accounts, rates and payment method, so the SBS income it posted comes back out. Send `{}` for the defaults.
+         */
+        post: operations["reverseTransaction"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get?: never;
-    put?: never;
-    /**
-     * Post the reversing transaction (every posting negated)
-     * @description Posted transactions never change; a reversal is the only correction. Same accounts, rates and payment method, so the SBS income it posted comes back out. Send `{}` for the defaults.
-     */
-    post: operations['reverseTransaction'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/v1/orgs/{orgId}/rules': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/v1/orgs/{orgId}/rules": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Categorisation rules in the order they are tried */
+        get: operations["listRules"];
+        put?: never;
+        /**
+         * Create a categorisation rule (tried after the existing ones)
+         * @description New uploads apply it straight away; open previews pick it up with `POST /imports/:batchId/apply-rules`.
+         */
+        post: operations["createRule"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /** Categorisation rules in the order they are tried */
-    get: operations['listRules'];
-    put?: never;
-    /**
-     * Create a categorisation rule (tried after the existing ones)
-     * @description New uploads apply it straight away; open previews pick it up with `POST /imports/:batchId/apply-rules`.
-     */
-    post: operations['createRule'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/v1/orgs/{orgId}/rules/{ruleId}': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/v1/orgs/{orgId}/rules/{ruleId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** One categorisation rule */
+        get: operations["getRule"];
+        put?: never;
+        post?: never;
+        /**
+         * Delete a categorisation rule
+         * @description Rows it already suggested keep their account. Returns the deleted rule.
+         */
+        delete: operations["deleteRule"];
+        options?: never;
+        head?: never;
+        /**
+         * Change a categorisation rule
+         * @description Only the fields sent change; null clears a condition.
+         */
+        patch: operations["updateRule"];
+        trace?: never;
     };
-    /** One categorisation rule */
-    get: operations['getRule'];
-    put?: never;
-    post?: never;
-    /**
-     * Delete a categorisation rule
-     * @description Rows it already suggested keep their account. Returns the deleted rule.
-     */
-    delete: operations['deleteRule'];
-    options?: never;
-    head?: never;
-    /**
-     * Change a categorisation rule
-     * @description Only the fields sent change; null clears a condition.
-     */
-    patch: operations['updateRule'];
-    trace?: never;
-  };
-  '/v1/orgs/{orgId}/rules/reorder': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/v1/orgs/{orgId}/rules/reorder": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Set the order the rules are tried in
+         * @description Send every rule id of the organization, first tried first.
+         */
+        post: operations["reorderRules"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get?: never;
-    put?: never;
-    /**
-     * Set the order the rules are tried in
-     * @description Send every rule id of the organization, first tried first.
-     */
-    post: operations['reorderRules'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/v1/orgs/{orgId}/declarations': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/v1/orgs/{orgId}/declarations": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Monthly SBS declaration figures for a year, with filing status and drift
+         * @description Per month: line 15 (`ytdGelMinor`), lines 18–21 (`byPaymentMethod`), rate, tax and deadline, computed from posted transactions on every request, plus `status` against the latest filing (drift lists the lines that moved). Without `year`: the latest year with posted transactions, else the current year.
+         */
+        get: operations["getDeclarationYear"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /**
-     * Monthly SBS declaration figures for a year, laid out like the return
-     * @description Per month: line 15 (`ytdGelMinor`), lines 18–21 (`byPaymentMethod`), rate, tax and deadline. Computed from posted transactions on every request; nothing is filed. Without `year`: the latest year with posted transactions, else the current year.
-     */
-    get: operations['getDeclarationYear'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/v1/orgs/{orgId}/dashboard': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/v1/orgs/{orgId}/declarations/{period}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** One monthly return laid out like rs.ge, with its transactions and filings */
+        get: operations["getDeclarationPeriod"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /**
-     * Year-to-date SBS income, latest month, next deadline and limit progress
-     * @description Without `year`: the latest year with posted transactions, else the current year in Tbilisi.
-     */
-    get: operations['getDashboard'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
+    "/v1/orgs/{orgId}/declarations/{period}/file": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Record that the return was filed on rs.ge: stores an immutable snapshot
+         * @description Snapshots the live figures, rules version and contributing transactions of the month. Nothing is sent to rs.ge. If the month is already filed, this files a correction: send the latest filing id as `supersedesId` (409 otherwise). Snapshots are never changed or deleted. 409 also when the month is not over yet or needs no return.
+         */
+        post: operations["fileDeclaration"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/orgs/{orgId}/dashboard": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Year-to-date SBS income, income by month, counterparty and currency, deadlines
+         * @description Without `year`: the latest year with posted transactions, else the current year in Tbilisi. Counterparty and currency figures cover SBS income from the status start.
+         */
+        get: operations["getDashboard"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
-  schemas: {
-    ProblemInput: {
-      /** @description URI reference identifying the problem type. */
-      type: string;
-      title: string;
-      status: number;
-      detail?: string;
-      instance?: string;
-      /** @enum {string} */
-      code:
-        | 'bad_request'
-        | 'validation_failed'
-        | 'unauthenticated'
-        | 'forbidden'
-        | 'not_found'
-        | 'conflict'
-        | 'idempotency_key_reused'
-        | 'rate_unavailable'
-        | 'payload_too_large'
-        | 'rate_limited'
-        | 'internal_error'
-        | 'service_unavailable';
-      requestId: string;
-      errors?: {
-        path: string;
-        message: string;
-      }[];
-    };
-    ParsedRowInput: {
-      rowIndex: number;
-      /** Format: date */
-      bookedOn: string;
-      /**
-       * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
-       * @example 125000
-       * @example -69085
-       */
-      amountMinor: string;
-      /**
-       * @example GEL
-       * @example USD
-       * @example EUR
-       * @example GBP
-       */
-      currency: string;
-      counterparty: string | null;
-      counterpartyAccount: string | null;
-      description: string;
-      bankReference: string | null;
-      documentNumber: string | null;
-      /** @enum {string} */
-      operationType: 'incoming_payment' | 'outgoing_payment' | 'fx_conversion' | 'fee' | 'other';
-      bankOperationCode: string | null;
-      bankGelAmountMinor: string | null;
-      counterAmountMinor: string | null;
-      counterCurrency: string | null;
-      raw: {
-        [key: string]: string | number | boolean | null;
-      };
-    };
-    ParseWarningInput: {
-      code: string;
-      message: string;
-      rowIndex: number | null;
-    };
-    StatementMetaInput: {
-      accountIban: string | null;
-      currency: string | null;
-      periodFrom: string | null;
-      periodTo: string | null;
-      openingBalanceMinor: string | null;
-      closingBalanceMinor: string | null;
-    };
-    ParseResultInput: {
-      /** @enum {string} */
-      parserId: 'tbc-csv' | 'tbc-xlsx' | 'bog-csv' | 'bog-xlsx' | 'generic-csv';
-      meta: components['schemas']['StatementMetaInput'];
-      rows: components['schemas']['ParsedRowInput'][];
-      warnings: components['schemas']['ParseWarningInput'][];
-    };
-    GenericCsvMappingInput: {
-      /** @enum {string} */
-      delimiter?: ',' | ';' | '\t';
-      /** @default 0 */
-      headerRow: number;
-      date: string;
-      /** @enum {string} */
-      dateFormat: 'YYYY-MM-DD' | 'DD.MM.YYYY' | 'DD/MM/YYYY' | 'MM/DD/YYYY' | 'DD.MM.YY';
-      /** @enum {string} */
-      decimalSeparator: '.' | ',';
-      amount:
-        | {
-            /** @constant */
-            kind: 'signed';
-            column: string;
-          }
-        | {
-            /** @constant */
-            kind: 'debit_credit';
-            debit: string;
-            credit: string;
-          };
-      currency?: string;
-      counterparty?: string;
-      description?: string;
-      reference?: string;
-    };
-    UserInput: {
-      /** Format: uuid */
-      id: string;
-      /** Format: email */
-      email: string;
-      name: string;
-      /** Format: date-time */
-      createdAt: string;
-    };
-    OrganizationInput: {
-      /** Format: uuid */
-      id: string;
-      name: string;
-      taxId: string | null;
-      /** @constant */
-      baseCurrency: 'GEL';
-      sbsEffectiveFrom: string | null;
-      /** @enum {string} */
-      accountingMethod: 'cash';
-      /** Format: date-time */
-      createdAt: string;
-    };
-    MembershipInput: {
-      /** Format: uuid */
-      orgId: string;
-      /** Format: uuid */
-      userId: string;
-      /** @enum {string} */
-      role: 'owner' | 'accountant' | 'viewer';
-      /** Format: date-time */
-      createdAt: string;
-    };
-    InvitationInput: {
-      /** Format: uuid */
-      id: string;
-      /** Format: uuid */
-      orgId: string;
-      /** Format: email */
-      email: string;
-      /** @enum {string} */
-      role: 'owner' | 'accountant' | 'viewer';
-      invitedBy: string | null;
-      /** Format: date-time */
-      expiresAt: string;
-      acceptedAt: string | null;
-      revokedAt: string | null;
-      /** Format: date-time */
-      createdAt: string;
-    };
-    AccountInput: {
-      /** Format: uuid */
-      id: string;
-      /** Format: uuid */
-      orgId: string;
-      name: string;
-      /** @enum {string} */
-      kind: 'asset' | 'liability' | 'equity' | 'income' | 'expense';
-      currency: string | null;
-      systemKey: ('fx_clearing' | 'tax_payable' | 'owner_equity') | null;
-      incomeClass: ('sbs' | 'non_sbs') | null;
-      bank: ('tbc' | 'bog' | 'other') | null;
-      iban: string | null;
-      archivedAt: string | null;
-      /** Format: date-time */
-      createdAt: string;
-    };
-    ExchangeRateInput: {
-      /** Format: uuid */
-      id: string;
-      /**
-       * @example GEL
-       * @example USD
-       * @example EUR
-       * @example GBP
-       */
-      currency: string;
-      /** Format: date */
-      validFrom: string;
-      /**
-       * @example 2.7123
-       * @example 3.6924
-       */
-      rate: string;
-      quantity: number;
-      /** @constant */
-      source: 'nbg';
-      setAt: string | null;
-      /** Format: date-time */
-      fetchedAt: string;
-    };
-    PostingInput: {
-      /** Format: uuid */
-      id: string;
-      /** Format: uuid */
-      transactionId: string;
-      /** Format: uuid */
-      orgId: string;
-      /** Format: uuid */
-      accountId: string;
-      /**
-       * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
-       * @example 125000
-       * @example -69085
-       */
-      amountMinor: string;
-      /**
-       * @example GEL
-       * @example USD
-       * @example EUR
-       * @example GBP
-       */
-      currency: string;
-      /**
-       * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
-       * @example 125000
-       * @example -69085
-       */
-      gelAmountMinor: string;
-      rateId: string | null;
-    };
-    TransactionInput: {
-      /** Format: uuid */
-      id: string;
-      /** Format: uuid */
-      orgId: string;
-      /** Format: date */
-      occurredOn: string;
-      description: string;
-      notes: string | null;
-      /** @enum {string} */
-      source: 'manual' | 'import' | 'invoice_payment' | 'reversal';
-      paymentMethod: ('cash_register' | 'pos' | 'bank' | 'other') | null;
-      reversesId: string | null;
-      importBatchId: string | null;
-      /** Format: uuid */
-      createdBy: string;
-      /** Format: date-time */
-      createdAt: string;
-    };
-    TransactionWithPostingsInput: {
-      /** Format: uuid */
-      id: string;
-      /** Format: uuid */
-      orgId: string;
-      /** Format: date */
-      occurredOn: string;
-      description: string;
-      notes: string | null;
-      /** @enum {string} */
-      source: 'manual' | 'import' | 'invoice_payment' | 'reversal';
-      paymentMethod: ('cash_register' | 'pos' | 'bank' | 'other') | null;
-      reversesId: string | null;
-      importBatchId: string | null;
-      /** Format: uuid */
-      createdBy: string;
-      /** Format: date-time */
-      createdAt: string;
-      postings: components['schemas']['PostingInput'][];
-    };
-    ImportBatchInput: {
-      /** Format: uuid */
-      id: string;
-      /** Format: uuid */
-      orgId: string;
-      /** Format: uuid */
-      accountId: string;
-      /** @enum {string} */
-      bankFormat: 'tbc-csv' | 'tbc-xlsx' | 'bog-csv' | 'bog-xlsx' | 'generic-csv';
-      fileKey: string | null;
-      fileSha256: string;
-      fileName: string;
-      /** @enum {string} */
-      status: 'uploaded' | 'parsing' | 'preview' | 'committing' | 'committed' | 'failed';
-      stats: {
-        total?: number;
-        new?: number;
-        duplicate?: number;
-        skipped?: number;
-        committed?: number;
-        warnings?: number;
-      };
-      warnings: components['schemas']['ParseWarningInput'][];
-      periodFrom: string | null;
-      periodTo: string | null;
-      error: {
-        [key: string]: unknown;
-      } | null;
-      /** Format: uuid */
-      createdBy: string;
-      /** Format: date-time */
-      createdAt: string;
-      /** Format: date-time */
-      updatedAt: string;
-    };
-    ImportRowInput: {
-      /** Format: uuid */
-      id: string;
-      /** Format: uuid */
-      batchId: string;
-      /** Format: uuid */
-      orgId: string;
-      rowIndex: number;
-      raw: {
-        [key: string]: unknown;
-      };
-      /** Format: date */
-      bookedOn: string;
-      /**
-       * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
-       * @example 125000
-       * @example -69085
-       */
-      amountMinor: string;
-      /**
-       * @example GEL
-       * @example USD
-       * @example EUR
-       * @example GBP
-       */
-      currency: string;
-      counterparty: string | null;
-      counterpartyAccount: string | null;
-      description: string;
-      bankReference: string | null;
-      documentNumber: string | null;
-      /** @enum {string} */
-      operationType: 'incoming_payment' | 'outgoing_payment' | 'fx_conversion' | 'fee' | 'other';
-      bankGelAmountMinor: string | null;
-      counterAmountMinor: string | null;
-      counterCurrency: string | null;
-      dedupeHash: string;
-      /** @enum {string} */
-      status: 'new' | 'duplicate' | 'skipped';
-      suggestedAccountId: string | null;
-      suggestedRuleId: string | null;
-      chosenAccountId: string | null;
-      transactionId: string | null;
-    };
-    CategorizationRuleInput: {
-      /** Format: uuid */
-      id: string;
-      /** Format: uuid */
-      orgId: string;
-      name: string;
-      priority: number;
-      counterpartyContains: string | null;
-      descriptionContains: string | null;
-      direction: ('in' | 'out') | null;
-      currency: string | null;
-      amountMinMinor: string | null;
-      amountMaxMinor: string | null;
-      /** Format: uuid */
-      targetAccountId: string;
-      isActive: boolean;
-      /** Format: date-time */
-      createdAt: string;
-      /** Format: date-time */
-      updatedAt: string;
-    };
-    ColumnMappingInput: {
-      /** Format: uuid */
-      id: string;
-      /** Format: uuid */
-      orgId: string;
-      /** Format: uuid */
-      accountId: string;
-      mapping: components['schemas']['GenericCsvMappingInput'];
-      /** Format: date-time */
-      createdAt: string;
-    };
-    ClientInput: {
-      /** Format: uuid */
-      id: string;
-      /** Format: uuid */
-      orgId: string;
-      name: string;
-      country: string;
-      email: string | null;
-      /**
-       * @example GEL
-       * @example USD
-       * @example EUR
-       * @example GBP
-       */
-      defaultCurrency: string;
-      archivedAt: string | null;
-      /** Format: date-time */
-      createdAt: string;
-    };
-    InvoiceLineInput: {
-      /** Format: uuid */
-      id: string;
-      /** Format: uuid */
-      invoiceId: string;
-      /** Format: uuid */
-      orgId: string;
-      position: number;
-      description: string;
-      quantity: string;
-      /**
-       * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
-       * @example 125000
-       * @example -69085
-       */
-      unitPriceMinor: string;
-    };
-    InvoiceInput: {
-      /** Format: uuid */
-      id: string;
-      /** Format: uuid */
-      orgId: string;
-      /** Format: uuid */
-      clientId: string;
-      number: number | null;
-      issueDate: string | null;
-      dueDate: string | null;
-      /**
-       * @example GEL
-       * @example USD
-       * @example EUR
-       * @example GBP
-       */
-      currency: string;
-      /** @enum {string} */
-      status: 'draft' | 'issued' | 'paid' | 'void';
-      pdfKey: string | null;
-      notes: string | null;
-      /** Format: date-time */
-      createdAt: string;
-    };
-    InvoicePaymentInput: {
-      /** Format: uuid */
-      invoiceId: string;
-      /** Format: uuid */
-      transactionId: string;
-      /** Format: uuid */
-      orgId: string;
-      /**
-       * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
-       * @example 125000
-       * @example -69085
-       */
-      amountMinor: string;
-      /** Format: date-time */
-      createdAt: string;
-    };
-    IncomeByPaymentMethodInput: {
-      /**
-       * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
-       * @example 125000
-       * @example -69085
-       */
-      cash_register: string;
-      /**
-       * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
-       * @example 125000
-       * @example -69085
-       */
-      pos: string;
-      /**
-       * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
-       * @example 125000
-       * @example -69085
-       */
-      bank: string;
-      /**
-       * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
-       * @example 125000
-       * @example -69085
-       */
-      other: string;
-    };
-    DeclarationInput: {
-      /** Format: uuid */
-      id: string;
-      /** Format: uuid */
-      orgId: string;
-      /** @example 2026-09 */
-      period: string;
-      /** @enum {string} */
-      status: 'draft' | 'filed';
-      /**
-       * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
-       * @example 125000
-       * @example -69085
-       */
-      turnoverGelMinor: string;
-      /**
-       * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
-       * @example 125000
-       * @example -69085
-       */
-      ytdGelMinor: string;
-      rateBp: number;
-      byPaymentMethod: components['schemas']['IncomeByPaymentMethodInput'];
-      /**
-       * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
-       * @example 125000
-       * @example -69085
-       */
-      taxGelMinor: string;
-      rulesVersion: string;
-      snapshot: {
-        [key: string]: unknown;
-      } | null;
-      hasDrift: boolean;
-      /** Format: date-time */
-      computedAt: string;
-      filedAt: string | null;
-      filedBy: string | null;
-    };
-    AuditLogEntryInput: {
-      /** Format: uuid */
-      id: string;
-      /** Format: uuid */
-      orgId: string;
-      actorId: string | null;
-      action: string;
-      entity: string;
-      entityId: string | null;
-      before: {
-        [key: string]: unknown;
-      } | null;
-      after: {
-        [key: string]: unknown;
-      } | null;
-      requestId: string | null;
-      /** Format: date-time */
-      at: string;
-    };
-    OrgEventInput:
-      | {
-          id: string;
-          /** Format: date-time */
-          at: string;
-          /** @constant */
-          type: 'import.progress';
-          data: {
-            /** Format: uuid */
-            batchId: string;
+    schemas: {
+        ProblemInput: {
+            /** @description URI reference identifying the problem type. */
+            type: string;
+            title: string;
+            status: number;
+            detail?: string;
+            instance?: string;
             /** @enum {string} */
-            phase: 'parse' | 'commit';
-            processed: number;
-            total: number | null;
-          };
-        }
-      | {
-          id: string;
-          /** Format: date-time */
-          at: string;
-          /** @constant */
-          type: 'import.completed';
-          data: {
-            /** Format: uuid */
-            batchId: string;
+            code: "bad_request" | "validation_failed" | "unauthenticated" | "forbidden" | "not_found" | "conflict" | "idempotency_key_reused" | "rate_unavailable" | "payload_too_large" | "rate_limited" | "internal_error" | "service_unavailable";
+            requestId: string;
+            errors?: {
+                path: string;
+                message: string;
+            }[];
+        };
+        ParsedRowInput: {
+            rowIndex: number;
+            /** Format: date */
+            bookedOn: string;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            amountMinor: string;
+            /**
+             * @example GEL
+             * @example USD
+             * @example EUR
+             * @example GBP
+             */
+            currency: string;
+            counterparty: string | null;
+            counterpartyAccount: string | null;
+            description: string;
+            bankReference: string | null;
+            documentNumber: string | null;
             /** @enum {string} */
-            status: 'uploaded' | 'parsing' | 'preview' | 'committing' | 'committed' | 'failed';
-            stats: {
-              total?: number;
-              new?: number;
-              duplicate?: number;
-              skipped?: number;
-              committed?: number;
-              warnings?: number;
+            operationType: "incoming_payment" | "outgoing_payment" | "fx_conversion" | "fee" | "other";
+            bankOperationCode: string | null;
+            bankGelAmountMinor: string | null;
+            counterAmountMinor: string | null;
+            counterCurrency: string | null;
+            raw: {
+                [key: string]: string | number | boolean | null;
             };
-          };
-        }
-      | {
-          id: string;
-          /** Format: date-time */
-          at: string;
-          /** @constant */
-          type: 'rates.backfilled';
-          data: {
-            currencies: string[];
+        };
+        ParseWarningInput: {
+            code: string;
+            message: string;
+            rowIndex: number | null;
+        };
+        StatementMetaInput: {
+            accountIban: string | null;
+            currency: string | null;
+            periodFrom: string | null;
+            periodTo: string | null;
+            openingBalanceMinor: string | null;
+            closingBalanceMinor: string | null;
+        };
+        ParseResultInput: {
+            /** @enum {string} */
+            parserId: "tbc-csv" | "tbc-xlsx" | "bog-csv" | "bog-xlsx" | "generic-csv";
+            meta: components["schemas"]["StatementMetaInput"];
+            rows: components["schemas"]["ParsedRowInput"][];
+            warnings: components["schemas"]["ParseWarningInput"][];
+        };
+        GenericCsvMappingInput: {
+            /** @enum {string} */
+            delimiter?: "," | ";" | "\t";
+            /** @default 0 */
+            headerRow: number;
+            date: string;
+            /** @enum {string} */
+            dateFormat: "YYYY-MM-DD" | "DD.MM.YYYY" | "DD/MM/YYYY" | "MM/DD/YYYY" | "DD.MM.YY";
+            /** @enum {string} */
+            decimalSeparator: "." | ",";
+            amount: {
+                /** @constant */
+                kind: "signed";
+                column: string;
+            } | {
+                /** @constant */
+                kind: "debit_credit";
+                debit: string;
+                credit: string;
+            };
+            currency?: string;
+            counterparty?: string;
+            description?: string;
+            reference?: string;
+        };
+        UserInput: {
+            /** Format: uuid */
+            id: string;
+            /** Format: email */
+            email: string;
+            name: string;
+            /** Format: date-time */
+            createdAt: string;
+        };
+        OrganizationInput: {
+            /** Format: uuid */
+            id: string;
+            name: string;
+            taxId: string | null;
+            /** @constant */
+            baseCurrency: "GEL";
+            sbsEffectiveFrom: string | null;
+            /** @enum {string} */
+            accountingMethod: "cash";
+            /** Format: date-time */
+            createdAt: string;
+        };
+        MembershipInput: {
+            /** Format: uuid */
+            orgId: string;
+            /** Format: uuid */
+            userId: string;
+            /** @enum {string} */
+            role: "owner" | "accountant" | "viewer";
+            /** Format: date-time */
+            createdAt: string;
+        };
+        InvitationInput: {
+            /** Format: uuid */
+            id: string;
+            /** Format: uuid */
+            orgId: string;
+            /** Format: email */
+            email: string;
+            /** @enum {string} */
+            role: "owner" | "accountant" | "viewer";
+            invitedBy: string | null;
+            /** Format: date-time */
+            expiresAt: string;
+            acceptedAt: string | null;
+            revokedAt: string | null;
+            /** Format: date-time */
+            createdAt: string;
+        };
+        AccountInput: {
+            /** Format: uuid */
+            id: string;
+            /** Format: uuid */
+            orgId: string;
+            name: string;
+            /** @enum {string} */
+            kind: "asset" | "liability" | "equity" | "income" | "expense";
+            currency: string | null;
+            systemKey: ("fx_clearing" | "tax_payable" | "owner_equity") | null;
+            incomeClass: ("sbs" | "non_sbs") | null;
+            bank: ("tbc" | "bog" | "other") | null;
+            iban: string | null;
+            archivedAt: string | null;
+            /** Format: date-time */
+            createdAt: string;
+        };
+        ExchangeRateInput: {
+            /** Format: uuid */
+            id: string;
+            /**
+             * @example GEL
+             * @example USD
+             * @example EUR
+             * @example GBP
+             */
+            currency: string;
+            /** Format: date */
+            validFrom: string;
+            /**
+             * @example 2.7123
+             * @example 3.6924
+             */
+            rate: string;
+            quantity: number;
+            /** @constant */
+            source: "nbg";
+            setAt: string | null;
+            /** Format: date-time */
+            fetchedAt: string;
+        };
+        PostingInput: {
+            /** Format: uuid */
+            id: string;
+            /** Format: uuid */
+            transactionId: string;
+            /** Format: uuid */
+            orgId: string;
+            /** Format: uuid */
+            accountId: string;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            amountMinor: string;
+            /**
+             * @example GEL
+             * @example USD
+             * @example EUR
+             * @example GBP
+             */
+            currency: string;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            gelAmountMinor: string;
+            rateId: string | null;
+        };
+        TransactionInput: {
+            /** Format: uuid */
+            id: string;
+            /** Format: uuid */
+            orgId: string;
+            /** Format: date */
+            occurredOn: string;
+            description: string;
+            notes: string | null;
+            /** @enum {string} */
+            source: "manual" | "import" | "invoice_payment" | "reversal";
+            paymentMethod: ("cash_register" | "pos" | "bank" | "other") | null;
+            reversesId: string | null;
+            importBatchId: string | null;
+            /** Format: uuid */
+            createdBy: string;
+            /** Format: date-time */
+            createdAt: string;
+        };
+        TransactionWithPostingsInput: {
+            /** Format: uuid */
+            id: string;
+            /** Format: uuid */
+            orgId: string;
+            /** Format: date */
+            occurredOn: string;
+            description: string;
+            notes: string | null;
+            /** @enum {string} */
+            source: "manual" | "import" | "invoice_payment" | "reversal";
+            paymentMethod: ("cash_register" | "pos" | "bank" | "other") | null;
+            reversesId: string | null;
+            importBatchId: string | null;
+            /** Format: uuid */
+            createdBy: string;
+            /** Format: date-time */
+            createdAt: string;
+            postings: components["schemas"]["PostingInput"][];
+        };
+        ImportBatchInput: {
+            /** Format: uuid */
+            id: string;
+            /** Format: uuid */
+            orgId: string;
+            /** Format: uuid */
+            accountId: string;
+            /** @enum {string} */
+            bankFormat: "tbc-csv" | "tbc-xlsx" | "bog-csv" | "bog-xlsx" | "generic-csv";
+            fileKey: string | null;
+            fileSha256: string;
+            fileName: string;
+            /** @enum {string} */
+            status: "uploaded" | "parsing" | "preview" | "committing" | "committed" | "failed";
+            stats: {
+                total?: number;
+                new?: number;
+                duplicate?: number;
+                skipped?: number;
+                committed?: number;
+                warnings?: number;
+            };
+            warnings: components["schemas"]["ParseWarningInput"][];
+            periodFrom: string | null;
+            periodTo: string | null;
+            error: {
+                [key: string]: unknown;
+            } | null;
+            /** Format: uuid */
+            createdBy: string;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+        };
+        ImportRowInput: {
+            /** Format: uuid */
+            id: string;
+            /** Format: uuid */
+            batchId: string;
+            /** Format: uuid */
+            orgId: string;
+            rowIndex: number;
+            raw: {
+                [key: string]: unknown;
+            };
+            /** Format: date */
+            bookedOn: string;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            amountMinor: string;
+            /**
+             * @example GEL
+             * @example USD
+             * @example EUR
+             * @example GBP
+             */
+            currency: string;
+            counterparty: string | null;
+            counterpartyAccount: string | null;
+            description: string;
+            bankReference: string | null;
+            documentNumber: string | null;
+            /** @enum {string} */
+            operationType: "incoming_payment" | "outgoing_payment" | "fx_conversion" | "fee" | "other";
+            bankGelAmountMinor: string | null;
+            counterAmountMinor: string | null;
+            counterCurrency: string | null;
+            dedupeHash: string;
+            /** @enum {string} */
+            status: "new" | "duplicate" | "skipped";
+            suggestedAccountId: string | null;
+            suggestedRuleId: string | null;
+            chosenAccountId: string | null;
+            transactionId: string | null;
+        };
+        CategorizationRuleInput: {
+            /** Format: uuid */
+            id: string;
+            /** Format: uuid */
+            orgId: string;
+            name: string;
+            priority: number;
+            counterpartyContains: string | null;
+            descriptionContains: string | null;
+            direction: ("in" | "out") | null;
+            currency: string | null;
+            amountMinMinor: string | null;
+            amountMaxMinor: string | null;
+            /** Format: uuid */
+            targetAccountId: string;
+            isActive: boolean;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+        };
+        ColumnMappingInput: {
+            /** Format: uuid */
+            id: string;
+            /** Format: uuid */
+            orgId: string;
+            /** Format: uuid */
+            accountId: string;
+            mapping: components["schemas"]["GenericCsvMappingInput"];
+            /** Format: date-time */
+            createdAt: string;
+        };
+        ClientInput: {
+            /** Format: uuid */
+            id: string;
+            /** Format: uuid */
+            orgId: string;
+            name: string;
+            country: string;
+            email: string | null;
+            /**
+             * @example GEL
+             * @example USD
+             * @example EUR
+             * @example GBP
+             */
+            defaultCurrency: string;
+            archivedAt: string | null;
+            /** Format: date-time */
+            createdAt: string;
+        };
+        InvoiceLineInput: {
+            /** Format: uuid */
+            id: string;
+            /** Format: uuid */
+            invoiceId: string;
+            /** Format: uuid */
+            orgId: string;
+            position: number;
+            description: string;
+            quantity: string;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            unitPriceMinor: string;
+        };
+        InvoiceInput: {
+            /** Format: uuid */
+            id: string;
+            /** Format: uuid */
+            orgId: string;
+            /** Format: uuid */
+            clientId: string;
+            number: number | null;
+            issueDate: string | null;
+            dueDate: string | null;
+            /**
+             * @example GEL
+             * @example USD
+             * @example EUR
+             * @example GBP
+             */
+            currency: string;
+            /** @enum {string} */
+            status: "draft" | "issued" | "paid" | "void";
+            pdfKey: string | null;
+            notes: string | null;
+            /** Format: date-time */
+            createdAt: string;
+        };
+        InvoicePaymentInput: {
+            /** Format: uuid */
+            invoiceId: string;
+            /** Format: uuid */
+            transactionId: string;
+            /** Format: uuid */
+            orgId: string;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            amountMinor: string;
+            /** Format: date-time */
+            createdAt: string;
+        };
+        IncomeByPaymentMethodInput: {
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            cash_register: string;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            pos: string;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            bank: string;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            other: string;
+        };
+        AuditLogEntryInput: {
+            /** Format: uuid */
+            id: string;
+            /** Format: uuid */
+            orgId: string;
+            actorId: string | null;
+            action: string;
+            entity: string;
+            entityId: string | null;
+            before: {
+                [key: string]: unknown;
+            } | null;
+            after: {
+                [key: string]: unknown;
+            } | null;
+            requestId: string | null;
+            /** Format: date-time */
+            at: string;
+        };
+        OrgEventInput: {
+            id: string;
+            /** Format: date-time */
+            at: string;
+            /** @constant */
+            type: "import.progress";
+            data: {
+                /** Format: uuid */
+                batchId: string;
+                /** @enum {string} */
+                phase: "parse" | "commit";
+                processed: number;
+                total: number | null;
+            };
+        } | {
+            id: string;
+            /** Format: date-time */
+            at: string;
+            /** @constant */
+            type: "import.completed";
+            data: {
+                /** Format: uuid */
+                batchId: string;
+                /** @enum {string} */
+                status: "uploaded" | "parsing" | "preview" | "committing" | "committed" | "failed";
+                stats: {
+                    total?: number;
+                    new?: number;
+                    duplicate?: number;
+                    skipped?: number;
+                    committed?: number;
+                    warnings?: number;
+                };
+            };
+        } | {
+            id: string;
+            /** Format: date-time */
+            at: string;
+            /** @constant */
+            type: "rates.backfilled";
+            data: {
+                currencies: string[];
+                /** Format: date */
+                from: string;
+                /** Format: date */
+                to: string;
+            };
+        } | {
+            id: string;
+            /** Format: date-time */
+            at: string;
+            /** @constant */
+            type: "invoice.pdf_ready";
+            data: {
+                /** Format: uuid */
+                invoiceId: string;
+            };
+        };
+        HealthResponseInput: {
+            /** @enum {string} */
+            status: "ok" | "degraded";
+            version: string;
+            /** Format: date-time */
+            time: string;
+            checks: {
+                /** @enum {string} */
+                database: "ok" | "fail";
+            };
+        };
+        /** @enum {string} */
+        AnnualLimitStatusInput: "ok" | "warn80" | "warn95" | "exceeded" | "exceeded_second_year";
+        /** @enum {string} */
+        SbsMonthStatusInput: "inactive" | "partial" | "active";
+        DeclarationFiguresInput: {
+            /** @example 2026-09 */
+            period: string;
+            rulesVersion: string;
+            sbsStatus: components["schemas"]["SbsMonthStatusInput"];
+            filingRequired: boolean;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            incomeGelMinor: string;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            excludedGelMinor: string;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            ytdGelMinor: string;
+            byPaymentMethod: components["schemas"]["IncomeByPaymentMethodInput"];
+            rateBp: number;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            taxGelMinor: string;
+            limitCrossedThisMonth: boolean;
+            zeroReturn: boolean;
+            negativeIncome: boolean;
+            /** Format: date */
+            deadline: string;
+        };
+        /** @enum {string} */
+        ParseWarningCodeInput: "unreadable_file" | "encoding_fallback" | "unterminated_quote" | "header_not_found" | "missing_column" | "mapping_required" | "unparseable_row" | "ambiguous_debit_credit" | "amount_mismatch" | "amount_rounded" | "unknown_operation_type" | "unexpected_direction" | "currency_mismatch" | "invalid_currency" | "reconciliation_mismatch" | "reconciliation_unavailable" | "running_balance_mismatch" | "turnover_mismatch" | "no_rows" | "date_outside_period" | "internal_error";
+        StatementDetectionInput: {
+            /** @enum {string} */
+            parserId: "tbc-csv" | "tbc-xlsx" | "bog-csv" | "bog-xlsx" | "generic-csv";
+            confidence: number;
+        };
+        ListRatesResponseInput: {
+            items: components["schemas"]["ExchangeRateInput"][];
+            nextCursor: string | null;
+        };
+        BackfillRatesRequestInput: {
             /** Format: date */
             from: string;
             /** Format: date */
             to: string;
-          };
-        }
-      | {
-          id: string;
-          /** Format: date-time */
-          at: string;
-          /** @constant */
-          type: 'invoice.pdf_ready';
-          data: {
+            currencies: string[];
+        };
+        BackfillRatesResponseInput: {
+            jobId: string;
+            /** @constant */
+            status: "queued";
+        };
+        SessionUserInput: {
+            /** Format: uuid */
+            id: string;
+            /** Format: email */
+            email: string;
+            name: string;
+            /** Format: date-time */
+            createdAt: string;
+            emailVerified: boolean;
+        };
+        MembershipSummaryInput: {
+            /** Format: uuid */
+            orgId: string;
+            orgName: string;
+            /** @enum {string} */
+            role: "owner" | "accountant" | "viewer";
+        };
+        MeResponseInput: {
+            user: components["schemas"]["SessionUserInput"];
+            memberships: components["schemas"]["MembershipSummaryInput"][];
+        };
+        CreateOrganizationRequestInput: {
+            name: string;
+            taxId?: string | null;
+            sbsEffectiveFrom?: string | null;
+        };
+        UpdateOrganizationRequestInput: {
+            name?: string;
+            taxId?: string | null;
+            sbsEffectiveFrom?: string | null;
+        };
+        OrganizationWithRoleInput: {
+            /** Format: uuid */
+            id: string;
+            name: string;
+            taxId: string | null;
+            /** @constant */
+            baseCurrency: "GEL";
+            sbsEffectiveFrom: string | null;
+            /** @enum {string} */
+            accountingMethod: "cash";
+            /** Format: date-time */
+            createdAt: string;
+            /** @enum {string} */
+            role: "owner" | "accountant" | "viewer";
+        };
+        OrganizationListInput: {
+            items: components["schemas"]["OrganizationWithRoleInput"][];
+            nextCursor: string | null;
+        };
+        MemberInput: {
+            /** Format: uuid */
+            userId: string;
+            /** Format: email */
+            email: string;
+            name: string;
+            /** @enum {string} */
+            role: "owner" | "accountant" | "viewer";
+            /** Format: date-time */
+            createdAt: string;
+        };
+        MemberListInput: {
+            items: components["schemas"]["MemberInput"][];
+            nextCursor: string | null;
+        };
+        CreateInvitationRequestInput: {
+            /** Format: email */
+            email: string;
+            /** @enum {string} */
+            role: "owner" | "accountant" | "viewer";
+        };
+        InvitationListInput: {
+            items: components["schemas"]["InvitationInput"][];
+            nextCursor: string | null;
+        };
+        InvitationTokenRequestInput: {
+            token: string;
+        };
+        InvitationPreviewInput: {
+            orgName: string;
+            /** Format: email */
+            email: string;
+            /** @enum {string} */
+            role: "owner" | "accountant" | "viewer";
+            /** @enum {string} */
+            status: "pending" | "accepted" | "revoked" | "expired";
+            /** Format: date-time */
+            expiresAt: string;
+        };
+        AcceptInvitationResponseInput: {
+            /** Format: uuid */
+            orgId: string;
+            orgName: string;
+            /** @enum {string} */
+            role: "owner" | "accountant" | "viewer";
+        };
+        SignInBodyInput: {
+            /** Format: email */
+            email: string;
+            password: string;
+            rememberMe?: boolean;
+        };
+        SignUpBodyInput: {
+            name: string;
+            /** Format: email */
+            email: string;
+            password: string;
+            /** Format: starts_with */
+            callbackURL?: string;
+        };
+        MagicLinkBodyInput: {
+            /** Format: email */
+            email: string;
+            name?: string;
+            /** Format: starts_with */
+            callbackURL?: string;
+        };
+        AccountListInput: {
+            items: components["schemas"]["AccountInput"][];
+        };
+        UploadStatementRequestInput: {
+            /**
+             * Format: binary
+             * @description Bank statement, XLSX or CSV, at most 5 MB. The file itself is not stored.
+             */
+            file: string;
+            /**
+             * Format: uuid
+             * @description Book into this bank account. Default: match on the statement IBAN + currency, or create one.
+             */
+            accountId?: string;
+        };
+        /**
+         * @description `matched`: IBAN + currency found. `claimed`: an unused default account of that currency got the IBAN. `created`: a new account. `chosen`: the `accountId` sent with the upload.
+         * @enum {string}
+         */
+        AccountMatchOutcomeInput: "matched" | "claimed" | "created" | "chosen";
+        ImportBatchDetailInput: {
+            batch: components["schemas"]["ImportBatchInput"];
+            account: components["schemas"]["AccountInput"];
+        };
+        UploadStatementResponseInput: {
+            batch: components["schemas"]["ImportBatchInput"];
+            account: components["schemas"]["AccountInput"];
+            accountMatch: components["schemas"]["AccountMatchOutcomeInput"];
+            detection: components["schemas"]["StatementDetectionInput"];
+        };
+        ImportBatchListInput: {
+            items: components["schemas"]["ImportBatchInput"][];
+            nextCursor: string | null;
+        };
+        ImportRowViewInput: {
+            /** Format: uuid */
+            id: string;
+            /** Format: uuid */
+            batchId: string;
+            /** Format: uuid */
+            orgId: string;
+            rowIndex: number;
+            /** Format: date */
+            bookedOn: string;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            amountMinor: string;
+            /**
+             * @example GEL
+             * @example USD
+             * @example EUR
+             * @example GBP
+             */
+            currency: string;
+            counterparty: string | null;
+            counterpartyAccount: string | null;
+            description: string;
+            bankReference: string | null;
+            documentNumber: string | null;
+            /** @enum {string} */
+            operationType: "incoming_payment" | "outgoing_payment" | "fx_conversion" | "fee" | "other";
+            bankGelAmountMinor: string | null;
+            counterAmountMinor: string | null;
+            counterCurrency: string | null;
+            dedupeHash: string;
+            /** @enum {string} */
+            status: "new" | "duplicate" | "skipped";
+            suggestedAccountId: string | null;
+            suggestedRuleId: string | null;
+            chosenAccountId: string | null;
+            transactionId: string | null;
+            accountId: string | null;
+        };
+        ImportRowListInput: {
+            items: components["schemas"]["ImportRowViewInput"][];
+            nextCursor: string | null;
+        };
+        UpdateImportRowRequestInput: {
+            accountId?: string | null;
+            skip?: boolean;
+        };
+        /**
+         * @description `bank_gel_mismatch`: the bank's GEL equivalent of the line differs from ours (NBG rate of the booked date) by more than 1 tetri. Ours is booked; check the rate the bank used.
+         * @enum {string}
+         */
+        CommitWarningCodeInput: "bank_gel_mismatch";
+        CommitWarningInput: {
+            code: components["schemas"]["CommitWarningCodeInput"];
+            /** Format: uuid */
+            rowId: string;
+            /** Format: uuid */
+            transactionId: string;
+            /** Format: date */
+            bookedOn: string;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            amountMinor: string;
+            /**
+             * @example GEL
+             * @example USD
+             * @example EUR
+             * @example GBP
+             */
+            currency: string;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            gelAmountMinor: string;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            bankGelAmountMinor: string;
+            message: string;
+        };
+        CommitImportResponseInput: {
+            batch: components["schemas"]["ImportBatchInput"];
+            transactionIds: string[];
+            warnings: components["schemas"]["CommitWarningInput"][];
+        };
+        PostingRateInput: {
+            /**
+             * @example 2.7123
+             * @example 3.6924
+             */
+            rate: string;
+            quantity: number;
+            /** Format: date */
+            validFrom: string;
+        };
+        TransactionPostingInput: {
+            /** Format: uuid */
+            id: string;
+            /** Format: uuid */
+            transactionId: string;
+            /** Format: uuid */
+            orgId: string;
+            /** Format: uuid */
+            accountId: string;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            amountMinor: string;
+            /**
+             * @example GEL
+             * @example USD
+             * @example EUR
+             * @example GBP
+             */
+            currency: string;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            gelAmountMinor: string;
+            rateId: string | null;
+            account: {
+                name: string;
+                /** @enum {string} */
+                kind: "asset" | "liability" | "equity" | "income" | "expense";
+                systemKey: ("fx_clearing" | "tax_payable" | "owner_equity") | null;
+                incomeClass: ("sbs" | "non_sbs") | null;
+            };
+            rate: components["schemas"]["PostingRateInput"] | null;
+        };
+        TransactionViewInput: {
+            /** Format: uuid */
+            id: string;
+            /** Format: uuid */
+            orgId: string;
+            /** Format: date */
+            occurredOn: string;
+            description: string;
+            notes: string | null;
+            /** @enum {string} */
+            source: "manual" | "import" | "invoice_payment" | "reversal";
+            paymentMethod: ("cash_register" | "pos" | "bank" | "other") | null;
+            reversesId: string | null;
+            importBatchId: string | null;
+            /** Format: uuid */
+            createdBy: string;
+            /** Format: date-time */
+            createdAt: string;
+            postings: components["schemas"]["TransactionPostingInput"][];
+            reversedById: string | null;
+        };
+        TransactionListInput: {
+            items: components["schemas"]["TransactionViewInput"][];
+            nextCursor: string | null;
+        };
+        ReverseTransactionRequestInput: {
+            /** Format: date */
+            occurredOn?: string;
+            description?: string;
+        };
+        DeclarationYearResponseInput: {
+            year: number;
+            months: components["schemas"]["DeclarationFiguresInput"][];
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            totalIncomeGelMinor: string;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            totalTaxGelMinor: string;
+            crossingPeriod: string | null;
+            limitExceeded: boolean;
+            limitStatus: components["schemas"]["AnnualLimitStatusInput"];
+            sbsEffectiveFrom: string | null;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            annualLimitGelMinor: string;
+            annualLimitUsedBp: number;
+            latestYearWithData: number | null;
+            previousYearLimitExceeded: boolean;
+        };
+        DashboardMonthInput: {
+            /** @example 2026-09 */
+            period: string;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            incomeGelMinor: string;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            taxGelMinor: string;
+            rateBp: number;
+        };
+        DashboardResponseInput: {
+            year: number;
+            sbsEffectiveFrom: string | null;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            annualLimitGelMinor: string;
+            annualLimitUsedBp: number;
+            latestYearWithData: number | null;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            ytdIncomeGelMinor: string;
+            limitStatus: components["schemas"]["AnnualLimitStatusInput"];
+            latestMonth: components["schemas"]["DeclarationFiguresInput"] | null;
+            nextDeadline: {
+                /** @example 2026-09 */
+                period: string;
+                /** Format: date */
+                deadline: string;
+                /**
+                 * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+                 * @example 125000
+                 * @example -69085
+                 */
+                taxGelMinor: string;
+                zeroReturn: boolean;
+            } | null;
+            months: components["schemas"]["DashboardMonthInput"][];
+        };
+        CreateAccountRequestInput: {
+            name: string;
+            /** @enum {string} */
+            kind: "asset" | "liability" | "equity" | "income" | "expense";
+            currency?: string | null;
+            incomeClass?: ("sbs" | "non_sbs") | null;
+            bank?: ("tbc" | "bog" | "other") | null;
+            iban?: string | null;
+        };
+        UpdateAccountRequestInput: {
+            name?: string;
+            archived?: boolean;
+        };
+        CurrencyBalanceInput: {
+            /**
+             * @example GEL
+             * @example USD
+             * @example EUR
+             * @example GBP
+             */
+            currency: string;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            amountMinor: string;
+        };
+        AccountBalanceInput: {
+            /** Format: uuid */
+            accountId: string;
+            balances: components["schemas"]["CurrencyBalanceInput"][];
+            gelValue: {
+                /**
+                 * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+                 * @example 125000
+                 * @example -69085
+                 */
+                amountMinor: string;
+                rate: components["schemas"]["PostingRateInput"] | null;
+            } | null;
+        };
+        AccountBalanceListInput: {
+            items: components["schemas"]["AccountBalanceInput"][];
+            /** Format: date */
+            asOf: string;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            bankTotalGelMinor: string;
+            bankAccountsWithoutRate: string[];
+        };
+        /** @enum {string} */
+        ManualTransactionTypeInput: "income" | "expense" | "owner_draw" | "owner_contribution" | "transfer" | "fx_conversion" | "tax_payment" | "postings";
+        IncomeReceiptRequestInput: {
+            /** @constant */
+            type: "income";
+            /** Format: date */
+            occurredOn: string;
+            description: string;
+            /** Format: uuid */
+            bankAccountId: string;
+            /** Format: uuid */
+            incomeAccountId: string;
+            /** @description Positive integer amount in minor units, as a decimal string. */
+            amountMinor: string;
+            /**
+             * @default bank
+             * @enum {string}
+             */
+            paymentMethod: "cash_register" | "pos" | "bank" | "other";
+        };
+        ExpenseRequestInput: {
+            /** @constant */
+            type: "expense";
+            /** Format: date */
+            occurredOn: string;
+            description: string;
+            /** Format: uuid */
+            bankAccountId: string;
+            /** Format: uuid */
+            expenseAccountId: string;
+            /** @description Positive integer amount in minor units, as a decimal string. */
+            amountMinor: string;
+        };
+        OwnerDrawRequestInput: {
+            /** @constant */
+            type: "owner_draw";
+            /** Format: date */
+            occurredOn: string;
+            description: string;
+            /** Format: uuid */
+            bankAccountId: string;
+            /** @description Positive integer amount in minor units, as a decimal string. */
+            amountMinor: string;
+        };
+        OwnerContributionRequestInput: {
+            /** @constant */
+            type: "owner_contribution";
+            /** Format: date */
+            occurredOn: string;
+            description: string;
+            /** Format: uuid */
+            bankAccountId: string;
+            /** @description Positive integer amount in minor units, as a decimal string. */
+            amountMinor: string;
+        };
+        TransferRequestInput: {
+            /** @constant */
+            type: "transfer";
+            /** Format: date */
+            occurredOn: string;
+            description: string;
+            /** Format: uuid */
+            fromAccountId: string;
+            /** Format: uuid */
+            toAccountId: string;
+            /** @description Positive integer amount in minor units, as a decimal string. */
+            amountMinor: string;
+        };
+        FxConversionRequestInput: {
+            /** @constant */
+            type: "fx_conversion";
+            /** Format: date */
+            occurredOn: string;
+            description: string;
+            /** Format: uuid */
+            fromAccountId: string;
+            /** Format: uuid */
+            toAccountId: string;
+            /** @description Positive integer amount in minor units, as a decimal string. */
+            soldAmountMinor: string;
+            /** @description Positive integer amount in minor units, as a decimal string. */
+            boughtAmountMinor: string;
+        };
+        TaxPaymentRequestInput: {
+            /** @constant */
+            type: "tax_payment";
+            /** Format: date */
+            occurredOn: string;
+            description: string;
+            /** Format: uuid */
+            bankAccountId: string;
+            /** @description Positive integer amount in minor units, as a decimal string. */
+            amountMinor: string;
+        };
+        RawPostingRequestInput: {
+            /** Format: uuid */
+            accountId: string;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            amountMinor: string;
+            /**
+             * @example GEL
+             * @example USD
+             * @example EUR
+             * @example GBP
+             */
+            currency: string;
+        };
+        RawPostingsRequestInput: {
+            /** @constant */
+            type: "postings";
+            /** Format: date */
+            occurredOn: string;
+            description: string;
+            /** @default null */
+            paymentMethod: ("cash_register" | "pos" | "bank" | "other") | null;
+            postings: components["schemas"]["RawPostingRequestInput"][];
+        };
+        CreateTransactionRequestInput: components["schemas"]["IncomeReceiptRequestInput"] | components["schemas"]["ExpenseRequestInput"] | components["schemas"]["OwnerDrawRequestInput"] | components["schemas"]["OwnerContributionRequestInput"] | components["schemas"]["TransferRequestInput"] | components["schemas"]["FxConversionRequestInput"] | components["schemas"]["TaxPaymentRequestInput"] | components["schemas"]["RawPostingsRequestInput"];
+        TransactionPreviewInput: {
+            /** Format: date */
+            occurredOn: string;
+            description: string;
+            paymentMethod: ("cash_register" | "pos" | "bank" | "other") | null;
+            postings: {
+                /** Format: uuid */
+                accountId: string;
+                /**
+                 * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+                 * @example 125000
+                 * @example -69085
+                 */
+                amountMinor: string;
+                /**
+                 * @example GEL
+                 * @example USD
+                 * @example EUR
+                 * @example GBP
+                 */
+                currency: string;
+                /**
+                 * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+                 * @example 125000
+                 * @example -69085
+                 */
+                gelAmountMinor: string;
+                rateId: string | null;
+                account: {
+                    name: string;
+                    /** @enum {string} */
+                    kind: "asset" | "liability" | "equity" | "income" | "expense";
+                    systemKey: ("fx_clearing" | "tax_payable" | "owner_equity") | null;
+                    incomeClass: ("sbs" | "non_sbs") | null;
+                };
+                rate: components["schemas"]["PostingRateInput"] | null;
+            }[];
+        };
+        CreateRuleRequestInput: {
+            name: string;
+            counterpartyContains?: string | null;
+            descriptionContains?: string | null;
+            direction?: ("in" | "out") | null;
+            currency?: string | null;
+            amountMinMinor?: string | null;
+            amountMaxMinor?: string | null;
+            /** Format: uuid */
+            targetAccountId: string;
+            isActive?: boolean;
+        };
+        UpdateRuleRequestInput: {
+            name?: string;
+            counterpartyContains?: string | null;
+            descriptionContains?: string | null;
+            direction?: ("in" | "out") | null;
+            currency?: string | null;
+            amountMinMinor?: string | null;
+            amountMaxMinor?: string | null;
+            /** Format: uuid */
+            targetAccountId?: string;
+            isActive?: boolean;
+        };
+        RuleListInput: {
+            items: components["schemas"]["CategorizationRuleInput"][];
+        };
+        ReorderRulesRequestInput: {
+            ruleIds: string[];
+        };
+        ApplyRulesResponseInput: {
+            updated: number;
+            rows: components["schemas"]["ImportRowViewInput"][];
+        };
+        BulkUpdateImportRowsRequestInput: {
+            rowIds: string[];
+            accountId?: string | null;
+            skip?: boolean;
+        };
+        BulkUpdateImportRowsResponseInput: {
+            rows: components["schemas"]["ImportRowViewInput"][];
+            ignored: string[];
+        };
+        /**
+         * @description `not_due`: no return for the month, or the month is not over. `due`: the month is over and the deadline is today or later. `overdue`: past the deadline, never filed. `filed`: the latest filing matches the live figures. `filed_with_drift`: they differ.
+         * @enum {string}
+         */
+        FilingStatusKindInput: "not_due" | "due" | "overdue" | "filed" | "filed_with_drift";
+        /** @enum {string} */
+        NotDueReasonInput: "not_required" | "period_open";
+        /** @enum {string} */
+        ReturnLineInput: "income" | "line15" | "line18" | "line19" | "line20" | "line21" | "rate" | "tax";
+        LineDifferenceInput: {
+            line: components["schemas"]["ReturnLineInput"];
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            filed: string;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            live: string;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            delta: string;
+        };
+        FilingStatusInput: {
+            kind: components["schemas"]["FilingStatusKindInput"];
+            reason: components["schemas"]["NotDueReasonInput"] | null;
+            daysLeft: number | null;
+            daysOverdue: number | null;
+            differences: components["schemas"]["LineDifferenceInput"][];
+        };
+        FiledFiguresInput: {
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            incomeGelMinor: string;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            ytdGelMinor: string;
+            byPaymentMethod: components["schemas"]["IncomeByPaymentMethodInput"];
+            rateBp: number;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            taxGelMinor: string;
+        };
+        DeclarationFilingInput: {
+            /** Format: uuid */
+            id: string;
+            /** @example 2026-09 */
+            period: string;
+            version: number;
+            supersedesId: string | null;
+            rulesVersion: string;
+            figures: components["schemas"]["FiledFiguresInput"];
+            zeroReturn: boolean;
+            transactionIds: string[];
+            rsReference: string | null;
+            /** Format: date-time */
+            filedAt: string;
+            filedBy: {
+                /** Format: uuid */
+                id: string;
+                name: string;
+                email: string;
+            };
+        };
+        FilingSummaryInput: {
+            /** Format: uuid */
+            id: string;
+            version: number;
+            /** Format: date-time */
+            filedAt: string;
+            rsReference: string | null;
+        };
+        FileDeclarationRequestInput: {
+            rsReference?: string | null;
+            supersedesId?: string | null;
+        };
+        DeclarationMonthViewInput: {
+            /** @example 2026-09 */
+            period: string;
+            rulesVersion: string;
+            sbsStatus: components["schemas"]["SbsMonthStatusInput"];
+            filingRequired: boolean;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            incomeGelMinor: string;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            excludedGelMinor: string;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            ytdGelMinor: string;
+            byPaymentMethod: components["schemas"]["IncomeByPaymentMethodInput"];
+            rateBp: number;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            taxGelMinor: string;
+            limitCrossedThisMonth: boolean;
+            zeroReturn: boolean;
+            negativeIncome: boolean;
+            /** Format: date */
+            deadline: string;
+            status: components["schemas"]["FilingStatusInput"];
+            latestFiling: components["schemas"]["FilingSummaryInput"] | null;
+        };
+        DeclarationYearViewInput: {
+            year: number;
+            months: components["schemas"]["DeclarationMonthViewInput"][];
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            totalIncomeGelMinor: string;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            totalTaxGelMinor: string;
+            crossingPeriod: string | null;
+            limitExceeded: boolean;
+            limitStatus: components["schemas"]["AnnualLimitStatusInput"];
+            sbsEffectiveFrom: string | null;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            annualLimitGelMinor: string;
+            annualLimitUsedBp: number;
+            latestYearWithData: number | null;
+            previousYearLimitExceeded: boolean;
+            /** Format: date */
+            today: string;
+        };
+        ContributingTransactionInput: {
+            /** Format: uuid */
+            id: string;
+            /** Format: date */
+            occurredOn: string;
+            description: string;
+            /** @enum {string} */
+            source: "manual" | "import" | "invoice_payment" | "reversal";
+            paymentMethod: ("cash_register" | "pos" | "bank" | "other") | null;
+            reversesId: string | null;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            incomeGelMinor: string;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            amountMinor: string;
+            /**
+             * @example GEL
+             * @example USD
+             * @example EUR
+             * @example GBP
+             */
+            currency: string;
+            counterparty: string | null;
+            excluded: boolean;
+        };
+        PeriodRulesInput: {
+            version: string;
+            baseRateBp: number;
+            increasedRateBp: number;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            annualLimitGelMinor: string;
+            filingDeadlineDayOfNextMonth: number;
+        };
+        DeclarationPeriodViewInput: {
+            month: components["schemas"]["DeclarationMonthViewInput"];
+            sbsEffectiveFrom: string | null;
+            rules: components["schemas"]["PeriodRulesInput"];
+            transactions: components["schemas"]["ContributingTransactionInput"][];
+            filings: components["schemas"]["DeclarationFilingInput"][];
+            transactionChanges: {
+                added: string[];
+                removed: string[];
+            } | null;
+            fileBlocker: components["schemas"]["NotDueReasonInput"] | null;
+            /** Format: date */
+            today: string;
+        };
+        CounterpartyIncomeInput: {
+            counterparty: string | null;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            incomeGelMinor: string;
+            transactionCount: number;
+        };
+        CurrencyIncomeInput: {
+            /**
+             * @example GEL
+             * @example USD
+             * @example EUR
+             * @example GBP
+             */
+            currency: string;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            amountMinor: string;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            incomeGelMinor: string;
+            transactionCount: number;
+        };
+        DashboardViewInput: {
+            year: number;
+            sbsEffectiveFrom: string | null;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            annualLimitGelMinor: string;
+            annualLimitUsedBp: number;
+            latestYearWithData: number | null;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            ytdIncomeGelMinor: string;
+            limitStatus: components["schemas"]["AnnualLimitStatusInput"];
+            latestMonth: components["schemas"]["DeclarationFiguresInput"] | null;
+            nextDeadline: {
+                /** @example 2026-09 */
+                period: string;
+                /** Format: date */
+                deadline: string;
+                /**
+                 * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+                 * @example 125000
+                 * @example -69085
+                 */
+                taxGelMinor: string;
+                zeroReturn: boolean;
+            } | null;
+            months: components["schemas"]["DashboardMonthInput"][];
+            byCounterparty: {
+                top: components["schemas"]["CounterpartyIncomeInput"][];
+                other: {
+                    /**
+                     * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+                     * @example 125000
+                     * @example -69085
+                     */
+                    incomeGelMinor: string;
+                    transactionCount: number;
+                    counterpartyCount: number;
+                };
+            };
+            currencyMix: components["schemas"]["CurrencyIncomeInput"][];
+            nextReturn: {
+                /** @example 2026-09 */
+                period: string;
+                /** Format: date */
+                deadline: string;
+                /**
+                 * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+                 * @example 125000
+                 * @example -69085
+                 */
+                taxGelMinor: string;
+                zeroReturn: boolean;
+                status: components["schemas"]["FilingStatusInput"];
+            } | null;
+            statusCounts: {
+                [key: string]: number;
+            };
+            /** Format: date */
+            today: string;
+        };
+        Problem: {
+            /** @description URI reference identifying the problem type. */
+            type: string;
+            title: string;
+            status: number;
+            detail?: string;
+            instance?: string;
+            /** @enum {string} */
+            code: "bad_request" | "validation_failed" | "unauthenticated" | "forbidden" | "not_found" | "conflict" | "idempotency_key_reused" | "rate_unavailable" | "payload_too_large" | "rate_limited" | "internal_error" | "service_unavailable";
+            requestId: string;
+            errors?: {
+                path: string;
+                message: string;
+            }[];
+        };
+        ParsedRow: {
+            rowIndex: number;
+            /** Format: date */
+            bookedOn: string;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            amountMinor: string;
+            /**
+             * @example GEL
+             * @example USD
+             * @example EUR
+             * @example GBP
+             */
+            currency: string;
+            counterparty: string | null;
+            counterpartyAccount: string | null;
+            description: string;
+            bankReference: string | null;
+            documentNumber: string | null;
+            /** @enum {string} */
+            operationType: "incoming_payment" | "outgoing_payment" | "fx_conversion" | "fee" | "other";
+            bankOperationCode: string | null;
+            bankGelAmountMinor: string | null;
+            counterAmountMinor: string | null;
+            counterCurrency: string | null;
+            raw: {
+                [key: string]: string | number | boolean | null;
+            };
+        };
+        ParseWarning: {
+            code: string;
+            message: string;
+            rowIndex: number | null;
+        };
+        StatementMeta: {
+            accountIban: string | null;
+            currency: string | null;
+            periodFrom: string | null;
+            periodTo: string | null;
+            openingBalanceMinor: string | null;
+            closingBalanceMinor: string | null;
+        };
+        ParseResult: {
+            /** @enum {string} */
+            parserId: "tbc-csv" | "tbc-xlsx" | "bog-csv" | "bog-xlsx" | "generic-csv";
+            meta: components["schemas"]["StatementMeta"];
+            rows: components["schemas"]["ParsedRow"][];
+            warnings: components["schemas"]["ParseWarning"][];
+        };
+        GenericCsvMapping: {
+            /** @enum {string} */
+            delimiter?: "," | ";" | "\t";
+            /** @default 0 */
+            headerRow: number;
+            date: string;
+            /** @enum {string} */
+            dateFormat: "YYYY-MM-DD" | "DD.MM.YYYY" | "DD/MM/YYYY" | "MM/DD/YYYY" | "DD.MM.YY";
+            /** @enum {string} */
+            decimalSeparator: "." | ",";
+            amount: {
+                /** @constant */
+                kind: "signed";
+                column: string;
+            } | {
+                /** @constant */
+                kind: "debit_credit";
+                debit: string;
+                credit: string;
+            };
+            currency?: string;
+            counterparty?: string;
+            description?: string;
+            reference?: string;
+        };
+        User: {
+            /** Format: uuid */
+            id: string;
+            /** Format: email */
+            email: string;
+            name: string;
+            /** Format: date-time */
+            createdAt: string;
+        };
+        Organization: {
+            /** Format: uuid */
+            id: string;
+            name: string;
+            taxId: string | null;
+            /** @constant */
+            baseCurrency: "GEL";
+            sbsEffectiveFrom: string | null;
+            /** @enum {string} */
+            accountingMethod: "cash";
+            /** Format: date-time */
+            createdAt: string;
+        };
+        Membership: {
+            /** Format: uuid */
+            orgId: string;
+            /** Format: uuid */
+            userId: string;
+            /** @enum {string} */
+            role: "owner" | "accountant" | "viewer";
+            /** Format: date-time */
+            createdAt: string;
+        };
+        Invitation: {
+            /** Format: uuid */
+            id: string;
+            /** Format: uuid */
+            orgId: string;
+            /** Format: email */
+            email: string;
+            /** @enum {string} */
+            role: "owner" | "accountant" | "viewer";
+            invitedBy: string | null;
+            /** Format: date-time */
+            expiresAt: string;
+            acceptedAt: string | null;
+            revokedAt: string | null;
+            /** Format: date-time */
+            createdAt: string;
+        };
+        Account: {
+            /** Format: uuid */
+            id: string;
+            /** Format: uuid */
+            orgId: string;
+            name: string;
+            /** @enum {string} */
+            kind: "asset" | "liability" | "equity" | "income" | "expense";
+            currency: string | null;
+            systemKey: ("fx_clearing" | "tax_payable" | "owner_equity") | null;
+            incomeClass: ("sbs" | "non_sbs") | null;
+            bank: ("tbc" | "bog" | "other") | null;
+            iban: string | null;
+            archivedAt: string | null;
+            /** Format: date-time */
+            createdAt: string;
+        };
+        ExchangeRate: {
+            /** Format: uuid */
+            id: string;
+            /**
+             * @example GEL
+             * @example USD
+             * @example EUR
+             * @example GBP
+             */
+            currency: string;
+            /** Format: date */
+            validFrom: string;
+            /**
+             * @example 2.7123
+             * @example 3.6924
+             */
+            rate: string;
+            quantity: number;
+            /** @constant */
+            source: "nbg";
+            setAt: string | null;
+            /** Format: date-time */
+            fetchedAt: string;
+        };
+        Posting: {
+            /** Format: uuid */
+            id: string;
+            /** Format: uuid */
+            transactionId: string;
+            /** Format: uuid */
+            orgId: string;
+            /** Format: uuid */
+            accountId: string;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            amountMinor: string;
+            /**
+             * @example GEL
+             * @example USD
+             * @example EUR
+             * @example GBP
+             */
+            currency: string;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            gelAmountMinor: string;
+            rateId: string | null;
+        };
+        Transaction: {
+            /** Format: uuid */
+            id: string;
+            /** Format: uuid */
+            orgId: string;
+            /** Format: date */
+            occurredOn: string;
+            description: string;
+            notes: string | null;
+            /** @enum {string} */
+            source: "manual" | "import" | "invoice_payment" | "reversal";
+            paymentMethod: ("cash_register" | "pos" | "bank" | "other") | null;
+            reversesId: string | null;
+            importBatchId: string | null;
+            /** Format: uuid */
+            createdBy: string;
+            /** Format: date-time */
+            createdAt: string;
+        };
+        TransactionWithPostings: {
+            /** Format: uuid */
+            id: string;
+            /** Format: uuid */
+            orgId: string;
+            /** Format: date */
+            occurredOn: string;
+            description: string;
+            notes: string | null;
+            /** @enum {string} */
+            source: "manual" | "import" | "invoice_payment" | "reversal";
+            paymentMethod: ("cash_register" | "pos" | "bank" | "other") | null;
+            reversesId: string | null;
+            importBatchId: string | null;
+            /** Format: uuid */
+            createdBy: string;
+            /** Format: date-time */
+            createdAt: string;
+            postings: components["schemas"]["Posting"][];
+        };
+        ImportBatch: {
+            /** Format: uuid */
+            id: string;
+            /** Format: uuid */
+            orgId: string;
+            /** Format: uuid */
+            accountId: string;
+            /** @enum {string} */
+            bankFormat: "tbc-csv" | "tbc-xlsx" | "bog-csv" | "bog-xlsx" | "generic-csv";
+            fileKey: string | null;
+            fileSha256: string;
+            fileName: string;
+            /** @enum {string} */
+            status: "uploaded" | "parsing" | "preview" | "committing" | "committed" | "failed";
+            stats: {
+                total?: number;
+                new?: number;
+                duplicate?: number;
+                skipped?: number;
+                committed?: number;
+                warnings?: number;
+            };
+            warnings: components["schemas"]["ParseWarning"][];
+            periodFrom: string | null;
+            periodTo: string | null;
+            error: {
+                [key: string]: unknown;
+            } | null;
+            /** Format: uuid */
+            createdBy: string;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+        };
+        ImportRow: {
+            /** Format: uuid */
+            id: string;
+            /** Format: uuid */
+            batchId: string;
+            /** Format: uuid */
+            orgId: string;
+            rowIndex: number;
+            raw: {
+                [key: string]: unknown;
+            };
+            /** Format: date */
+            bookedOn: string;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            amountMinor: string;
+            /**
+             * @example GEL
+             * @example USD
+             * @example EUR
+             * @example GBP
+             */
+            currency: string;
+            counterparty: string | null;
+            counterpartyAccount: string | null;
+            description: string;
+            bankReference: string | null;
+            documentNumber: string | null;
+            /** @enum {string} */
+            operationType: "incoming_payment" | "outgoing_payment" | "fx_conversion" | "fee" | "other";
+            bankGelAmountMinor: string | null;
+            counterAmountMinor: string | null;
+            counterCurrency: string | null;
+            dedupeHash: string;
+            /** @enum {string} */
+            status: "new" | "duplicate" | "skipped";
+            suggestedAccountId: string | null;
+            suggestedRuleId: string | null;
+            chosenAccountId: string | null;
+            transactionId: string | null;
+        };
+        CategorizationRule: {
+            /** Format: uuid */
+            id: string;
+            /** Format: uuid */
+            orgId: string;
+            name: string;
+            priority: number;
+            counterpartyContains: string | null;
+            descriptionContains: string | null;
+            direction: ("in" | "out") | null;
+            currency: string | null;
+            amountMinMinor: string | null;
+            amountMaxMinor: string | null;
+            /** Format: uuid */
+            targetAccountId: string;
+            isActive: boolean;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+        };
+        ColumnMapping: {
+            /** Format: uuid */
+            id: string;
+            /** Format: uuid */
+            orgId: string;
+            /** Format: uuid */
+            accountId: string;
+            mapping: components["schemas"]["GenericCsvMapping"];
+            /** Format: date-time */
+            createdAt: string;
+        };
+        Client: {
+            /** Format: uuid */
+            id: string;
+            /** Format: uuid */
+            orgId: string;
+            name: string;
+            country: string;
+            email: string | null;
+            /**
+             * @example GEL
+             * @example USD
+             * @example EUR
+             * @example GBP
+             */
+            defaultCurrency: string;
+            archivedAt: string | null;
+            /** Format: date-time */
+            createdAt: string;
+        };
+        InvoiceLine: {
+            /** Format: uuid */
+            id: string;
             /** Format: uuid */
             invoiceId: string;
-          };
-        };
-    HealthResponseInput: {
-      /** @enum {string} */
-      status: 'ok' | 'degraded';
-      version: string;
-      /** Format: date-time */
-      time: string;
-      checks: {
-        /** @enum {string} */
-        database: 'ok' | 'fail';
-      };
-    };
-    /** @enum {string} */
-    AnnualLimitStatusInput: 'ok' | 'warn80' | 'warn95' | 'exceeded' | 'exceeded_second_year';
-    /** @enum {string} */
-    SbsMonthStatusInput: 'inactive' | 'partial' | 'active';
-    DeclarationFiguresInput: {
-      /** @example 2026-09 */
-      period: string;
-      rulesVersion: string;
-      sbsStatus: components['schemas']['SbsMonthStatusInput'];
-      filingRequired: boolean;
-      /**
-       * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
-       * @example 125000
-       * @example -69085
-       */
-      incomeGelMinor: string;
-      /**
-       * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
-       * @example 125000
-       * @example -69085
-       */
-      excludedGelMinor: string;
-      /**
-       * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
-       * @example 125000
-       * @example -69085
-       */
-      ytdGelMinor: string;
-      byPaymentMethod: components['schemas']['IncomeByPaymentMethodInput'];
-      rateBp: number;
-      /**
-       * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
-       * @example 125000
-       * @example -69085
-       */
-      taxGelMinor: string;
-      limitCrossedThisMonth: boolean;
-      zeroReturn: boolean;
-      negativeIncome: boolean;
-      /** Format: date */
-      deadline: string;
-    };
-    /** @enum {string} */
-    ParseWarningCodeInput:
-      | 'unreadable_file'
-      | 'encoding_fallback'
-      | 'unterminated_quote'
-      | 'header_not_found'
-      | 'missing_column'
-      | 'mapping_required'
-      | 'unparseable_row'
-      | 'ambiguous_debit_credit'
-      | 'amount_mismatch'
-      | 'amount_rounded'
-      | 'unknown_operation_type'
-      | 'unexpected_direction'
-      | 'currency_mismatch'
-      | 'invalid_currency'
-      | 'reconciliation_mismatch'
-      | 'reconciliation_unavailable'
-      | 'running_balance_mismatch'
-      | 'turnover_mismatch'
-      | 'no_rows'
-      | 'date_outside_period'
-      | 'internal_error';
-    StatementDetectionInput: {
-      /** @enum {string} */
-      parserId: 'tbc-csv' | 'tbc-xlsx' | 'bog-csv' | 'bog-xlsx' | 'generic-csv';
-      confidence: number;
-    };
-    ListRatesResponseInput: {
-      items: components['schemas']['ExchangeRateInput'][];
-      nextCursor: string | null;
-    };
-    BackfillRatesRequestInput: {
-      /** Format: date */
-      from: string;
-      /** Format: date */
-      to: string;
-      currencies: string[];
-    };
-    BackfillRatesResponseInput: {
-      jobId: string;
-      /** @constant */
-      status: 'queued';
-    };
-    SessionUserInput: {
-      /** Format: uuid */
-      id: string;
-      /** Format: email */
-      email: string;
-      name: string;
-      /** Format: date-time */
-      createdAt: string;
-      emailVerified: boolean;
-    };
-    MembershipSummaryInput: {
-      /** Format: uuid */
-      orgId: string;
-      orgName: string;
-      /** @enum {string} */
-      role: 'owner' | 'accountant' | 'viewer';
-    };
-    MeResponseInput: {
-      user: components['schemas']['SessionUserInput'];
-      memberships: components['schemas']['MembershipSummaryInput'][];
-    };
-    CreateOrganizationRequestInput: {
-      name: string;
-      taxId?: string | null;
-      sbsEffectiveFrom?: string | null;
-    };
-    UpdateOrganizationRequestInput: {
-      name?: string;
-      taxId?: string | null;
-      sbsEffectiveFrom?: string | null;
-    };
-    OrganizationWithRoleInput: {
-      /** Format: uuid */
-      id: string;
-      name: string;
-      taxId: string | null;
-      /** @constant */
-      baseCurrency: 'GEL';
-      sbsEffectiveFrom: string | null;
-      /** @enum {string} */
-      accountingMethod: 'cash';
-      /** Format: date-time */
-      createdAt: string;
-      /** @enum {string} */
-      role: 'owner' | 'accountant' | 'viewer';
-    };
-    OrganizationListInput: {
-      items: components['schemas']['OrganizationWithRoleInput'][];
-      nextCursor: string | null;
-    };
-    MemberInput: {
-      /** Format: uuid */
-      userId: string;
-      /** Format: email */
-      email: string;
-      name: string;
-      /** @enum {string} */
-      role: 'owner' | 'accountant' | 'viewer';
-      /** Format: date-time */
-      createdAt: string;
-    };
-    MemberListInput: {
-      items: components['schemas']['MemberInput'][];
-      nextCursor: string | null;
-    };
-    CreateInvitationRequestInput: {
-      /** Format: email */
-      email: string;
-      /** @enum {string} */
-      role: 'owner' | 'accountant' | 'viewer';
-    };
-    InvitationListInput: {
-      items: components['schemas']['InvitationInput'][];
-      nextCursor: string | null;
-    };
-    InvitationTokenRequestInput: {
-      token: string;
-    };
-    InvitationPreviewInput: {
-      orgName: string;
-      /** Format: email */
-      email: string;
-      /** @enum {string} */
-      role: 'owner' | 'accountant' | 'viewer';
-      /** @enum {string} */
-      status: 'pending' | 'accepted' | 'revoked' | 'expired';
-      /** Format: date-time */
-      expiresAt: string;
-    };
-    AcceptInvitationResponseInput: {
-      /** Format: uuid */
-      orgId: string;
-      orgName: string;
-      /** @enum {string} */
-      role: 'owner' | 'accountant' | 'viewer';
-    };
-    SignInBodyInput: {
-      /** Format: email */
-      email: string;
-      password: string;
-      rememberMe?: boolean;
-    };
-    SignUpBodyInput: {
-      name: string;
-      /** Format: email */
-      email: string;
-      password: string;
-      /** Format: starts_with */
-      callbackURL?: string;
-    };
-    MagicLinkBodyInput: {
-      /** Format: email */
-      email: string;
-      name?: string;
-      /** Format: starts_with */
-      callbackURL?: string;
-    };
-    AccountListInput: {
-      items: components['schemas']['AccountInput'][];
-    };
-    UploadStatementRequestInput: {
-      /**
-       * Format: binary
-       * @description Bank statement, XLSX or CSV, at most 5 MB. The file itself is not stored.
-       */
-      file: string;
-      /**
-       * Format: uuid
-       * @description Book into this bank account. Default: match on the statement IBAN + currency, or create one.
-       */
-      accountId?: string;
-    };
-    /**
-     * @description `matched`: IBAN + currency found. `claimed`: an unused default account of that currency got the IBAN. `created`: a new account. `chosen`: the `accountId` sent with the upload.
-     * @enum {string}
-     */
-    AccountMatchOutcomeInput: 'matched' | 'claimed' | 'created' | 'chosen';
-    ImportBatchDetailInput: {
-      batch: components['schemas']['ImportBatchInput'];
-      account: components['schemas']['AccountInput'];
-    };
-    UploadStatementResponseInput: {
-      batch: components['schemas']['ImportBatchInput'];
-      account: components['schemas']['AccountInput'];
-      accountMatch: components['schemas']['AccountMatchOutcomeInput'];
-      detection: components['schemas']['StatementDetectionInput'];
-    };
-    ImportBatchListInput: {
-      items: components['schemas']['ImportBatchInput'][];
-      nextCursor: string | null;
-    };
-    ImportRowViewInput: {
-      /** Format: uuid */
-      id: string;
-      /** Format: uuid */
-      batchId: string;
-      /** Format: uuid */
-      orgId: string;
-      rowIndex: number;
-      /** Format: date */
-      bookedOn: string;
-      /**
-       * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
-       * @example 125000
-       * @example -69085
-       */
-      amountMinor: string;
-      /**
-       * @example GEL
-       * @example USD
-       * @example EUR
-       * @example GBP
-       */
-      currency: string;
-      counterparty: string | null;
-      counterpartyAccount: string | null;
-      description: string;
-      bankReference: string | null;
-      documentNumber: string | null;
-      /** @enum {string} */
-      operationType: 'incoming_payment' | 'outgoing_payment' | 'fx_conversion' | 'fee' | 'other';
-      bankGelAmountMinor: string | null;
-      counterAmountMinor: string | null;
-      counterCurrency: string | null;
-      dedupeHash: string;
-      /** @enum {string} */
-      status: 'new' | 'duplicate' | 'skipped';
-      suggestedAccountId: string | null;
-      suggestedRuleId: string | null;
-      chosenAccountId: string | null;
-      transactionId: string | null;
-      accountId: string | null;
-    };
-    ImportRowListInput: {
-      items: components['schemas']['ImportRowViewInput'][];
-      nextCursor: string | null;
-    };
-    UpdateImportRowRequestInput: {
-      accountId?: string | null;
-      skip?: boolean;
-    };
-    /**
-     * @description `bank_gel_mismatch`: the bank's GEL equivalent of the line differs from ours (NBG rate of the booked date) by more than 1 tetri. Ours is booked; check the rate the bank used.
-     * @enum {string}
-     */
-    CommitWarningCodeInput: 'bank_gel_mismatch';
-    CommitWarningInput: {
-      code: components['schemas']['CommitWarningCodeInput'];
-      /** Format: uuid */
-      rowId: string;
-      /** Format: uuid */
-      transactionId: string;
-      /** Format: date */
-      bookedOn: string;
-      /**
-       * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
-       * @example 125000
-       * @example -69085
-       */
-      amountMinor: string;
-      /**
-       * @example GEL
-       * @example USD
-       * @example EUR
-       * @example GBP
-       */
-      currency: string;
-      /**
-       * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
-       * @example 125000
-       * @example -69085
-       */
-      gelAmountMinor: string;
-      /**
-       * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
-       * @example 125000
-       * @example -69085
-       */
-      bankGelAmountMinor: string;
-      message: string;
-    };
-    CommitImportResponseInput: {
-      batch: components['schemas']['ImportBatchInput'];
-      transactionIds: string[];
-      warnings: components['schemas']['CommitWarningInput'][];
-    };
-    PostingRateInput: {
-      /**
-       * @example 2.7123
-       * @example 3.6924
-       */
-      rate: string;
-      quantity: number;
-      /** Format: date */
-      validFrom: string;
-    };
-    TransactionPostingInput: {
-      /** Format: uuid */
-      id: string;
-      /** Format: uuid */
-      transactionId: string;
-      /** Format: uuid */
-      orgId: string;
-      /** Format: uuid */
-      accountId: string;
-      /**
-       * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
-       * @example 125000
-       * @example -69085
-       */
-      amountMinor: string;
-      /**
-       * @example GEL
-       * @example USD
-       * @example EUR
-       * @example GBP
-       */
-      currency: string;
-      /**
-       * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
-       * @example 125000
-       * @example -69085
-       */
-      gelAmountMinor: string;
-      rateId: string | null;
-      account: {
-        name: string;
-        /** @enum {string} */
-        kind: 'asset' | 'liability' | 'equity' | 'income' | 'expense';
-        systemKey: ('fx_clearing' | 'tax_payable' | 'owner_equity') | null;
-        incomeClass: ('sbs' | 'non_sbs') | null;
-      };
-      rate: components['schemas']['PostingRateInput'] | null;
-    };
-    TransactionViewInput: {
-      /** Format: uuid */
-      id: string;
-      /** Format: uuid */
-      orgId: string;
-      /** Format: date */
-      occurredOn: string;
-      description: string;
-      notes: string | null;
-      /** @enum {string} */
-      source: 'manual' | 'import' | 'invoice_payment' | 'reversal';
-      paymentMethod: ('cash_register' | 'pos' | 'bank' | 'other') | null;
-      reversesId: string | null;
-      importBatchId: string | null;
-      /** Format: uuid */
-      createdBy: string;
-      /** Format: date-time */
-      createdAt: string;
-      postings: components['schemas']['TransactionPostingInput'][];
-      reversedById: string | null;
-    };
-    TransactionListInput: {
-      items: components['schemas']['TransactionViewInput'][];
-      nextCursor: string | null;
-    };
-    ReverseTransactionRequestInput: {
-      /** Format: date */
-      occurredOn?: string;
-      description?: string;
-    };
-    DeclarationYearResponseInput: {
-      year: number;
-      months: components['schemas']['DeclarationFiguresInput'][];
-      /**
-       * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
-       * @example 125000
-       * @example -69085
-       */
-      totalIncomeGelMinor: string;
-      /**
-       * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
-       * @example 125000
-       * @example -69085
-       */
-      totalTaxGelMinor: string;
-      crossingPeriod: string | null;
-      limitExceeded: boolean;
-      limitStatus: components['schemas']['AnnualLimitStatusInput'];
-      sbsEffectiveFrom: string | null;
-      /**
-       * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
-       * @example 125000
-       * @example -69085
-       */
-      annualLimitGelMinor: string;
-      annualLimitUsedBp: number;
-      latestYearWithData: number | null;
-      previousYearLimitExceeded: boolean;
-    };
-    DashboardMonthInput: {
-      /** @example 2026-09 */
-      period: string;
-      /**
-       * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
-       * @example 125000
-       * @example -69085
-       */
-      incomeGelMinor: string;
-      /**
-       * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
-       * @example 125000
-       * @example -69085
-       */
-      taxGelMinor: string;
-      rateBp: number;
-    };
-    DashboardResponseInput: {
-      year: number;
-      sbsEffectiveFrom: string | null;
-      /**
-       * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
-       * @example 125000
-       * @example -69085
-       */
-      annualLimitGelMinor: string;
-      annualLimitUsedBp: number;
-      latestYearWithData: number | null;
-      /**
-       * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
-       * @example 125000
-       * @example -69085
-       */
-      ytdIncomeGelMinor: string;
-      limitStatus: components['schemas']['AnnualLimitStatusInput'];
-      latestMonth: components['schemas']['DeclarationFiguresInput'] | null;
-      nextDeadline: {
-        /** @example 2026-09 */
-        period: string;
-        /** Format: date */
-        deadline: string;
-        /**
-         * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
-         * @example 125000
-         * @example -69085
-         */
-        taxGelMinor: string;
-        zeroReturn: boolean;
-      } | null;
-      months: components['schemas']['DashboardMonthInput'][];
-    };
-    CreateAccountRequestInput: {
-      name: string;
-      /** @enum {string} */
-      kind: 'asset' | 'liability' | 'equity' | 'income' | 'expense';
-      currency?: string | null;
-      incomeClass?: ('sbs' | 'non_sbs') | null;
-      bank?: ('tbc' | 'bog' | 'other') | null;
-      iban?: string | null;
-    };
-    UpdateAccountRequestInput: {
-      name?: string;
-      archived?: boolean;
-    };
-    CurrencyBalanceInput: {
-      /**
-       * @example GEL
-       * @example USD
-       * @example EUR
-       * @example GBP
-       */
-      currency: string;
-      /**
-       * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
-       * @example 125000
-       * @example -69085
-       */
-      amountMinor: string;
-    };
-    AccountBalanceInput: {
-      /** Format: uuid */
-      accountId: string;
-      balances: components['schemas']['CurrencyBalanceInput'][];
-      gelValue: {
-        /**
-         * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
-         * @example 125000
-         * @example -69085
-         */
-        amountMinor: string;
-        rate: components['schemas']['PostingRateInput'] | null;
-      } | null;
-    };
-    AccountBalanceListInput: {
-      items: components['schemas']['AccountBalanceInput'][];
-      /** Format: date */
-      asOf: string;
-      /**
-       * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
-       * @example 125000
-       * @example -69085
-       */
-      bankTotalGelMinor: string;
-      bankAccountsWithoutRate: string[];
-    };
-    /** @enum {string} */
-    ManualTransactionTypeInput:
-      | 'income'
-      | 'expense'
-      | 'owner_draw'
-      | 'owner_contribution'
-      | 'transfer'
-      | 'fx_conversion'
-      | 'tax_payment'
-      | 'postings';
-    IncomeReceiptRequestInput: {
-      /** @constant */
-      type: 'income';
-      /** Format: date */
-      occurredOn: string;
-      description: string;
-      /** Format: uuid */
-      bankAccountId: string;
-      /** Format: uuid */
-      incomeAccountId: string;
-      /** @description Positive integer amount in minor units, as a decimal string. */
-      amountMinor: string;
-      /**
-       * @default bank
-       * @enum {string}
-       */
-      paymentMethod: 'cash_register' | 'pos' | 'bank' | 'other';
-    };
-    ExpenseRequestInput: {
-      /** @constant */
-      type: 'expense';
-      /** Format: date */
-      occurredOn: string;
-      description: string;
-      /** Format: uuid */
-      bankAccountId: string;
-      /** Format: uuid */
-      expenseAccountId: string;
-      /** @description Positive integer amount in minor units, as a decimal string. */
-      amountMinor: string;
-    };
-    OwnerDrawRequestInput: {
-      /** @constant */
-      type: 'owner_draw';
-      /** Format: date */
-      occurredOn: string;
-      description: string;
-      /** Format: uuid */
-      bankAccountId: string;
-      /** @description Positive integer amount in minor units, as a decimal string. */
-      amountMinor: string;
-    };
-    OwnerContributionRequestInput: {
-      /** @constant */
-      type: 'owner_contribution';
-      /** Format: date */
-      occurredOn: string;
-      description: string;
-      /** Format: uuid */
-      bankAccountId: string;
-      /** @description Positive integer amount in minor units, as a decimal string. */
-      amountMinor: string;
-    };
-    TransferRequestInput: {
-      /** @constant */
-      type: 'transfer';
-      /** Format: date */
-      occurredOn: string;
-      description: string;
-      /** Format: uuid */
-      fromAccountId: string;
-      /** Format: uuid */
-      toAccountId: string;
-      /** @description Positive integer amount in minor units, as a decimal string. */
-      amountMinor: string;
-    };
-    FxConversionRequestInput: {
-      /** @constant */
-      type: 'fx_conversion';
-      /** Format: date */
-      occurredOn: string;
-      description: string;
-      /** Format: uuid */
-      fromAccountId: string;
-      /** Format: uuid */
-      toAccountId: string;
-      /** @description Positive integer amount in minor units, as a decimal string. */
-      soldAmountMinor: string;
-      /** @description Positive integer amount in minor units, as a decimal string. */
-      boughtAmountMinor: string;
-    };
-    TaxPaymentRequestInput: {
-      /** @constant */
-      type: 'tax_payment';
-      /** Format: date */
-      occurredOn: string;
-      description: string;
-      /** Format: uuid */
-      bankAccountId: string;
-      /** @description Positive integer amount in minor units, as a decimal string. */
-      amountMinor: string;
-    };
-    RawPostingRequestInput: {
-      /** Format: uuid */
-      accountId: string;
-      /**
-       * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
-       * @example 125000
-       * @example -69085
-       */
-      amountMinor: string;
-      /**
-       * @example GEL
-       * @example USD
-       * @example EUR
-       * @example GBP
-       */
-      currency: string;
-    };
-    RawPostingsRequestInput: {
-      /** @constant */
-      type: 'postings';
-      /** Format: date */
-      occurredOn: string;
-      description: string;
-      /** @default null */
-      paymentMethod: ('cash_register' | 'pos' | 'bank' | 'other') | null;
-      postings: components['schemas']['RawPostingRequestInput'][];
-    };
-    CreateTransactionRequestInput:
-      | components['schemas']['IncomeReceiptRequestInput']
-      | components['schemas']['ExpenseRequestInput']
-      | components['schemas']['OwnerDrawRequestInput']
-      | components['schemas']['OwnerContributionRequestInput']
-      | components['schemas']['TransferRequestInput']
-      | components['schemas']['FxConversionRequestInput']
-      | components['schemas']['TaxPaymentRequestInput']
-      | components['schemas']['RawPostingsRequestInput'];
-    TransactionPreviewInput: {
-      /** Format: date */
-      occurredOn: string;
-      description: string;
-      paymentMethod: ('cash_register' | 'pos' | 'bank' | 'other') | null;
-      postings: {
-        /** Format: uuid */
-        accountId: string;
-        /**
-         * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
-         * @example 125000
-         * @example -69085
-         */
-        amountMinor: string;
-        /**
-         * @example GEL
-         * @example USD
-         * @example EUR
-         * @example GBP
-         */
-        currency: string;
-        /**
-         * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
-         * @example 125000
-         * @example -69085
-         */
-        gelAmountMinor: string;
-        rateId: string | null;
-        account: {
-          name: string;
-          /** @enum {string} */
-          kind: 'asset' | 'liability' | 'equity' | 'income' | 'expense';
-          systemKey: ('fx_clearing' | 'tax_payable' | 'owner_equity') | null;
-          incomeClass: ('sbs' | 'non_sbs') | null;
-        };
-        rate: components['schemas']['PostingRateInput'] | null;
-      }[];
-    };
-    CreateRuleRequestInput: {
-      name: string;
-      counterpartyContains?: string | null;
-      descriptionContains?: string | null;
-      direction?: ('in' | 'out') | null;
-      currency?: string | null;
-      amountMinMinor?: string | null;
-      amountMaxMinor?: string | null;
-      /** Format: uuid */
-      targetAccountId: string;
-      isActive?: boolean;
-    };
-    UpdateRuleRequestInput: {
-      name?: string;
-      counterpartyContains?: string | null;
-      descriptionContains?: string | null;
-      direction?: ('in' | 'out') | null;
-      currency?: string | null;
-      amountMinMinor?: string | null;
-      amountMaxMinor?: string | null;
-      /** Format: uuid */
-      targetAccountId?: string;
-      isActive?: boolean;
-    };
-    RuleListInput: {
-      items: components['schemas']['CategorizationRuleInput'][];
-    };
-    ReorderRulesRequestInput: {
-      ruleIds: string[];
-    };
-    ApplyRulesResponseInput: {
-      updated: number;
-      rows: components['schemas']['ImportRowViewInput'][];
-    };
-    BulkUpdateImportRowsRequestInput: {
-      rowIds: string[];
-      accountId?: string | null;
-      skip?: boolean;
-    };
-    BulkUpdateImportRowsResponseInput: {
-      rows: components['schemas']['ImportRowViewInput'][];
-      ignored: string[];
-    };
-    Problem: {
-      /** @description URI reference identifying the problem type. */
-      type: string;
-      title: string;
-      status: number;
-      detail?: string;
-      instance?: string;
-      /** @enum {string} */
-      code:
-        | 'bad_request'
-        | 'validation_failed'
-        | 'unauthenticated'
-        | 'forbidden'
-        | 'not_found'
-        | 'conflict'
-        | 'idempotency_key_reused'
-        | 'rate_unavailable'
-        | 'payload_too_large'
-        | 'rate_limited'
-        | 'internal_error'
-        | 'service_unavailable';
-      requestId: string;
-      errors?: {
-        path: string;
-        message: string;
-      }[];
-    };
-    ParsedRow: {
-      rowIndex: number;
-      /** Format: date */
-      bookedOn: string;
-      /**
-       * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
-       * @example 125000
-       * @example -69085
-       */
-      amountMinor: string;
-      /**
-       * @example GEL
-       * @example USD
-       * @example EUR
-       * @example GBP
-       */
-      currency: string;
-      counterparty: string | null;
-      counterpartyAccount: string | null;
-      description: string;
-      bankReference: string | null;
-      documentNumber: string | null;
-      /** @enum {string} */
-      operationType: 'incoming_payment' | 'outgoing_payment' | 'fx_conversion' | 'fee' | 'other';
-      bankOperationCode: string | null;
-      bankGelAmountMinor: string | null;
-      counterAmountMinor: string | null;
-      counterCurrency: string | null;
-      raw: {
-        [key: string]: string | number | boolean | null;
-      };
-    };
-    ParseWarning: {
-      code: string;
-      message: string;
-      rowIndex: number | null;
-    };
-    StatementMeta: {
-      accountIban: string | null;
-      currency: string | null;
-      periodFrom: string | null;
-      periodTo: string | null;
-      openingBalanceMinor: string | null;
-      closingBalanceMinor: string | null;
-    };
-    ParseResult: {
-      /** @enum {string} */
-      parserId: 'tbc-csv' | 'tbc-xlsx' | 'bog-csv' | 'bog-xlsx' | 'generic-csv';
-      meta: components['schemas']['StatementMeta'];
-      rows: components['schemas']['ParsedRow'][];
-      warnings: components['schemas']['ParseWarning'][];
-    };
-    GenericCsvMapping: {
-      /** @enum {string} */
-      delimiter?: ',' | ';' | '\t';
-      /** @default 0 */
-      headerRow: number;
-      date: string;
-      /** @enum {string} */
-      dateFormat: 'YYYY-MM-DD' | 'DD.MM.YYYY' | 'DD/MM/YYYY' | 'MM/DD/YYYY' | 'DD.MM.YY';
-      /** @enum {string} */
-      decimalSeparator: '.' | ',';
-      amount:
-        | {
-            /** @constant */
-            kind: 'signed';
-            column: string;
-          }
-        | {
-            /** @constant */
-            kind: 'debit_credit';
-            debit: string;
-            credit: string;
-          };
-      currency?: string;
-      counterparty?: string;
-      description?: string;
-      reference?: string;
-    };
-    User: {
-      /** Format: uuid */
-      id: string;
-      /** Format: email */
-      email: string;
-      name: string;
-      /** Format: date-time */
-      createdAt: string;
-    };
-    Organization: {
-      /** Format: uuid */
-      id: string;
-      name: string;
-      taxId: string | null;
-      /** @constant */
-      baseCurrency: 'GEL';
-      sbsEffectiveFrom: string | null;
-      /** @enum {string} */
-      accountingMethod: 'cash';
-      /** Format: date-time */
-      createdAt: string;
-    };
-    Membership: {
-      /** Format: uuid */
-      orgId: string;
-      /** Format: uuid */
-      userId: string;
-      /** @enum {string} */
-      role: 'owner' | 'accountant' | 'viewer';
-      /** Format: date-time */
-      createdAt: string;
-    };
-    Invitation: {
-      /** Format: uuid */
-      id: string;
-      /** Format: uuid */
-      orgId: string;
-      /** Format: email */
-      email: string;
-      /** @enum {string} */
-      role: 'owner' | 'accountant' | 'viewer';
-      invitedBy: string | null;
-      /** Format: date-time */
-      expiresAt: string;
-      acceptedAt: string | null;
-      revokedAt: string | null;
-      /** Format: date-time */
-      createdAt: string;
-    };
-    Account: {
-      /** Format: uuid */
-      id: string;
-      /** Format: uuid */
-      orgId: string;
-      name: string;
-      /** @enum {string} */
-      kind: 'asset' | 'liability' | 'equity' | 'income' | 'expense';
-      currency: string | null;
-      systemKey: ('fx_clearing' | 'tax_payable' | 'owner_equity') | null;
-      incomeClass: ('sbs' | 'non_sbs') | null;
-      bank: ('tbc' | 'bog' | 'other') | null;
-      iban: string | null;
-      archivedAt: string | null;
-      /** Format: date-time */
-      createdAt: string;
-    };
-    ExchangeRate: {
-      /** Format: uuid */
-      id: string;
-      /**
-       * @example GEL
-       * @example USD
-       * @example EUR
-       * @example GBP
-       */
-      currency: string;
-      /** Format: date */
-      validFrom: string;
-      /**
-       * @example 2.7123
-       * @example 3.6924
-       */
-      rate: string;
-      quantity: number;
-      /** @constant */
-      source: 'nbg';
-      setAt: string | null;
-      /** Format: date-time */
-      fetchedAt: string;
-    };
-    Posting: {
-      /** Format: uuid */
-      id: string;
-      /** Format: uuid */
-      transactionId: string;
-      /** Format: uuid */
-      orgId: string;
-      /** Format: uuid */
-      accountId: string;
-      /**
-       * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
-       * @example 125000
-       * @example -69085
-       */
-      amountMinor: string;
-      /**
-       * @example GEL
-       * @example USD
-       * @example EUR
-       * @example GBP
-       */
-      currency: string;
-      /**
-       * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
-       * @example 125000
-       * @example -69085
-       */
-      gelAmountMinor: string;
-      rateId: string | null;
-    };
-    Transaction: {
-      /** Format: uuid */
-      id: string;
-      /** Format: uuid */
-      orgId: string;
-      /** Format: date */
-      occurredOn: string;
-      description: string;
-      notes: string | null;
-      /** @enum {string} */
-      source: 'manual' | 'import' | 'invoice_payment' | 'reversal';
-      paymentMethod: ('cash_register' | 'pos' | 'bank' | 'other') | null;
-      reversesId: string | null;
-      importBatchId: string | null;
-      /** Format: uuid */
-      createdBy: string;
-      /** Format: date-time */
-      createdAt: string;
-    };
-    TransactionWithPostings: {
-      /** Format: uuid */
-      id: string;
-      /** Format: uuid */
-      orgId: string;
-      /** Format: date */
-      occurredOn: string;
-      description: string;
-      notes: string | null;
-      /** @enum {string} */
-      source: 'manual' | 'import' | 'invoice_payment' | 'reversal';
-      paymentMethod: ('cash_register' | 'pos' | 'bank' | 'other') | null;
-      reversesId: string | null;
-      importBatchId: string | null;
-      /** Format: uuid */
-      createdBy: string;
-      /** Format: date-time */
-      createdAt: string;
-      postings: components['schemas']['Posting'][];
-    };
-    ImportBatch: {
-      /** Format: uuid */
-      id: string;
-      /** Format: uuid */
-      orgId: string;
-      /** Format: uuid */
-      accountId: string;
-      /** @enum {string} */
-      bankFormat: 'tbc-csv' | 'tbc-xlsx' | 'bog-csv' | 'bog-xlsx' | 'generic-csv';
-      fileKey: string | null;
-      fileSha256: string;
-      fileName: string;
-      /** @enum {string} */
-      status: 'uploaded' | 'parsing' | 'preview' | 'committing' | 'committed' | 'failed';
-      stats: {
-        total?: number;
-        new?: number;
-        duplicate?: number;
-        skipped?: number;
-        committed?: number;
-        warnings?: number;
-      };
-      warnings: components['schemas']['ParseWarning'][];
-      periodFrom: string | null;
-      periodTo: string | null;
-      error: {
-        [key: string]: unknown;
-      } | null;
-      /** Format: uuid */
-      createdBy: string;
-      /** Format: date-time */
-      createdAt: string;
-      /** Format: date-time */
-      updatedAt: string;
-    };
-    ImportRow: {
-      /** Format: uuid */
-      id: string;
-      /** Format: uuid */
-      batchId: string;
-      /** Format: uuid */
-      orgId: string;
-      rowIndex: number;
-      raw: {
-        [key: string]: unknown;
-      };
-      /** Format: date */
-      bookedOn: string;
-      /**
-       * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
-       * @example 125000
-       * @example -69085
-       */
-      amountMinor: string;
-      /**
-       * @example GEL
-       * @example USD
-       * @example EUR
-       * @example GBP
-       */
-      currency: string;
-      counterparty: string | null;
-      counterpartyAccount: string | null;
-      description: string;
-      bankReference: string | null;
-      documentNumber: string | null;
-      /** @enum {string} */
-      operationType: 'incoming_payment' | 'outgoing_payment' | 'fx_conversion' | 'fee' | 'other';
-      bankGelAmountMinor: string | null;
-      counterAmountMinor: string | null;
-      counterCurrency: string | null;
-      dedupeHash: string;
-      /** @enum {string} */
-      status: 'new' | 'duplicate' | 'skipped';
-      suggestedAccountId: string | null;
-      suggestedRuleId: string | null;
-      chosenAccountId: string | null;
-      transactionId: string | null;
-    };
-    CategorizationRule: {
-      /** Format: uuid */
-      id: string;
-      /** Format: uuid */
-      orgId: string;
-      name: string;
-      priority: number;
-      counterpartyContains: string | null;
-      descriptionContains: string | null;
-      direction: ('in' | 'out') | null;
-      currency: string | null;
-      amountMinMinor: string | null;
-      amountMaxMinor: string | null;
-      /** Format: uuid */
-      targetAccountId: string;
-      isActive: boolean;
-      /** Format: date-time */
-      createdAt: string;
-      /** Format: date-time */
-      updatedAt: string;
-    };
-    ColumnMapping: {
-      /** Format: uuid */
-      id: string;
-      /** Format: uuid */
-      orgId: string;
-      /** Format: uuid */
-      accountId: string;
-      mapping: components['schemas']['GenericCsvMapping'];
-      /** Format: date-time */
-      createdAt: string;
-    };
-    Client: {
-      /** Format: uuid */
-      id: string;
-      /** Format: uuid */
-      orgId: string;
-      name: string;
-      country: string;
-      email: string | null;
-      /**
-       * @example GEL
-       * @example USD
-       * @example EUR
-       * @example GBP
-       */
-      defaultCurrency: string;
-      archivedAt: string | null;
-      /** Format: date-time */
-      createdAt: string;
-    };
-    InvoiceLine: {
-      /** Format: uuid */
-      id: string;
-      /** Format: uuid */
-      invoiceId: string;
-      /** Format: uuid */
-      orgId: string;
-      position: number;
-      description: string;
-      quantity: string;
-      /**
-       * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
-       * @example 125000
-       * @example -69085
-       */
-      unitPriceMinor: string;
-    };
-    Invoice: {
-      /** Format: uuid */
-      id: string;
-      /** Format: uuid */
-      orgId: string;
-      /** Format: uuid */
-      clientId: string;
-      number: number | null;
-      issueDate: string | null;
-      dueDate: string | null;
-      /**
-       * @example GEL
-       * @example USD
-       * @example EUR
-       * @example GBP
-       */
-      currency: string;
-      /** @enum {string} */
-      status: 'draft' | 'issued' | 'paid' | 'void';
-      pdfKey: string | null;
-      notes: string | null;
-      /** Format: date-time */
-      createdAt: string;
-    };
-    InvoicePayment: {
-      /** Format: uuid */
-      invoiceId: string;
-      /** Format: uuid */
-      transactionId: string;
-      /** Format: uuid */
-      orgId: string;
-      /**
-       * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
-       * @example 125000
-       * @example -69085
-       */
-      amountMinor: string;
-      /** Format: date-time */
-      createdAt: string;
-    };
-    IncomeByPaymentMethod: {
-      /**
-       * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
-       * @example 125000
-       * @example -69085
-       */
-      cash_register: string;
-      /**
-       * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
-       * @example 125000
-       * @example -69085
-       */
-      pos: string;
-      /**
-       * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
-       * @example 125000
-       * @example -69085
-       */
-      bank: string;
-      /**
-       * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
-       * @example 125000
-       * @example -69085
-       */
-      other: string;
-    };
-    Declaration: {
-      /** Format: uuid */
-      id: string;
-      /** Format: uuid */
-      orgId: string;
-      /** @example 2026-09 */
-      period: string;
-      /** @enum {string} */
-      status: 'draft' | 'filed';
-      /**
-       * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
-       * @example 125000
-       * @example -69085
-       */
-      turnoverGelMinor: string;
-      /**
-       * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
-       * @example 125000
-       * @example -69085
-       */
-      ytdGelMinor: string;
-      rateBp: number;
-      byPaymentMethod: components['schemas']['IncomeByPaymentMethod'];
-      /**
-       * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
-       * @example 125000
-       * @example -69085
-       */
-      taxGelMinor: string;
-      rulesVersion: string;
-      snapshot: {
-        [key: string]: unknown;
-      } | null;
-      hasDrift: boolean;
-      /** Format: date-time */
-      computedAt: string;
-      filedAt: string | null;
-      filedBy: string | null;
-    };
-    AuditLogEntry: {
-      /** Format: uuid */
-      id: string;
-      /** Format: uuid */
-      orgId: string;
-      actorId: string | null;
-      action: string;
-      entity: string;
-      entityId: string | null;
-      before: {
-        [key: string]: unknown;
-      } | null;
-      after: {
-        [key: string]: unknown;
-      } | null;
-      requestId: string | null;
-      /** Format: date-time */
-      at: string;
-    };
-    OrgEvent:
-      | {
-          id: string;
-          /** Format: date-time */
-          at: string;
-          /** @constant */
-          type: 'import.progress';
-          data: {
             /** Format: uuid */
-            batchId: string;
-            /** @enum {string} */
-            phase: 'parse' | 'commit';
-            processed: number;
-            total: number | null;
-          };
-        }
-      | {
-          id: string;
-          /** Format: date-time */
-          at: string;
-          /** @constant */
-          type: 'import.completed';
-          data: {
+            orgId: string;
+            position: number;
+            description: string;
+            quantity: string;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            unitPriceMinor: string;
+        };
+        Invoice: {
             /** Format: uuid */
-            batchId: string;
+            id: string;
+            /** Format: uuid */
+            orgId: string;
+            /** Format: uuid */
+            clientId: string;
+            number: number | null;
+            issueDate: string | null;
+            dueDate: string | null;
+            /**
+             * @example GEL
+             * @example USD
+             * @example EUR
+             * @example GBP
+             */
+            currency: string;
             /** @enum {string} */
-            status: 'uploaded' | 'parsing' | 'preview' | 'committing' | 'committed' | 'failed';
-            stats: {
-              total?: number;
-              new?: number;
-              duplicate?: number;
-              skipped?: number;
-              committed?: number;
-              warnings?: number;
+            status: "draft" | "issued" | "paid" | "void";
+            pdfKey: string | null;
+            notes: string | null;
+            /** Format: date-time */
+            createdAt: string;
+        };
+        InvoicePayment: {
+            /** Format: uuid */
+            invoiceId: string;
+            /** Format: uuid */
+            transactionId: string;
+            /** Format: uuid */
+            orgId: string;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            amountMinor: string;
+            /** Format: date-time */
+            createdAt: string;
+        };
+        IncomeByPaymentMethod: {
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            cash_register: string;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            pos: string;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            bank: string;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            other: string;
+        };
+        AuditLogEntry: {
+            /** Format: uuid */
+            id: string;
+            /** Format: uuid */
+            orgId: string;
+            actorId: string | null;
+            action: string;
+            entity: string;
+            entityId: string | null;
+            before: {
+                [key: string]: unknown;
+            } | null;
+            after: {
+                [key: string]: unknown;
+            } | null;
+            requestId: string | null;
+            /** Format: date-time */
+            at: string;
+        };
+        OrgEvent: {
+            id: string;
+            /** Format: date-time */
+            at: string;
+            /** @constant */
+            type: "import.progress";
+            data: {
+                /** Format: uuid */
+                batchId: string;
+                /** @enum {string} */
+                phase: "parse" | "commit";
+                processed: number;
+                total: number | null;
             };
-          };
-        }
-      | {
-          id: string;
-          /** Format: date-time */
-          at: string;
-          /** @constant */
-          type: 'rates.backfilled';
-          data: {
-            currencies: string[];
+        } | {
+            id: string;
+            /** Format: date-time */
+            at: string;
+            /** @constant */
+            type: "import.completed";
+            data: {
+                /** Format: uuid */
+                batchId: string;
+                /** @enum {string} */
+                status: "uploaded" | "parsing" | "preview" | "committing" | "committed" | "failed";
+                stats: {
+                    total?: number;
+                    new?: number;
+                    duplicate?: number;
+                    skipped?: number;
+                    committed?: number;
+                    warnings?: number;
+                };
+            };
+        } | {
+            id: string;
+            /** Format: date-time */
+            at: string;
+            /** @constant */
+            type: "rates.backfilled";
+            data: {
+                currencies: string[];
+                /** Format: date */
+                from: string;
+                /** Format: date */
+                to: string;
+            };
+        } | {
+            id: string;
+            /** Format: date-time */
+            at: string;
+            /** @constant */
+            type: "invoice.pdf_ready";
+            data: {
+                /** Format: uuid */
+                invoiceId: string;
+            };
+        };
+        HealthResponse: {
+            /** @enum {string} */
+            status: "ok" | "degraded";
+            version: string;
+            /** Format: date-time */
+            time: string;
+            checks: {
+                /** @enum {string} */
+                database: "ok" | "fail";
+            };
+        };
+        /** @enum {string} */
+        AnnualLimitStatus: "ok" | "warn80" | "warn95" | "exceeded" | "exceeded_second_year";
+        /** @enum {string} */
+        SbsMonthStatus: "inactive" | "partial" | "active";
+        DeclarationFigures: {
+            /** @example 2026-09 */
+            period: string;
+            rulesVersion: string;
+            sbsStatus: components["schemas"]["SbsMonthStatus"];
+            filingRequired: boolean;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            incomeGelMinor: string;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            excludedGelMinor: string;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            ytdGelMinor: string;
+            byPaymentMethod: components["schemas"]["IncomeByPaymentMethod"];
+            rateBp: number;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            taxGelMinor: string;
+            limitCrossedThisMonth: boolean;
+            zeroReturn: boolean;
+            negativeIncome: boolean;
+            /** Format: date */
+            deadline: string;
+        };
+        /** @enum {string} */
+        ParseWarningCode: "unreadable_file" | "encoding_fallback" | "unterminated_quote" | "header_not_found" | "missing_column" | "mapping_required" | "unparseable_row" | "ambiguous_debit_credit" | "amount_mismatch" | "amount_rounded" | "unknown_operation_type" | "unexpected_direction" | "currency_mismatch" | "invalid_currency" | "reconciliation_mismatch" | "reconciliation_unavailable" | "running_balance_mismatch" | "turnover_mismatch" | "no_rows" | "date_outside_period" | "internal_error";
+        StatementDetection: {
+            /** @enum {string} */
+            parserId: "tbc-csv" | "tbc-xlsx" | "bog-csv" | "bog-xlsx" | "generic-csv";
+            confidence: number;
+        };
+        ListRatesResponse: {
+            items: components["schemas"]["ExchangeRate"][];
+            nextCursor: string | null;
+        };
+        BackfillRatesRequest: {
             /** Format: date */
             from: string;
             /** Format: date */
             to: string;
-          };
-        }
-      | {
-          id: string;
-          /** Format: date-time */
-          at: string;
-          /** @constant */
-          type: 'invoice.pdf_ready';
-          data: {
+            currencies: string[];
+        };
+        BackfillRatesResponse: {
+            jobId: string;
+            /** @constant */
+            status: "queued";
+        };
+        SessionUser: {
             /** Format: uuid */
-            invoiceId: string;
-          };
+            id: string;
+            /** Format: email */
+            email: string;
+            name: string;
+            /** Format: date-time */
+            createdAt: string;
+            emailVerified: boolean;
         };
-    HealthResponse: {
-      /** @enum {string} */
-      status: 'ok' | 'degraded';
-      version: string;
-      /** Format: date-time */
-      time: string;
-      checks: {
-        /** @enum {string} */
-        database: 'ok' | 'fail';
-      };
-    };
-    /** @enum {string} */
-    AnnualLimitStatus: 'ok' | 'warn80' | 'warn95' | 'exceeded' | 'exceeded_second_year';
-    /** @enum {string} */
-    SbsMonthStatus: 'inactive' | 'partial' | 'active';
-    DeclarationFigures: {
-      /** @example 2026-09 */
-      period: string;
-      rulesVersion: string;
-      sbsStatus: components['schemas']['SbsMonthStatus'];
-      filingRequired: boolean;
-      /**
-       * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
-       * @example 125000
-       * @example -69085
-       */
-      incomeGelMinor: string;
-      /**
-       * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
-       * @example 125000
-       * @example -69085
-       */
-      excludedGelMinor: string;
-      /**
-       * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
-       * @example 125000
-       * @example -69085
-       */
-      ytdGelMinor: string;
-      byPaymentMethod: components['schemas']['IncomeByPaymentMethod'];
-      rateBp: number;
-      /**
-       * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
-       * @example 125000
-       * @example -69085
-       */
-      taxGelMinor: string;
-      limitCrossedThisMonth: boolean;
-      zeroReturn: boolean;
-      negativeIncome: boolean;
-      /** Format: date */
-      deadline: string;
-    };
-    /** @enum {string} */
-    ParseWarningCode:
-      | 'unreadable_file'
-      | 'encoding_fallback'
-      | 'unterminated_quote'
-      | 'header_not_found'
-      | 'missing_column'
-      | 'mapping_required'
-      | 'unparseable_row'
-      | 'ambiguous_debit_credit'
-      | 'amount_mismatch'
-      | 'amount_rounded'
-      | 'unknown_operation_type'
-      | 'unexpected_direction'
-      | 'currency_mismatch'
-      | 'invalid_currency'
-      | 'reconciliation_mismatch'
-      | 'reconciliation_unavailable'
-      | 'running_balance_mismatch'
-      | 'turnover_mismatch'
-      | 'no_rows'
-      | 'date_outside_period'
-      | 'internal_error';
-    StatementDetection: {
-      /** @enum {string} */
-      parserId: 'tbc-csv' | 'tbc-xlsx' | 'bog-csv' | 'bog-xlsx' | 'generic-csv';
-      confidence: number;
-    };
-    ListRatesResponse: {
-      items: components['schemas']['ExchangeRate'][];
-      nextCursor: string | null;
-    };
-    BackfillRatesRequest: {
-      /** Format: date */
-      from: string;
-      /** Format: date */
-      to: string;
-      currencies: string[];
-    };
-    BackfillRatesResponse: {
-      jobId: string;
-      /** @constant */
-      status: 'queued';
-    };
-    SessionUser: {
-      /** Format: uuid */
-      id: string;
-      /** Format: email */
-      email: string;
-      name: string;
-      /** Format: date-time */
-      createdAt: string;
-      emailVerified: boolean;
-    };
-    MembershipSummary: {
-      /** Format: uuid */
-      orgId: string;
-      orgName: string;
-      /** @enum {string} */
-      role: 'owner' | 'accountant' | 'viewer';
-    };
-    MeResponse: {
-      user: components['schemas']['SessionUser'];
-      memberships: components['schemas']['MembershipSummary'][];
-    };
-    CreateOrganizationRequest: {
-      name: string;
-      taxId?: string | null;
-      sbsEffectiveFrom?: string | null;
-    };
-    UpdateOrganizationRequest: {
-      name?: string;
-      taxId?: string | null;
-      sbsEffectiveFrom?: string | null;
-    };
-    OrganizationWithRole: {
-      /** Format: uuid */
-      id: string;
-      name: string;
-      taxId: string | null;
-      /** @constant */
-      baseCurrency: 'GEL';
-      sbsEffectiveFrom: string | null;
-      /** @enum {string} */
-      accountingMethod: 'cash';
-      /** Format: date-time */
-      createdAt: string;
-      /** @enum {string} */
-      role: 'owner' | 'accountant' | 'viewer';
-    };
-    OrganizationList: {
-      items: components['schemas']['OrganizationWithRole'][];
-      nextCursor: string | null;
-    };
-    Member: {
-      /** Format: uuid */
-      userId: string;
-      /** Format: email */
-      email: string;
-      name: string;
-      /** @enum {string} */
-      role: 'owner' | 'accountant' | 'viewer';
-      /** Format: date-time */
-      createdAt: string;
-    };
-    MemberList: {
-      items: components['schemas']['Member'][];
-      nextCursor: string | null;
-    };
-    CreateInvitationRequest: {
-      /** Format: email */
-      email: string;
-      /** @enum {string} */
-      role: 'owner' | 'accountant' | 'viewer';
-    };
-    InvitationList: {
-      items: components['schemas']['Invitation'][];
-      nextCursor: string | null;
-    };
-    InvitationTokenRequest: {
-      token: string;
-    };
-    InvitationPreview: {
-      orgName: string;
-      /** Format: email */
-      email: string;
-      /** @enum {string} */
-      role: 'owner' | 'accountant' | 'viewer';
-      /** @enum {string} */
-      status: 'pending' | 'accepted' | 'revoked' | 'expired';
-      /** Format: date-time */
-      expiresAt: string;
-    };
-    AcceptInvitationResponse: {
-      /** Format: uuid */
-      orgId: string;
-      orgName: string;
-      /** @enum {string} */
-      role: 'owner' | 'accountant' | 'viewer';
-    };
-    SignInBody: {
-      /** Format: email */
-      email: string;
-      password: string;
-      rememberMe?: boolean;
-    };
-    SignUpBody: {
-      name: string;
-      /** Format: email */
-      email: string;
-      password: string;
-      /** Format: starts_with */
-      callbackURL?: string;
-    };
-    MagicLinkBody: {
-      /** Format: email */
-      email: string;
-      name?: string;
-      /** Format: starts_with */
-      callbackURL?: string;
-    };
-    AccountList: {
-      items: components['schemas']['Account'][];
-    };
-    UploadStatementRequest: {
-      /**
-       * Format: binary
-       * @description Bank statement, XLSX or CSV, at most 5 MB. The file itself is not stored.
-       */
-      file: string;
-      /**
-       * Format: uuid
-       * @description Book into this bank account. Default: match on the statement IBAN + currency, or create one.
-       */
-      accountId?: string;
-    };
-    /**
-     * @description `matched`: IBAN + currency found. `claimed`: an unused default account of that currency got the IBAN. `created`: a new account. `chosen`: the `accountId` sent with the upload.
-     * @enum {string}
-     */
-    AccountMatchOutcome: 'matched' | 'claimed' | 'created' | 'chosen';
-    ImportBatchDetail: {
-      batch: components['schemas']['ImportBatch'];
-      account: components['schemas']['Account'];
-    };
-    UploadStatementResponse: {
-      batch: components['schemas']['ImportBatch'];
-      account: components['schemas']['Account'];
-      accountMatch: components['schemas']['AccountMatchOutcome'];
-      detection: components['schemas']['StatementDetection'];
-    };
-    ImportBatchList: {
-      items: components['schemas']['ImportBatch'][];
-      nextCursor: string | null;
-    };
-    ImportRowView: {
-      /** Format: uuid */
-      id: string;
-      /** Format: uuid */
-      batchId: string;
-      /** Format: uuid */
-      orgId: string;
-      rowIndex: number;
-      /** Format: date */
-      bookedOn: string;
-      /**
-       * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
-       * @example 125000
-       * @example -69085
-       */
-      amountMinor: string;
-      /**
-       * @example GEL
-       * @example USD
-       * @example EUR
-       * @example GBP
-       */
-      currency: string;
-      counterparty: string | null;
-      counterpartyAccount: string | null;
-      description: string;
-      bankReference: string | null;
-      documentNumber: string | null;
-      /** @enum {string} */
-      operationType: 'incoming_payment' | 'outgoing_payment' | 'fx_conversion' | 'fee' | 'other';
-      bankGelAmountMinor: string | null;
-      counterAmountMinor: string | null;
-      counterCurrency: string | null;
-      dedupeHash: string;
-      /** @enum {string} */
-      status: 'new' | 'duplicate' | 'skipped';
-      suggestedAccountId: string | null;
-      suggestedRuleId: string | null;
-      chosenAccountId: string | null;
-      transactionId: string | null;
-      accountId: string | null;
-    };
-    ImportRowList: {
-      items: components['schemas']['ImportRowView'][];
-      nextCursor: string | null;
-    };
-    UpdateImportRowRequest: {
-      accountId?: string | null;
-      skip?: boolean;
-    };
-    /**
-     * @description `bank_gel_mismatch`: the bank's GEL equivalent of the line differs from ours (NBG rate of the booked date) by more than 1 tetri. Ours is booked; check the rate the bank used.
-     * @enum {string}
-     */
-    CommitWarningCode: 'bank_gel_mismatch';
-    CommitWarning: {
-      code: components['schemas']['CommitWarningCode'];
-      /** Format: uuid */
-      rowId: string;
-      /** Format: uuid */
-      transactionId: string;
-      /** Format: date */
-      bookedOn: string;
-      /**
-       * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
-       * @example 125000
-       * @example -69085
-       */
-      amountMinor: string;
-      /**
-       * @example GEL
-       * @example USD
-       * @example EUR
-       * @example GBP
-       */
-      currency: string;
-      /**
-       * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
-       * @example 125000
-       * @example -69085
-       */
-      gelAmountMinor: string;
-      /**
-       * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
-       * @example 125000
-       * @example -69085
-       */
-      bankGelAmountMinor: string;
-      message: string;
-    };
-    CommitImportResponse: {
-      batch: components['schemas']['ImportBatch'];
-      transactionIds: string[];
-      warnings: components['schemas']['CommitWarning'][];
-    };
-    PostingRate: {
-      /**
-       * @example 2.7123
-       * @example 3.6924
-       */
-      rate: string;
-      quantity: number;
-      /** Format: date */
-      validFrom: string;
-    };
-    TransactionPosting: {
-      /** Format: uuid */
-      id: string;
-      /** Format: uuid */
-      transactionId: string;
-      /** Format: uuid */
-      orgId: string;
-      /** Format: uuid */
-      accountId: string;
-      /**
-       * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
-       * @example 125000
-       * @example -69085
-       */
-      amountMinor: string;
-      /**
-       * @example GEL
-       * @example USD
-       * @example EUR
-       * @example GBP
-       */
-      currency: string;
-      /**
-       * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
-       * @example 125000
-       * @example -69085
-       */
-      gelAmountMinor: string;
-      rateId: string | null;
-      account: {
-        name: string;
-        /** @enum {string} */
-        kind: 'asset' | 'liability' | 'equity' | 'income' | 'expense';
-        systemKey: ('fx_clearing' | 'tax_payable' | 'owner_equity') | null;
-        incomeClass: ('sbs' | 'non_sbs') | null;
-      };
-      rate: components['schemas']['PostingRate'] | null;
-    };
-    TransactionView: {
-      /** Format: uuid */
-      id: string;
-      /** Format: uuid */
-      orgId: string;
-      /** Format: date */
-      occurredOn: string;
-      description: string;
-      notes: string | null;
-      /** @enum {string} */
-      source: 'manual' | 'import' | 'invoice_payment' | 'reversal';
-      paymentMethod: ('cash_register' | 'pos' | 'bank' | 'other') | null;
-      reversesId: string | null;
-      importBatchId: string | null;
-      /** Format: uuid */
-      createdBy: string;
-      /** Format: date-time */
-      createdAt: string;
-      postings: components['schemas']['TransactionPosting'][];
-      reversedById: string | null;
-    };
-    TransactionList: {
-      items: components['schemas']['TransactionView'][];
-      nextCursor: string | null;
-    };
-    ReverseTransactionRequest: {
-      /** Format: date */
-      occurredOn?: string;
-      description?: string;
-    };
-    DeclarationYearResponse: {
-      year: number;
-      months: components['schemas']['DeclarationFigures'][];
-      /**
-       * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
-       * @example 125000
-       * @example -69085
-       */
-      totalIncomeGelMinor: string;
-      /**
-       * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
-       * @example 125000
-       * @example -69085
-       */
-      totalTaxGelMinor: string;
-      crossingPeriod: string | null;
-      limitExceeded: boolean;
-      limitStatus: components['schemas']['AnnualLimitStatus'];
-      sbsEffectiveFrom: string | null;
-      /**
-       * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
-       * @example 125000
-       * @example -69085
-       */
-      annualLimitGelMinor: string;
-      annualLimitUsedBp: number;
-      latestYearWithData: number | null;
-      previousYearLimitExceeded: boolean;
-    };
-    DashboardMonth: {
-      /** @example 2026-09 */
-      period: string;
-      /**
-       * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
-       * @example 125000
-       * @example -69085
-       */
-      incomeGelMinor: string;
-      /**
-       * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
-       * @example 125000
-       * @example -69085
-       */
-      taxGelMinor: string;
-      rateBp: number;
-    };
-    DashboardResponse: {
-      year: number;
-      sbsEffectiveFrom: string | null;
-      /**
-       * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
-       * @example 125000
-       * @example -69085
-       */
-      annualLimitGelMinor: string;
-      annualLimitUsedBp: number;
-      latestYearWithData: number | null;
-      /**
-       * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
-       * @example 125000
-       * @example -69085
-       */
-      ytdIncomeGelMinor: string;
-      limitStatus: components['schemas']['AnnualLimitStatus'];
-      latestMonth: components['schemas']['DeclarationFigures'] | null;
-      nextDeadline: {
-        /** @example 2026-09 */
-        period: string;
-        /** Format: date */
-        deadline: string;
-        /**
-         * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
-         * @example 125000
-         * @example -69085
-         */
-        taxGelMinor: string;
-        zeroReturn: boolean;
-      } | null;
-      months: components['schemas']['DashboardMonth'][];
-    };
-    CreateAccountRequest: {
-      name: string;
-      /** @enum {string} */
-      kind: 'asset' | 'liability' | 'equity' | 'income' | 'expense';
-      currency?: string | null;
-      incomeClass?: ('sbs' | 'non_sbs') | null;
-      bank?: ('tbc' | 'bog' | 'other') | null;
-      iban?: string | null;
-    };
-    UpdateAccountRequest: {
-      name?: string;
-      archived?: boolean;
-    };
-    CurrencyBalance: {
-      /**
-       * @example GEL
-       * @example USD
-       * @example EUR
-       * @example GBP
-       */
-      currency: string;
-      /**
-       * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
-       * @example 125000
-       * @example -69085
-       */
-      amountMinor: string;
-    };
-    AccountBalance: {
-      /** Format: uuid */
-      accountId: string;
-      balances: components['schemas']['CurrencyBalance'][];
-      gelValue: {
-        /**
-         * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
-         * @example 125000
-         * @example -69085
-         */
-        amountMinor: string;
-        rate: components['schemas']['PostingRate'] | null;
-      } | null;
-    };
-    AccountBalanceList: {
-      items: components['schemas']['AccountBalance'][];
-      /** Format: date */
-      asOf: string;
-      /**
-       * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
-       * @example 125000
-       * @example -69085
-       */
-      bankTotalGelMinor: string;
-      bankAccountsWithoutRate: string[];
-    };
-    /** @enum {string} */
-    ManualTransactionType:
-      | 'income'
-      | 'expense'
-      | 'owner_draw'
-      | 'owner_contribution'
-      | 'transfer'
-      | 'fx_conversion'
-      | 'tax_payment'
-      | 'postings';
-    IncomeReceiptRequest: {
-      /** @constant */
-      type: 'income';
-      /** Format: date */
-      occurredOn: string;
-      description: string;
-      /** Format: uuid */
-      bankAccountId: string;
-      /** Format: uuid */
-      incomeAccountId: string;
-      /**
-       * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
-       * @example 125000
-       * @example -69085
-       */
-      amountMinor: string;
-      /**
-       * @default bank
-       * @enum {string}
-       */
-      paymentMethod: 'cash_register' | 'pos' | 'bank' | 'other';
-    };
-    ExpenseRequest: {
-      /** @constant */
-      type: 'expense';
-      /** Format: date */
-      occurredOn: string;
-      description: string;
-      /** Format: uuid */
-      bankAccountId: string;
-      /** Format: uuid */
-      expenseAccountId: string;
-      /**
-       * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
-       * @example 125000
-       * @example -69085
-       */
-      amountMinor: string;
-    };
-    OwnerDrawRequest: {
-      /** @constant */
-      type: 'owner_draw';
-      /** Format: date */
-      occurredOn: string;
-      description: string;
-      /** Format: uuid */
-      bankAccountId: string;
-      /**
-       * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
-       * @example 125000
-       * @example -69085
-       */
-      amountMinor: string;
-    };
-    OwnerContributionRequest: {
-      /** @constant */
-      type: 'owner_contribution';
-      /** Format: date */
-      occurredOn: string;
-      description: string;
-      /** Format: uuid */
-      bankAccountId: string;
-      /**
-       * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
-       * @example 125000
-       * @example -69085
-       */
-      amountMinor: string;
-    };
-    TransferRequest: {
-      /** @constant */
-      type: 'transfer';
-      /** Format: date */
-      occurredOn: string;
-      description: string;
-      /** Format: uuid */
-      fromAccountId: string;
-      /** Format: uuid */
-      toAccountId: string;
-      /**
-       * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
-       * @example 125000
-       * @example -69085
-       */
-      amountMinor: string;
-    };
-    FxConversionRequest: {
-      /** @constant */
-      type: 'fx_conversion';
-      /** Format: date */
-      occurredOn: string;
-      description: string;
-      /** Format: uuid */
-      fromAccountId: string;
-      /** Format: uuid */
-      toAccountId: string;
-      /**
-       * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
-       * @example 125000
-       * @example -69085
-       */
-      soldAmountMinor: string;
-      /**
-       * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
-       * @example 125000
-       * @example -69085
-       */
-      boughtAmountMinor: string;
-    };
-    TaxPaymentRequest: {
-      /** @constant */
-      type: 'tax_payment';
-      /** Format: date */
-      occurredOn: string;
-      description: string;
-      /** Format: uuid */
-      bankAccountId: string;
-      /**
-       * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
-       * @example 125000
-       * @example -69085
-       */
-      amountMinor: string;
-    };
-    RawPostingRequest: {
-      /** Format: uuid */
-      accountId: string;
-      /**
-       * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
-       * @example 125000
-       * @example -69085
-       */
-      amountMinor: string;
-      /**
-       * @example GEL
-       * @example USD
-       * @example EUR
-       * @example GBP
-       */
-      currency: string;
-    };
-    RawPostingsRequest: {
-      /** @constant */
-      type: 'postings';
-      /** Format: date */
-      occurredOn: string;
-      description: string;
-      /** @default null */
-      paymentMethod: ('cash_register' | 'pos' | 'bank' | 'other') | null;
-      postings: components['schemas']['RawPostingRequest'][];
-    };
-    CreateTransactionRequest:
-      | components['schemas']['IncomeReceiptRequest']
-      | components['schemas']['ExpenseRequest']
-      | components['schemas']['OwnerDrawRequest']
-      | components['schemas']['OwnerContributionRequest']
-      | components['schemas']['TransferRequest']
-      | components['schemas']['FxConversionRequest']
-      | components['schemas']['TaxPaymentRequest']
-      | components['schemas']['RawPostingsRequest'];
-    TransactionPreview: {
-      /** Format: date */
-      occurredOn: string;
-      description: string;
-      paymentMethod: ('cash_register' | 'pos' | 'bank' | 'other') | null;
-      postings: {
-        /** Format: uuid */
-        accountId: string;
-        /**
-         * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
-         * @example 125000
-         * @example -69085
-         */
-        amountMinor: string;
-        /**
-         * @example GEL
-         * @example USD
-         * @example EUR
-         * @example GBP
-         */
-        currency: string;
-        /**
-         * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
-         * @example 125000
-         * @example -69085
-         */
-        gelAmountMinor: string;
-        rateId: string | null;
-        account: {
-          name: string;
-          /** @enum {string} */
-          kind: 'asset' | 'liability' | 'equity' | 'income' | 'expense';
-          systemKey: ('fx_clearing' | 'tax_payable' | 'owner_equity') | null;
-          incomeClass: ('sbs' | 'non_sbs') | null;
+        MembershipSummary: {
+            /** Format: uuid */
+            orgId: string;
+            orgName: string;
+            /** @enum {string} */
+            role: "owner" | "accountant" | "viewer";
         };
-        rate: components['schemas']['PostingRate'] | null;
-      }[];
+        MeResponse: {
+            user: components["schemas"]["SessionUser"];
+            memberships: components["schemas"]["MembershipSummary"][];
+        };
+        CreateOrganizationRequest: {
+            name: string;
+            taxId?: string | null;
+            sbsEffectiveFrom?: string | null;
+        };
+        UpdateOrganizationRequest: {
+            name?: string;
+            taxId?: string | null;
+            sbsEffectiveFrom?: string | null;
+        };
+        OrganizationWithRole: {
+            /** Format: uuid */
+            id: string;
+            name: string;
+            taxId: string | null;
+            /** @constant */
+            baseCurrency: "GEL";
+            sbsEffectiveFrom: string | null;
+            /** @enum {string} */
+            accountingMethod: "cash";
+            /** Format: date-time */
+            createdAt: string;
+            /** @enum {string} */
+            role: "owner" | "accountant" | "viewer";
+        };
+        OrganizationList: {
+            items: components["schemas"]["OrganizationWithRole"][];
+            nextCursor: string | null;
+        };
+        Member: {
+            /** Format: uuid */
+            userId: string;
+            /** Format: email */
+            email: string;
+            name: string;
+            /** @enum {string} */
+            role: "owner" | "accountant" | "viewer";
+            /** Format: date-time */
+            createdAt: string;
+        };
+        MemberList: {
+            items: components["schemas"]["Member"][];
+            nextCursor: string | null;
+        };
+        CreateInvitationRequest: {
+            /** Format: email */
+            email: string;
+            /** @enum {string} */
+            role: "owner" | "accountant" | "viewer";
+        };
+        InvitationList: {
+            items: components["schemas"]["Invitation"][];
+            nextCursor: string | null;
+        };
+        InvitationTokenRequest: {
+            token: string;
+        };
+        InvitationPreview: {
+            orgName: string;
+            /** Format: email */
+            email: string;
+            /** @enum {string} */
+            role: "owner" | "accountant" | "viewer";
+            /** @enum {string} */
+            status: "pending" | "accepted" | "revoked" | "expired";
+            /** Format: date-time */
+            expiresAt: string;
+        };
+        AcceptInvitationResponse: {
+            /** Format: uuid */
+            orgId: string;
+            orgName: string;
+            /** @enum {string} */
+            role: "owner" | "accountant" | "viewer";
+        };
+        SignInBody: {
+            /** Format: email */
+            email: string;
+            password: string;
+            rememberMe?: boolean;
+        };
+        SignUpBody: {
+            name: string;
+            /** Format: email */
+            email: string;
+            password: string;
+            /** Format: starts_with */
+            callbackURL?: string;
+        };
+        MagicLinkBody: {
+            /** Format: email */
+            email: string;
+            name?: string;
+            /** Format: starts_with */
+            callbackURL?: string;
+        };
+        AccountList: {
+            items: components["schemas"]["Account"][];
+        };
+        UploadStatementRequest: {
+            /**
+             * Format: binary
+             * @description Bank statement, XLSX or CSV, at most 5 MB. The file itself is not stored.
+             */
+            file: string;
+            /**
+             * Format: uuid
+             * @description Book into this bank account. Default: match on the statement IBAN + currency, or create one.
+             */
+            accountId?: string;
+        };
+        /**
+         * @description `matched`: IBAN + currency found. `claimed`: an unused default account of that currency got the IBAN. `created`: a new account. `chosen`: the `accountId` sent with the upload.
+         * @enum {string}
+         */
+        AccountMatchOutcome: "matched" | "claimed" | "created" | "chosen";
+        ImportBatchDetail: {
+            batch: components["schemas"]["ImportBatch"];
+            account: components["schemas"]["Account"];
+        };
+        UploadStatementResponse: {
+            batch: components["schemas"]["ImportBatch"];
+            account: components["schemas"]["Account"];
+            accountMatch: components["schemas"]["AccountMatchOutcome"];
+            detection: components["schemas"]["StatementDetection"];
+        };
+        ImportBatchList: {
+            items: components["schemas"]["ImportBatch"][];
+            nextCursor: string | null;
+        };
+        ImportRowView: {
+            /** Format: uuid */
+            id: string;
+            /** Format: uuid */
+            batchId: string;
+            /** Format: uuid */
+            orgId: string;
+            rowIndex: number;
+            /** Format: date */
+            bookedOn: string;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            amountMinor: string;
+            /**
+             * @example GEL
+             * @example USD
+             * @example EUR
+             * @example GBP
+             */
+            currency: string;
+            counterparty: string | null;
+            counterpartyAccount: string | null;
+            description: string;
+            bankReference: string | null;
+            documentNumber: string | null;
+            /** @enum {string} */
+            operationType: "incoming_payment" | "outgoing_payment" | "fx_conversion" | "fee" | "other";
+            bankGelAmountMinor: string | null;
+            counterAmountMinor: string | null;
+            counterCurrency: string | null;
+            dedupeHash: string;
+            /** @enum {string} */
+            status: "new" | "duplicate" | "skipped";
+            suggestedAccountId: string | null;
+            suggestedRuleId: string | null;
+            chosenAccountId: string | null;
+            transactionId: string | null;
+            accountId: string | null;
+        };
+        ImportRowList: {
+            items: components["schemas"]["ImportRowView"][];
+            nextCursor: string | null;
+        };
+        UpdateImportRowRequest: {
+            accountId?: string | null;
+            skip?: boolean;
+        };
+        /**
+         * @description `bank_gel_mismatch`: the bank's GEL equivalent of the line differs from ours (NBG rate of the booked date) by more than 1 tetri. Ours is booked; check the rate the bank used.
+         * @enum {string}
+         */
+        CommitWarningCode: "bank_gel_mismatch";
+        CommitWarning: {
+            code: components["schemas"]["CommitWarningCode"];
+            /** Format: uuid */
+            rowId: string;
+            /** Format: uuid */
+            transactionId: string;
+            /** Format: date */
+            bookedOn: string;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            amountMinor: string;
+            /**
+             * @example GEL
+             * @example USD
+             * @example EUR
+             * @example GBP
+             */
+            currency: string;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            gelAmountMinor: string;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            bankGelAmountMinor: string;
+            message: string;
+        };
+        CommitImportResponse: {
+            batch: components["schemas"]["ImportBatch"];
+            transactionIds: string[];
+            warnings: components["schemas"]["CommitWarning"][];
+        };
+        PostingRate: {
+            /**
+             * @example 2.7123
+             * @example 3.6924
+             */
+            rate: string;
+            quantity: number;
+            /** Format: date */
+            validFrom: string;
+        };
+        TransactionPosting: {
+            /** Format: uuid */
+            id: string;
+            /** Format: uuid */
+            transactionId: string;
+            /** Format: uuid */
+            orgId: string;
+            /** Format: uuid */
+            accountId: string;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            amountMinor: string;
+            /**
+             * @example GEL
+             * @example USD
+             * @example EUR
+             * @example GBP
+             */
+            currency: string;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            gelAmountMinor: string;
+            rateId: string | null;
+            account: {
+                name: string;
+                /** @enum {string} */
+                kind: "asset" | "liability" | "equity" | "income" | "expense";
+                systemKey: ("fx_clearing" | "tax_payable" | "owner_equity") | null;
+                incomeClass: ("sbs" | "non_sbs") | null;
+            };
+            rate: components["schemas"]["PostingRate"] | null;
+        };
+        TransactionView: {
+            /** Format: uuid */
+            id: string;
+            /** Format: uuid */
+            orgId: string;
+            /** Format: date */
+            occurredOn: string;
+            description: string;
+            notes: string | null;
+            /** @enum {string} */
+            source: "manual" | "import" | "invoice_payment" | "reversal";
+            paymentMethod: ("cash_register" | "pos" | "bank" | "other") | null;
+            reversesId: string | null;
+            importBatchId: string | null;
+            /** Format: uuid */
+            createdBy: string;
+            /** Format: date-time */
+            createdAt: string;
+            postings: components["schemas"]["TransactionPosting"][];
+            reversedById: string | null;
+        };
+        TransactionList: {
+            items: components["schemas"]["TransactionView"][];
+            nextCursor: string | null;
+        };
+        ReverseTransactionRequest: {
+            /** Format: date */
+            occurredOn?: string;
+            description?: string;
+        };
+        DeclarationYearResponse: {
+            year: number;
+            months: components["schemas"]["DeclarationFigures"][];
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            totalIncomeGelMinor: string;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            totalTaxGelMinor: string;
+            crossingPeriod: string | null;
+            limitExceeded: boolean;
+            limitStatus: components["schemas"]["AnnualLimitStatus"];
+            sbsEffectiveFrom: string | null;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            annualLimitGelMinor: string;
+            annualLimitUsedBp: number;
+            latestYearWithData: number | null;
+            previousYearLimitExceeded: boolean;
+        };
+        DashboardMonth: {
+            /** @example 2026-09 */
+            period: string;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            incomeGelMinor: string;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            taxGelMinor: string;
+            rateBp: number;
+        };
+        DashboardResponse: {
+            year: number;
+            sbsEffectiveFrom: string | null;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            annualLimitGelMinor: string;
+            annualLimitUsedBp: number;
+            latestYearWithData: number | null;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            ytdIncomeGelMinor: string;
+            limitStatus: components["schemas"]["AnnualLimitStatus"];
+            latestMonth: components["schemas"]["DeclarationFigures"] | null;
+            nextDeadline: {
+                /** @example 2026-09 */
+                period: string;
+                /** Format: date */
+                deadline: string;
+                /**
+                 * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+                 * @example 125000
+                 * @example -69085
+                 */
+                taxGelMinor: string;
+                zeroReturn: boolean;
+            } | null;
+            months: components["schemas"]["DashboardMonth"][];
+        };
+        CreateAccountRequest: {
+            name: string;
+            /** @enum {string} */
+            kind: "asset" | "liability" | "equity" | "income" | "expense";
+            currency?: string | null;
+            incomeClass?: ("sbs" | "non_sbs") | null;
+            bank?: ("tbc" | "bog" | "other") | null;
+            iban?: string | null;
+        };
+        UpdateAccountRequest: {
+            name?: string;
+            archived?: boolean;
+        };
+        CurrencyBalance: {
+            /**
+             * @example GEL
+             * @example USD
+             * @example EUR
+             * @example GBP
+             */
+            currency: string;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            amountMinor: string;
+        };
+        AccountBalance: {
+            /** Format: uuid */
+            accountId: string;
+            balances: components["schemas"]["CurrencyBalance"][];
+            gelValue: {
+                /**
+                 * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+                 * @example 125000
+                 * @example -69085
+                 */
+                amountMinor: string;
+                rate: components["schemas"]["PostingRate"] | null;
+            } | null;
+        };
+        AccountBalanceList: {
+            items: components["schemas"]["AccountBalance"][];
+            /** Format: date */
+            asOf: string;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            bankTotalGelMinor: string;
+            bankAccountsWithoutRate: string[];
+        };
+        /** @enum {string} */
+        ManualTransactionType: "income" | "expense" | "owner_draw" | "owner_contribution" | "transfer" | "fx_conversion" | "tax_payment" | "postings";
+        IncomeReceiptRequest: {
+            /** @constant */
+            type: "income";
+            /** Format: date */
+            occurredOn: string;
+            description: string;
+            /** Format: uuid */
+            bankAccountId: string;
+            /** Format: uuid */
+            incomeAccountId: string;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            amountMinor: string;
+            /**
+             * @default bank
+             * @enum {string}
+             */
+            paymentMethod: "cash_register" | "pos" | "bank" | "other";
+        };
+        ExpenseRequest: {
+            /** @constant */
+            type: "expense";
+            /** Format: date */
+            occurredOn: string;
+            description: string;
+            /** Format: uuid */
+            bankAccountId: string;
+            /** Format: uuid */
+            expenseAccountId: string;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            amountMinor: string;
+        };
+        OwnerDrawRequest: {
+            /** @constant */
+            type: "owner_draw";
+            /** Format: date */
+            occurredOn: string;
+            description: string;
+            /** Format: uuid */
+            bankAccountId: string;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            amountMinor: string;
+        };
+        OwnerContributionRequest: {
+            /** @constant */
+            type: "owner_contribution";
+            /** Format: date */
+            occurredOn: string;
+            description: string;
+            /** Format: uuid */
+            bankAccountId: string;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            amountMinor: string;
+        };
+        TransferRequest: {
+            /** @constant */
+            type: "transfer";
+            /** Format: date */
+            occurredOn: string;
+            description: string;
+            /** Format: uuid */
+            fromAccountId: string;
+            /** Format: uuid */
+            toAccountId: string;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            amountMinor: string;
+        };
+        FxConversionRequest: {
+            /** @constant */
+            type: "fx_conversion";
+            /** Format: date */
+            occurredOn: string;
+            description: string;
+            /** Format: uuid */
+            fromAccountId: string;
+            /** Format: uuid */
+            toAccountId: string;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            soldAmountMinor: string;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            boughtAmountMinor: string;
+        };
+        TaxPaymentRequest: {
+            /** @constant */
+            type: "tax_payment";
+            /** Format: date */
+            occurredOn: string;
+            description: string;
+            /** Format: uuid */
+            bankAccountId: string;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            amountMinor: string;
+        };
+        RawPostingRequest: {
+            /** Format: uuid */
+            accountId: string;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            amountMinor: string;
+            /**
+             * @example GEL
+             * @example USD
+             * @example EUR
+             * @example GBP
+             */
+            currency: string;
+        };
+        RawPostingsRequest: {
+            /** @constant */
+            type: "postings";
+            /** Format: date */
+            occurredOn: string;
+            description: string;
+            /** @default null */
+            paymentMethod: ("cash_register" | "pos" | "bank" | "other") | null;
+            postings: components["schemas"]["RawPostingRequest"][];
+        };
+        CreateTransactionRequest: components["schemas"]["IncomeReceiptRequest"] | components["schemas"]["ExpenseRequest"] | components["schemas"]["OwnerDrawRequest"] | components["schemas"]["OwnerContributionRequest"] | components["schemas"]["TransferRequest"] | components["schemas"]["FxConversionRequest"] | components["schemas"]["TaxPaymentRequest"] | components["schemas"]["RawPostingsRequest"];
+        TransactionPreview: {
+            /** Format: date */
+            occurredOn: string;
+            description: string;
+            paymentMethod: ("cash_register" | "pos" | "bank" | "other") | null;
+            postings: {
+                /** Format: uuid */
+                accountId: string;
+                /**
+                 * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+                 * @example 125000
+                 * @example -69085
+                 */
+                amountMinor: string;
+                /**
+                 * @example GEL
+                 * @example USD
+                 * @example EUR
+                 * @example GBP
+                 */
+                currency: string;
+                /**
+                 * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+                 * @example 125000
+                 * @example -69085
+                 */
+                gelAmountMinor: string;
+                rateId: string | null;
+                account: {
+                    name: string;
+                    /** @enum {string} */
+                    kind: "asset" | "liability" | "equity" | "income" | "expense";
+                    systemKey: ("fx_clearing" | "tax_payable" | "owner_equity") | null;
+                    incomeClass: ("sbs" | "non_sbs") | null;
+                };
+                rate: components["schemas"]["PostingRate"] | null;
+            }[];
+        };
+        CreateRuleRequest: {
+            name: string;
+            counterpartyContains: unknown;
+            descriptionContains: unknown;
+            direction?: ("in" | "out") | null;
+            currency?: string | null;
+            amountMinMinor?: string | null;
+            amountMaxMinor?: string | null;
+            /** Format: uuid */
+            targetAccountId: string;
+            isActive?: boolean;
+        };
+        UpdateRuleRequest: {
+            name?: string;
+            counterpartyContains?: unknown;
+            descriptionContains?: unknown;
+            direction?: ("in" | "out") | null;
+            currency?: string | null;
+            amountMinMinor?: string | null;
+            amountMaxMinor?: string | null;
+            /** Format: uuid */
+            targetAccountId?: string;
+            isActive?: boolean;
+        };
+        RuleList: {
+            items: components["schemas"]["CategorizationRule"][];
+        };
+        ReorderRulesRequest: {
+            ruleIds: string[];
+        };
+        ApplyRulesResponse: {
+            updated: number;
+            rows: components["schemas"]["ImportRowView"][];
+        };
+        BulkUpdateImportRowsRequest: {
+            rowIds: string[];
+            accountId?: string | null;
+            skip?: boolean;
+        };
+        BulkUpdateImportRowsResponse: {
+            rows: components["schemas"]["ImportRowView"][];
+            ignored: string[];
+        };
+        /**
+         * @description `not_due`: no return for the month, or the month is not over. `due`: the month is over and the deadline is today or later. `overdue`: past the deadline, never filed. `filed`: the latest filing matches the live figures. `filed_with_drift`: they differ.
+         * @enum {string}
+         */
+        FilingStatusKind: "not_due" | "due" | "overdue" | "filed" | "filed_with_drift";
+        /** @enum {string} */
+        NotDueReason: "not_required" | "period_open";
+        /** @enum {string} */
+        ReturnLine: "income" | "line15" | "line18" | "line19" | "line20" | "line21" | "rate" | "tax";
+        LineDifference: {
+            line: components["schemas"]["ReturnLine"];
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            filed: string;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            live: string;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            delta: string;
+        };
+        FilingStatus: {
+            kind: components["schemas"]["FilingStatusKind"];
+            reason: components["schemas"]["NotDueReason"] | null;
+            daysLeft: number | null;
+            daysOverdue: number | null;
+            differences: components["schemas"]["LineDifference"][];
+        };
+        FiledFigures: {
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            incomeGelMinor: string;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            ytdGelMinor: string;
+            byPaymentMethod: components["schemas"]["IncomeByPaymentMethod"];
+            rateBp: number;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            taxGelMinor: string;
+        };
+        DeclarationFiling: {
+            /** Format: uuid */
+            id: string;
+            /** @example 2026-09 */
+            period: string;
+            version: number;
+            supersedesId: string | null;
+            rulesVersion: string;
+            figures: components["schemas"]["FiledFigures"];
+            zeroReturn: boolean;
+            transactionIds: string[];
+            rsReference: string | null;
+            /** Format: date-time */
+            filedAt: string;
+            filedBy: {
+                /** Format: uuid */
+                id: string;
+                name: string;
+                email: string;
+            };
+        };
+        FilingSummary: {
+            /** Format: uuid */
+            id: string;
+            version: number;
+            /** Format: date-time */
+            filedAt: string;
+            rsReference: string | null;
+        };
+        FileDeclarationRequest: {
+            rsReference?: string | null;
+            supersedesId?: string | null;
+        };
+        DeclarationMonthView: {
+            /** @example 2026-09 */
+            period: string;
+            rulesVersion: string;
+            sbsStatus: components["schemas"]["SbsMonthStatus"];
+            filingRequired: boolean;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            incomeGelMinor: string;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            excludedGelMinor: string;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            ytdGelMinor: string;
+            byPaymentMethod: components["schemas"]["IncomeByPaymentMethod"];
+            rateBp: number;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            taxGelMinor: string;
+            limitCrossedThisMonth: boolean;
+            zeroReturn: boolean;
+            negativeIncome: boolean;
+            /** Format: date */
+            deadline: string;
+            status: components["schemas"]["FilingStatus"];
+            latestFiling: components["schemas"]["FilingSummary"] | null;
+        };
+        DeclarationYearView: {
+            year: number;
+            months: components["schemas"]["DeclarationMonthView"][];
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            totalIncomeGelMinor: string;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            totalTaxGelMinor: string;
+            crossingPeriod: string | null;
+            limitExceeded: boolean;
+            limitStatus: components["schemas"]["AnnualLimitStatus"];
+            sbsEffectiveFrom: string | null;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            annualLimitGelMinor: string;
+            annualLimitUsedBp: number;
+            latestYearWithData: number | null;
+            previousYearLimitExceeded: boolean;
+            /** Format: date */
+            today: string;
+        };
+        ContributingTransaction: {
+            /** Format: uuid */
+            id: string;
+            /** Format: date */
+            occurredOn: string;
+            description: string;
+            /** @enum {string} */
+            source: "manual" | "import" | "invoice_payment" | "reversal";
+            paymentMethod: ("cash_register" | "pos" | "bank" | "other") | null;
+            reversesId: string | null;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            incomeGelMinor: string;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            amountMinor: string;
+            /**
+             * @example GEL
+             * @example USD
+             * @example EUR
+             * @example GBP
+             */
+            currency: string;
+            counterparty: string | null;
+            excluded: boolean;
+        };
+        PeriodRules: {
+            version: string;
+            baseRateBp: number;
+            increasedRateBp: number;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            annualLimitGelMinor: string;
+            filingDeadlineDayOfNextMonth: number;
+        };
+        DeclarationPeriodView: {
+            month: components["schemas"]["DeclarationMonthView"];
+            sbsEffectiveFrom: string | null;
+            rules: components["schemas"]["PeriodRules"];
+            transactions: components["schemas"]["ContributingTransaction"][];
+            filings: components["schemas"]["DeclarationFiling"][];
+            transactionChanges: {
+                added: string[];
+                removed: string[];
+            } | null;
+            fileBlocker: components["schemas"]["NotDueReason"] | null;
+            /** Format: date */
+            today: string;
+        };
+        CounterpartyIncome: {
+            counterparty: string | null;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            incomeGelMinor: string;
+            transactionCount: number;
+        };
+        CurrencyIncome: {
+            /**
+             * @example GEL
+             * @example USD
+             * @example EUR
+             * @example GBP
+             */
+            currency: string;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            amountMinor: string;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            incomeGelMinor: string;
+            transactionCount: number;
+        };
+        DashboardView: {
+            year: number;
+            sbsEffectiveFrom: string | null;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            annualLimitGelMinor: string;
+            annualLimitUsedBp: number;
+            latestYearWithData: number | null;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            ytdIncomeGelMinor: string;
+            limitStatus: components["schemas"]["AnnualLimitStatus"];
+            latestMonth: components["schemas"]["DeclarationFigures"] | null;
+            nextDeadline: {
+                /** @example 2026-09 */
+                period: string;
+                /** Format: date */
+                deadline: string;
+                /**
+                 * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+                 * @example 125000
+                 * @example -69085
+                 */
+                taxGelMinor: string;
+                zeroReturn: boolean;
+            } | null;
+            months: components["schemas"]["DashboardMonth"][];
+            byCounterparty: {
+                top: components["schemas"]["CounterpartyIncome"][];
+                other: {
+                    /**
+                     * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+                     * @example 125000
+                     * @example -69085
+                     */
+                    incomeGelMinor: string;
+                    transactionCount: number;
+                    counterpartyCount: number;
+                };
+            };
+            currencyMix: components["schemas"]["CurrencyIncome"][];
+            nextReturn: {
+                /** @example 2026-09 */
+                period: string;
+                /** Format: date */
+                deadline: string;
+                /**
+                 * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+                 * @example 125000
+                 * @example -69085
+                 */
+                taxGelMinor: string;
+                zeroReturn: boolean;
+                status: components["schemas"]["FilingStatus"];
+            } | null;
+            statusCounts: {
+                [key: string]: number;
+            };
+            /** Format: date */
+            today: string;
+        };
     };
-    CreateRuleRequest: {
-      name: string;
-      counterpartyContains: unknown;
-      descriptionContains: unknown;
-      direction?: ('in' | 'out') | null;
-      currency?: string | null;
-      amountMinMinor?: string | null;
-      amountMaxMinor?: string | null;
-      /** Format: uuid */
-      targetAccountId: string;
-      isActive?: boolean;
-    };
-    UpdateRuleRequest: {
-      name?: string;
-      counterpartyContains?: unknown;
-      descriptionContains?: unknown;
-      direction?: ('in' | 'out') | null;
-      currency?: string | null;
-      amountMinMinor?: string | null;
-      amountMaxMinor?: string | null;
-      /** Format: uuid */
-      targetAccountId?: string;
-      isActive?: boolean;
-    };
-    RuleList: {
-      items: components['schemas']['CategorizationRule'][];
-    };
-    ReorderRulesRequest: {
-      ruleIds: string[];
-    };
-    ApplyRulesResponse: {
-      updated: number;
-      rows: components['schemas']['ImportRowView'][];
-    };
-    BulkUpdateImportRowsRequest: {
-      rowIds: string[];
-      accountId?: string | null;
-      skip?: boolean;
-    };
-    BulkUpdateImportRowsResponse: {
-      rows: components['schemas']['ImportRowView'][];
-      ignored: string[];
-    };
-  };
-  responses: never;
-  parameters: never;
-  requestBodies: never;
-  headers: never;
-  pathItems: never;
+    responses: never;
+    parameters: never;
+    requestBodies: never;
+    headers: never;
+    pathItems: never;
 }
 export type $defs = Record<string, never>;
 export interface operations {
-  getMe: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Default Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['MeResponse'];
-        };
-      };
-      /** @description Error (RFC 9457 problem details) */
-      default: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/problem+json': components['schemas']['Problem'];
-        };
-      };
-    };
-  };
-  listOrganizations: {
-    parameters: {
-      query?: {
-        cursor?: string;
-        limit?: number;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Default Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['OrganizationList'];
-        };
-      };
-      /** @description Error (RFC 9457 problem details) */
-      default: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/problem+json': components['schemas']['Problem'];
-        };
-      };
-    };
-  };
-  createOrganization: {
-    parameters: {
-      query?: never;
-      header?: {
-        /** @description Client-chosen key; replays return the stored response for 24 h. */
-        'idempotency-key'?: string;
-      };
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['CreateOrganizationRequestInput'];
-      };
-    };
-    responses: {
-      /** @description Default Response */
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['OrganizationWithRole'];
-        };
-      };
-      /** @description Error (RFC 9457 problem details) */
-      default: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/problem+json': components['schemas']['Problem'];
-        };
-      };
-    };
-  };
-  getOrganization: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        orgId: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Default Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['OrganizationWithRole'];
-        };
-      };
-      /** @description Error (RFC 9457 problem details) */
-      default: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/problem+json': components['schemas']['Problem'];
-        };
-      };
-    };
-  };
-  updateOrganization: {
-    parameters: {
-      query?: never;
-      header?: {
-        /** @description Client-chosen key; replays return the stored response for 24 h. */
-        'idempotency-key'?: string;
-      };
-      path: {
-        orgId: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['UpdateOrganizationRequestInput'];
-      };
-    };
-    responses: {
-      /** @description Default Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['OrganizationWithRole'];
-        };
-      };
-      /** @description Error (RFC 9457 problem details) */
-      default: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/problem+json': components['schemas']['Problem'];
-        };
-      };
-    };
-  };
-  listMembers: {
-    parameters: {
-      query?: {
-        cursor?: string;
-        limit?: number;
-      };
-      header?: never;
-      path: {
-        orgId: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Default Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['MemberList'];
-        };
-      };
-      /** @description Error (RFC 9457 problem details) */
-      default: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/problem+json': components['schemas']['Problem'];
-        };
-      };
-    };
-  };
-  listInvitations: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        orgId: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Default Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['InvitationList'];
-        };
-      };
-      /** @description Error (RFC 9457 problem details) */
-      default: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/problem+json': components['schemas']['Problem'];
-        };
-      };
-    };
-  };
-  createInvitation: {
-    parameters: {
-      query?: never;
-      header?: {
-        /** @description Client-chosen key; replays return the stored response for 24 h. */
-        'idempotency-key'?: string;
-      };
-      path: {
-        orgId: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['CreateInvitationRequestInput'];
-      };
-    };
-    responses: {
-      /** @description Default Response */
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['Invitation'];
-        };
-      };
-      /** @description Error (RFC 9457 problem details) */
-      default: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/problem+json': components['schemas']['Problem'];
-        };
-      };
-    };
-  };
-  revokeInvitation: {
-    parameters: {
-      query?: never;
-      header?: {
-        /** @description Client-chosen key; replays return the stored response for 24 h. */
-        'idempotency-key'?: string;
-      };
-      path: {
-        orgId: string;
-        invitationId: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Default Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['Invitation'];
-        };
-      };
-      /** @description Error (RFC 9457 problem details) */
-      default: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/problem+json': components['schemas']['Problem'];
-        };
-      };
-    };
-  };
-  previewInvitation: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['InvitationTokenRequestInput'];
-      };
-    };
-    responses: {
-      /** @description Default Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['InvitationPreview'];
-        };
-      };
-      /** @description Error (RFC 9457 problem details) */
-      default: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/problem+json': components['schemas']['Problem'];
-        };
-      };
-    };
-  };
-  acceptInvitation: {
-    parameters: {
-      query?: never;
-      header?: {
-        /** @description Client-chosen key; replays return the stored response for 24 h. */
-        'idempotency-key'?: string;
-      };
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['InvitationTokenRequestInput'];
-      };
-    };
-    responses: {
-      /** @description Default Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['AcceptInvitationResponse'];
-        };
-      };
-      /** @description Error (RFC 9457 problem details) */
-      default: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/problem+json': components['schemas']['Problem'];
-        };
-      };
-    };
-  };
-  getHealth: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Default Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['HealthResponse'];
-        };
-      };
-      /** @description Default Response */
-      503: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['HealthResponse'];
-        };
-      };
-      /** @description Error (RFC 9457 problem details) */
-      default: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/problem+json': components['schemas']['Problem'];
-        };
-      };
-    };
-  };
-  listRates: {
-    parameters: {
-      query?: {
-        cursor?: string;
-        limit?: number;
-        currency?: string;
-        from?: string;
-        to?: string;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Default Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ListRatesResponse'];
-        };
-      };
-      /** @description Error (RFC 9457 problem details) */
-      default: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/problem+json': components['schemas']['Problem'];
-        };
-      };
-    };
-  };
-  backfillRates: {
-    parameters: {
-      query?: never;
-      header?: {
-        'x-admin-token'?: string;
-      };
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['BackfillRatesRequestInput'];
-      };
-    };
-    responses: {
-      /** @description Default Response */
-      202: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['BackfillRatesResponse'];
-        };
-      };
-      /** @description Error (RFC 9457 problem details) */
-      default: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/problem+json': components['schemas']['Problem'];
-        };
-      };
-    };
-  };
-  listAccounts: {
-    parameters: {
-      query?: {
-        includeArchived?: 'true' | 'false';
-      };
-      header?: never;
-      path: {
-        orgId: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Default Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['AccountList'];
-        };
-      };
-      /** @description Error (RFC 9457 problem details) */
-      default: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/problem+json': components['schemas']['Problem'];
-        };
-      };
-    };
-  };
-  createAccount: {
-    parameters: {
-      query?: never;
-      header?: {
-        /** @description Client-chosen key; replays return the stored response for 24 h. */
-        'idempotency-key'?: string;
-      };
-      path: {
-        orgId: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['CreateAccountRequestInput'];
-      };
-    };
-    responses: {
-      /** @description Default Response */
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['Account'];
-        };
-      };
-      /** @description Error (RFC 9457 problem details) */
-      default: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/problem+json': components['schemas']['Problem'];
-        };
-      };
-    };
-  };
-  listAccountBalances: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        orgId: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Default Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['AccountBalanceList'];
-        };
-      };
-      /** @description Error (RFC 9457 problem details) */
-      default: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/problem+json': components['schemas']['Problem'];
-        };
-      };
-    };
-  };
-  updateAccount: {
-    parameters: {
-      query?: never;
-      header?: {
-        /** @description Client-chosen key; replays return the stored response for 24 h. */
-        'idempotency-key'?: string;
-      };
-      path: {
-        orgId: string;
-        accountId: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['UpdateAccountRequestInput'];
-      };
-    };
-    responses: {
-      /** @description Default Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['Account'];
-        };
-      };
-      /** @description Error (RFC 9457 problem details) */
-      default: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/problem+json': components['schemas']['Problem'];
-        };
-      };
-    };
-  };
-  listImports: {
-    parameters: {
-      query?: {
-        cursor?: string;
-        limit?: number;
-      };
-      header?: never;
-      path: {
-        orgId: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Default Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ImportBatchList'];
-        };
-      };
-      /** @description Error (RFC 9457 problem details) */
-      default: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/problem+json': components['schemas']['Problem'];
-        };
-      };
-    };
-  };
-  uploadStatement: {
-    parameters: {
-      query?: never;
-      header?: {
-        /** @description Client-chosen key; replays return the stored response for 24 h. */
-        'idempotency-key'?: string;
-      };
-      path: {
-        orgId: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'multipart/form-data': components['schemas']['UploadStatementRequestInput'];
-      };
-    };
-    responses: {
-      /** @description Default Response */
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['UploadStatementResponse'];
-        };
-      };
-      /** @description Error (RFC 9457 problem details) */
-      default: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/problem+json': components['schemas']['Problem'];
-        };
-      };
-    };
-  };
-  getImport: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        orgId: string;
-        batchId: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Default Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ImportBatchDetail'];
-        };
-      };
-      /** @description Error (RFC 9457 problem details) */
-      default: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/problem+json': components['schemas']['Problem'];
-        };
-      };
-    };
-  };
-  listImportRows: {
-    parameters: {
-      query?: {
-        cursor?: string;
-        limit?: number;
-        status?: 'new' | 'duplicate' | 'skipped';
-      };
-      header?: never;
-      path: {
-        orgId: string;
-        batchId: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Default Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ImportRowList'];
-        };
-      };
-      /** @description Error (RFC 9457 problem details) */
-      default: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/problem+json': components['schemas']['Problem'];
-        };
-      };
-    };
-  };
-  updateImportRow: {
-    parameters: {
-      query?: never;
-      header?: {
-        /** @description Client-chosen key; replays return the stored response for 24 h. */
-        'idempotency-key'?: string;
-      };
-      path: {
-        orgId: string;
-        batchId: string;
-        rowId: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['UpdateImportRowRequestInput'];
-      };
-    };
-    responses: {
-      /** @description Default Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ImportRowView'];
-        };
-      };
-      /** @description Error (RFC 9457 problem details) */
-      default: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/problem+json': components['schemas']['Problem'];
-        };
-      };
-    };
-  };
-  bulkUpdateImportRows: {
-    parameters: {
-      query?: never;
-      header?: {
-        /** @description Client-chosen key; replays return the stored response for 24 h. */
-        'idempotency-key'?: string;
-      };
-      path: {
-        orgId: string;
-        batchId: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['BulkUpdateImportRowsRequestInput'];
-      };
-    };
-    responses: {
-      /** @description Default Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['BulkUpdateImportRowsResponse'];
-        };
-      };
-      /** @description Error (RFC 9457 problem details) */
-      default: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/problem+json': components['schemas']['Problem'];
-        };
-      };
-    };
-  };
-  applyImportRules: {
-    parameters: {
-      query?: never;
-      header?: {
-        /** @description Client-chosen key; replays return the stored response for 24 h. */
-        'idempotency-key'?: string;
-      };
-      path: {
-        orgId: string;
-        batchId: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Default Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ApplyRulesResponse'];
-        };
-      };
-      /** @description Error (RFC 9457 problem details) */
-      default: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/problem+json': components['schemas']['Problem'];
-        };
-      };
-    };
-  };
-  commitImport: {
-    parameters: {
-      query?: never;
-      header?: {
-        /** @description Client-chosen key; replays return the stored response for 24 h. */
-        'idempotency-key'?: string;
-      };
-      path: {
-        orgId: string;
-        batchId: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Default Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['CommitImportResponse'];
-        };
-      };
-      /** @description Error (RFC 9457 problem details) */
-      default: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/problem+json': components['schemas']['Problem'];
-        };
-      };
-    };
-  };
-  previewTransaction: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        orgId: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['CreateTransactionRequestInput'];
-      };
-    };
-    responses: {
-      /** @description Default Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['TransactionPreview'];
-        };
-      };
-      /** @description Error (RFC 9457 problem details) */
-      default: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/problem+json': components['schemas']['Problem'];
-        };
-      };
-    };
-  };
-  listTransactions: {
-    parameters: {
-      query?: {
-        cursor?: string;
-        limit?: number;
-        from?: string;
-        to?: string;
-        accountId?: string;
-        source?: 'manual' | 'import' | 'invoice_payment' | 'reversal';
-        q?: string;
-        taxable?: 'true' | 'false';
-      };
-      header?: never;
-      path: {
-        orgId: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Default Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['TransactionList'];
-        };
-      };
-      /** @description Error (RFC 9457 problem details) */
-      default: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/problem+json': components['schemas']['Problem'];
-        };
-      };
-    };
-  };
-  createTransaction: {
-    parameters: {
-      query?: never;
-      header?: {
-        /** @description Client-chosen key; replays return the stored response for 24 h. */
-        'idempotency-key'?: string;
-      };
-      path: {
-        orgId: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['CreateTransactionRequestInput'];
-      };
-    };
-    responses: {
-      /** @description Default Response */
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['TransactionView'];
-        };
-      };
-      /** @description Error (RFC 9457 problem details) */
-      default: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/problem+json': components['schemas']['Problem'];
-        };
-      };
-    };
-  };
-  getTransaction: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        orgId: string;
-        transactionId: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Default Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['TransactionView'];
-        };
-      };
-      /** @description Error (RFC 9457 problem details) */
-      default: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/problem+json': components['schemas']['Problem'];
-        };
-      };
-    };
-  };
-  reverseTransaction: {
-    parameters: {
-      query?: never;
-      header?: {
-        /** @description Client-chosen key; replays return the stored response for 24 h. */
-        'idempotency-key'?: string;
-      };
-      path: {
-        orgId: string;
-        transactionId: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['ReverseTransactionRequestInput'];
-      };
-    };
-    responses: {
-      /** @description Default Response */
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['TransactionView'];
-        };
-      };
-      /** @description Error (RFC 9457 problem details) */
-      default: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/problem+json': components['schemas']['Problem'];
-        };
-      };
-    };
-  };
-  listRules: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        orgId: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Default Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['RuleList'];
-        };
-      };
-      /** @description Error (RFC 9457 problem details) */
-      default: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/problem+json': components['schemas']['Problem'];
-        };
-      };
-    };
-  };
-  createRule: {
-    parameters: {
-      query?: never;
-      header?: {
-        /** @description Client-chosen key; replays return the stored response for 24 h. */
-        'idempotency-key'?: string;
-      };
-      path: {
-        orgId: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['CreateRuleRequestInput'];
-      };
-    };
-    responses: {
-      /** @description Default Response */
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['CategorizationRule'];
-        };
-      };
-      /** @description Error (RFC 9457 problem details) */
-      default: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/problem+json': components['schemas']['Problem'];
-        };
-      };
-    };
-  };
-  getRule: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        orgId: string;
-        ruleId: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Default Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['CategorizationRule'];
-        };
-      };
-      /** @description Error (RFC 9457 problem details) */
-      default: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/problem+json': components['schemas']['Problem'];
-        };
-      };
-    };
-  };
-  deleteRule: {
-    parameters: {
-      query?: never;
-      header?: {
-        /** @description Client-chosen key; replays return the stored response for 24 h. */
-        'idempotency-key'?: string;
-      };
-      path: {
-        orgId: string;
-        ruleId: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Default Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['CategorizationRule'];
-        };
-      };
-      /** @description Error (RFC 9457 problem details) */
-      default: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/problem+json': components['schemas']['Problem'];
-        };
-      };
-    };
-  };
-  updateRule: {
-    parameters: {
-      query?: never;
-      header?: {
-        /** @description Client-chosen key; replays return the stored response for 24 h. */
-        'idempotency-key'?: string;
-      };
-      path: {
-        orgId: string;
-        ruleId: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['UpdateRuleRequestInput'];
-      };
-    };
-    responses: {
-      /** @description Default Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['CategorizationRule'];
-        };
-      };
-      /** @description Error (RFC 9457 problem details) */
-      default: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/problem+json': components['schemas']['Problem'];
-        };
-      };
-    };
-  };
-  reorderRules: {
-    parameters: {
-      query?: never;
-      header?: {
-        /** @description Client-chosen key; replays return the stored response for 24 h. */
-        'idempotency-key'?: string;
-      };
-      path: {
-        orgId: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['ReorderRulesRequestInput'];
-      };
-    };
-    responses: {
-      /** @description Default Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['RuleList'];
-        };
-      };
-      /** @description Error (RFC 9457 problem details) */
-      default: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/problem+json': components['schemas']['Problem'];
-        };
-      };
-    };
-  };
-  getDeclarationYear: {
-    parameters: {
-      query?: {
-        year?: number;
-      };
-      header?: never;
-      path: {
-        orgId: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Default Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['DeclarationYearResponse'];
-        };
-      };
-      /** @description Error (RFC 9457 problem details) */
-      default: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/problem+json': components['schemas']['Problem'];
-        };
-      };
-    };
-  };
-  getDashboard: {
-    parameters: {
-      query?: {
-        year?: number;
-      };
-      header?: never;
-      path: {
-        orgId: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Default Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['DashboardResponse'];
-        };
-      };
-      /** @description Error (RFC 9457 problem details) */
-      default: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/problem+json': components['schemas']['Problem'];
-        };
-      };
-    };
-  };
+    getMe: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Default Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MeResponse"];
+                };
+            };
+            /** @description Error (RFC 9457 problem details) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    listOrganizations: {
+        parameters: {
+            query?: {
+                cursor?: string;
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Default Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OrganizationList"];
+                };
+            };
+            /** @description Error (RFC 9457 problem details) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    createOrganization: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description Client-chosen key; replays return the stored response for 24 h. */
+                "idempotency-key"?: string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateOrganizationRequestInput"];
+            };
+        };
+        responses: {
+            /** @description Default Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OrganizationWithRole"];
+                };
+            };
+            /** @description Error (RFC 9457 problem details) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    getOrganization: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                orgId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Default Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OrganizationWithRole"];
+                };
+            };
+            /** @description Error (RFC 9457 problem details) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    updateOrganization: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description Client-chosen key; replays return the stored response for 24 h. */
+                "idempotency-key"?: string;
+            };
+            path: {
+                orgId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateOrganizationRequestInput"];
+            };
+        };
+        responses: {
+            /** @description Default Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OrganizationWithRole"];
+                };
+            };
+            /** @description Error (RFC 9457 problem details) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    listMembers: {
+        parameters: {
+            query?: {
+                cursor?: string;
+                limit?: number;
+            };
+            header?: never;
+            path: {
+                orgId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Default Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MemberList"];
+                };
+            };
+            /** @description Error (RFC 9457 problem details) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    listInvitations: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                orgId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Default Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InvitationList"];
+                };
+            };
+            /** @description Error (RFC 9457 problem details) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    createInvitation: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description Client-chosen key; replays return the stored response for 24 h. */
+                "idempotency-key"?: string;
+            };
+            path: {
+                orgId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateInvitationRequestInput"];
+            };
+        };
+        responses: {
+            /** @description Default Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Invitation"];
+                };
+            };
+            /** @description Error (RFC 9457 problem details) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    revokeInvitation: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description Client-chosen key; replays return the stored response for 24 h. */
+                "idempotency-key"?: string;
+            };
+            path: {
+                orgId: string;
+                invitationId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Default Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Invitation"];
+                };
+            };
+            /** @description Error (RFC 9457 problem details) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    previewInvitation: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["InvitationTokenRequestInput"];
+            };
+        };
+        responses: {
+            /** @description Default Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InvitationPreview"];
+                };
+            };
+            /** @description Error (RFC 9457 problem details) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    acceptInvitation: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description Client-chosen key; replays return the stored response for 24 h. */
+                "idempotency-key"?: string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["InvitationTokenRequestInput"];
+            };
+        };
+        responses: {
+            /** @description Default Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AcceptInvitationResponse"];
+                };
+            };
+            /** @description Error (RFC 9457 problem details) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    getHealth: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Default Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HealthResponse"];
+                };
+            };
+            /** @description Default Response */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HealthResponse"];
+                };
+            };
+            /** @description Error (RFC 9457 problem details) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    listRates: {
+        parameters: {
+            query?: {
+                cursor?: string;
+                limit?: number;
+                currency?: string;
+                from?: string;
+                to?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Default Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ListRatesResponse"];
+                };
+            };
+            /** @description Error (RFC 9457 problem details) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    backfillRates: {
+        parameters: {
+            query?: never;
+            header?: {
+                "x-admin-token"?: string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["BackfillRatesRequestInput"];
+            };
+        };
+        responses: {
+            /** @description Default Response */
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BackfillRatesResponse"];
+                };
+            };
+            /** @description Error (RFC 9457 problem details) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    listAccounts: {
+        parameters: {
+            query?: {
+                includeArchived?: "true" | "false";
+            };
+            header?: never;
+            path: {
+                orgId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Default Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AccountList"];
+                };
+            };
+            /** @description Error (RFC 9457 problem details) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    createAccount: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description Client-chosen key; replays return the stored response for 24 h. */
+                "idempotency-key"?: string;
+            };
+            path: {
+                orgId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateAccountRequestInput"];
+            };
+        };
+        responses: {
+            /** @description Default Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Account"];
+                };
+            };
+            /** @description Error (RFC 9457 problem details) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    listAccountBalances: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                orgId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Default Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AccountBalanceList"];
+                };
+            };
+            /** @description Error (RFC 9457 problem details) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    updateAccount: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description Client-chosen key; replays return the stored response for 24 h. */
+                "idempotency-key"?: string;
+            };
+            path: {
+                orgId: string;
+                accountId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateAccountRequestInput"];
+            };
+        };
+        responses: {
+            /** @description Default Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Account"];
+                };
+            };
+            /** @description Error (RFC 9457 problem details) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    listImports: {
+        parameters: {
+            query?: {
+                cursor?: string;
+                limit?: number;
+            };
+            header?: never;
+            path: {
+                orgId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Default Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ImportBatchList"];
+                };
+            };
+            /** @description Error (RFC 9457 problem details) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    uploadStatement: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description Client-chosen key; replays return the stored response for 24 h. */
+                "idempotency-key"?: string;
+            };
+            path: {
+                orgId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "multipart/form-data": components["schemas"]["UploadStatementRequestInput"];
+            };
+        };
+        responses: {
+            /** @description Default Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UploadStatementResponse"];
+                };
+            };
+            /** @description Error (RFC 9457 problem details) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    getImport: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                orgId: string;
+                batchId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Default Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ImportBatchDetail"];
+                };
+            };
+            /** @description Error (RFC 9457 problem details) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    listImportRows: {
+        parameters: {
+            query?: {
+                cursor?: string;
+                limit?: number;
+                status?: "new" | "duplicate" | "skipped";
+            };
+            header?: never;
+            path: {
+                orgId: string;
+                batchId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Default Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ImportRowList"];
+                };
+            };
+            /** @description Error (RFC 9457 problem details) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    updateImportRow: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description Client-chosen key; replays return the stored response for 24 h. */
+                "idempotency-key"?: string;
+            };
+            path: {
+                orgId: string;
+                batchId: string;
+                rowId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateImportRowRequestInput"];
+            };
+        };
+        responses: {
+            /** @description Default Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ImportRowView"];
+                };
+            };
+            /** @description Error (RFC 9457 problem details) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    bulkUpdateImportRows: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description Client-chosen key; replays return the stored response for 24 h. */
+                "idempotency-key"?: string;
+            };
+            path: {
+                orgId: string;
+                batchId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["BulkUpdateImportRowsRequestInput"];
+            };
+        };
+        responses: {
+            /** @description Default Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BulkUpdateImportRowsResponse"];
+                };
+            };
+            /** @description Error (RFC 9457 problem details) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    applyImportRules: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description Client-chosen key; replays return the stored response for 24 h. */
+                "idempotency-key"?: string;
+            };
+            path: {
+                orgId: string;
+                batchId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Default Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApplyRulesResponse"];
+                };
+            };
+            /** @description Error (RFC 9457 problem details) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    commitImport: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description Client-chosen key; replays return the stored response for 24 h. */
+                "idempotency-key"?: string;
+            };
+            path: {
+                orgId: string;
+                batchId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Default Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CommitImportResponse"];
+                };
+            };
+            /** @description Error (RFC 9457 problem details) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    previewTransaction: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                orgId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateTransactionRequestInput"];
+            };
+        };
+        responses: {
+            /** @description Default Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TransactionPreview"];
+                };
+            };
+            /** @description Error (RFC 9457 problem details) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    listTransactions: {
+        parameters: {
+            query?: {
+                cursor?: string;
+                limit?: number;
+                from?: string;
+                to?: string;
+                accountId?: string;
+                source?: "manual" | "import" | "invoice_payment" | "reversal";
+                q?: string;
+                taxable?: "true" | "false";
+            };
+            header?: never;
+            path: {
+                orgId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Default Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TransactionList"];
+                };
+            };
+            /** @description Error (RFC 9457 problem details) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    createTransaction: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description Client-chosen key; replays return the stored response for 24 h. */
+                "idempotency-key"?: string;
+            };
+            path: {
+                orgId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateTransactionRequestInput"];
+            };
+        };
+        responses: {
+            /** @description Default Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TransactionView"];
+                };
+            };
+            /** @description Error (RFC 9457 problem details) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    getTransaction: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                orgId: string;
+                transactionId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Default Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TransactionView"];
+                };
+            };
+            /** @description Error (RFC 9457 problem details) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    reverseTransaction: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description Client-chosen key; replays return the stored response for 24 h. */
+                "idempotency-key"?: string;
+            };
+            path: {
+                orgId: string;
+                transactionId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ReverseTransactionRequestInput"];
+            };
+        };
+        responses: {
+            /** @description Default Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TransactionView"];
+                };
+            };
+            /** @description Error (RFC 9457 problem details) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    listRules: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                orgId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Default Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RuleList"];
+                };
+            };
+            /** @description Error (RFC 9457 problem details) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    createRule: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description Client-chosen key; replays return the stored response for 24 h. */
+                "idempotency-key"?: string;
+            };
+            path: {
+                orgId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateRuleRequestInput"];
+            };
+        };
+        responses: {
+            /** @description Default Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CategorizationRule"];
+                };
+            };
+            /** @description Error (RFC 9457 problem details) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    getRule: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                orgId: string;
+                ruleId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Default Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CategorizationRule"];
+                };
+            };
+            /** @description Error (RFC 9457 problem details) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    deleteRule: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description Client-chosen key; replays return the stored response for 24 h. */
+                "idempotency-key"?: string;
+            };
+            path: {
+                orgId: string;
+                ruleId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Default Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CategorizationRule"];
+                };
+            };
+            /** @description Error (RFC 9457 problem details) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    updateRule: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description Client-chosen key; replays return the stored response for 24 h. */
+                "idempotency-key"?: string;
+            };
+            path: {
+                orgId: string;
+                ruleId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateRuleRequestInput"];
+            };
+        };
+        responses: {
+            /** @description Default Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CategorizationRule"];
+                };
+            };
+            /** @description Error (RFC 9457 problem details) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    reorderRules: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description Client-chosen key; replays return the stored response for 24 h. */
+                "idempotency-key"?: string;
+            };
+            path: {
+                orgId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ReorderRulesRequestInput"];
+            };
+        };
+        responses: {
+            /** @description Default Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RuleList"];
+                };
+            };
+            /** @description Error (RFC 9457 problem details) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    getDeclarationYear: {
+        parameters: {
+            query?: {
+                year?: number;
+            };
+            header?: never;
+            path: {
+                orgId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Default Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DeclarationYearView"];
+                };
+            };
+            /** @description Error (RFC 9457 problem details) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    getDeclarationPeriod: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                orgId: string;
+                /** @example 2026-09 */
+                period: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Default Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DeclarationPeriodView"];
+                };
+            };
+            /** @description Error (RFC 9457 problem details) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    fileDeclaration: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description Client-chosen key; replays return the stored response for 24 h. */
+                "idempotency-key"?: string;
+            };
+            path: {
+                orgId: string;
+                /** @example 2026-09 */
+                period: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["FileDeclarationRequestInput"];
+            };
+        };
+        responses: {
+            /** @description Default Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DeclarationFiling"];
+                };
+            };
+            /** @description Error (RFC 9457 problem details) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    getDashboard: {
+        parameters: {
+            query?: {
+                year?: number;
+            };
+            header?: never;
+            path: {
+                orgId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Default Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DashboardView"];
+                };
+            };
+            /** @description Error (RFC 9457 problem details) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
 }
