@@ -23,6 +23,20 @@ describe('cross-tenant harness', () => {
         'GET /v1/orgs/:orgId/invitations',
         'POST /v1/orgs/:orgId/invitations',
         'POST /v1/orgs/:orgId/invitations/:invitationId/revoke',
+        // MVP-A ledger routes.
+        'PATCH /v1/orgs/:orgId',
+        'GET /v1/orgs/:orgId/accounts',
+        'POST /v1/orgs/:orgId/imports',
+        'GET /v1/orgs/:orgId/imports',
+        'GET /v1/orgs/:orgId/imports/:batchId',
+        'GET /v1/orgs/:orgId/imports/:batchId/rows',
+        'PATCH /v1/orgs/:orgId/imports/:batchId/rows/:rowId',
+        'POST /v1/orgs/:orgId/imports/:batchId/commit',
+        'GET /v1/orgs/:orgId/transactions',
+        'GET /v1/orgs/:orgId/transactions/:transactionId',
+        'POST /v1/orgs/:orgId/transactions/:transactionId/reverse',
+        'GET /v1/orgs/:orgId/declarations',
+        'GET /v1/orgs/:orgId/dashboard',
       ]),
     );
   });
