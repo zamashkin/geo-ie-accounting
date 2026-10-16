@@ -19,8 +19,7 @@ import type { Route } from 'next';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { type ReactNode, useMemo } from 'react';
-import { errorMessage } from '@/lib/api/errors';
-import { authClient } from '@/lib/auth/client';
+import { errorMessage } from '@/lib/api/api-error';
 import { ORG_NAV, ORG_SETTINGS_NAV, type OrgNavKey, orgHref } from '@/lib/nav';
 import { useThemePreference } from '@/lib/theme';
 
@@ -101,6 +100,8 @@ export function OrgShell({
 
   async function signOut() {
     try {
+      // Loaded on demand: keeps the auth client and its schemas out of the shell bundle.
+      const { authClient } = await import('@/lib/auth/client');
       await authClient().signOut();
       router.replace('/sign-in');
       router.refresh();

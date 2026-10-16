@@ -1,5 +1,5 @@
 import { MutationCache, QueryCache, QueryClient } from '@tanstack/react-query';
-import { isApiError } from '../api/errors';
+import { isApiError } from '../api/api-error';
 
 /** Retry only what can succeed on retry: network failures and 5xx, at most twice. */
 export function shouldRetry(failureCount: number, error: unknown): boolean {

@@ -5,7 +5,7 @@ import type {
   SignInBody,
   SignUpBody,
 } from '@ie-ledger/contracts';
-import { ApiError } from '../api/errors';
+import { ApiError } from '../api/api-error';
 import {
   decodeMockSession,
   DEMO_ORGS,

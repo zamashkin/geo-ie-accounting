@@ -3,7 +3,7 @@
 import { AlertCircle, MailCheck } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { type FieldValues, type Path, type UseFormSetError } from 'react-hook-form';
-import { isApiError } from '@/lib/api/errors';
+import { isApiError } from '@/lib/api/api-error';
 
 /** Form-level message, announced when it appears. */
 export function FormAlert({

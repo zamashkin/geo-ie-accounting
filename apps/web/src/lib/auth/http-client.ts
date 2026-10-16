@@ -6,7 +6,8 @@ import {
   type SignInBody,
   type SignUpBody,
 } from '@ie-ledger/contracts';
-import { networkError, toApiError } from '../api/errors';
+import { networkError } from '../api/api-error';
+import { toApiError } from '../api/errors';
 import type { AuthClient } from './types';
 
 /**

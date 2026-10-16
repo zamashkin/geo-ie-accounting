@@ -4,6 +4,9 @@
   "private": true,
   "description": "Design-system components. No app logic.",
   "type": "module",
+  "sideEffects": [
+    "**/*.css"
+  ],
   "exports": {
     ".": "./src/index.ts",
     "./theme.css": "./src/styles/theme.css",

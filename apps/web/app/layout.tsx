@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from 'next';
+import Script from 'next/script';
 import type { ReactNode } from 'react';
 import { AppProviders } from '@/lib/providers';
 import { themeInitScript } from '@/lib/theme-script';
@@ -23,11 +24,11 @@ export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     // data-theme is set before hydration by the inline script, hence suppressHydrationWarning.
     <html lang="en" suppressHydrationWarning>
-      <head>
-        {/* Static string from theme-script.ts, no user input. */}
-        <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
-      </head>
       <body className="min-h-dvh bg-canvas text-fg antialiased">
+        {/* Applies the stored theme before first paint (static string, no user input). */}
+        <Script id="theme-init" strategy="beforeInteractive">
+          {themeInitScript}
+        </Script>
         <AppProviders>{children}</AppProviders>
       </body>
     </html>

@@ -5,7 +5,7 @@ import { Badge, Button, ButtonLink, Card, LoadingRegion, SkeletonText } from '@i
 import { useMutation, useQuery } from '@tanstack/react-query';
 import type { Route } from 'next';
 import { useRouter } from 'next/navigation';
-import { errorMessage } from '@/lib/api/errors';
+import { errorMessage } from '@/lib/api/api-error';
 import { authClient } from '@/lib/auth/client';
 import { orgHref } from '@/lib/nav';
 import { FormAlert } from '../../_components/form-helpers';
