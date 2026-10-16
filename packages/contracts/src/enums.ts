@@ -81,7 +81,3 @@ export type RuleOp = z.output<typeof RuleOp>;
 export const INVOICE_STATUSES = ['draft', 'issued', 'paid', 'void'] as const;
 export const InvoiceStatus = z.enum(INVOICE_STATUSES);
 export type InvoiceStatus = z.output<typeof InvoiceStatus>;
-
-export const DECLARATION_STATUSES = ['draft', 'filed'] as const;
-export const DeclarationStatus = z.enum(DECLARATION_STATUSES);
-export type DeclarationStatus = z.output<typeof DeclarationStatus>;

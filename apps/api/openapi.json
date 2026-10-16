@@ -1972,136 +1972,6 @@
           "other"
         ]
       },
-      "DeclarationInput": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "format": "uuid",
-            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
-          },
-          "orgId": {
-            "type": "string",
-            "format": "uuid",
-            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
-          },
-          "period": {
-            "type": "string",
-            "pattern": "^[0-9]{4}-(0[1-9]|1[0-2])$",
-            "examples": [
-              "2026-09"
-            ]
-          },
-          "status": {
-            "type": "string",
-            "enum": [
-              "draft",
-              "filed"
-            ]
-          },
-          "turnoverGelMinor": {
-            "type": "string",
-            "pattern": "^(0|-?[1-9][0-9]*)$",
-            "description": "Integer amount in minor units (e.g. tetri, cents), as a decimal string.",
-            "examples": [
-              "125000",
-              "-69085"
-            ]
-          },
-          "ytdGelMinor": {
-            "type": "string",
-            "pattern": "^(0|-?[1-9][0-9]*)$",
-            "description": "Integer amount in minor units (e.g. tetri, cents), as a decimal string.",
-            "examples": [
-              "125000",
-              "-69085"
-            ]
-          },
-          "rateBp": {
-            "type": "integer",
-            "minimum": 0,
-            "maximum": 9007199254740991
-          },
-          "byPaymentMethod": {
-            "$ref": "#/components/schemas/IncomeByPaymentMethodInput"
-          },
-          "taxGelMinor": {
-            "type": "string",
-            "pattern": "^(0|-?[1-9][0-9]*)$",
-            "description": "Integer amount in minor units (e.g. tetri, cents), as a decimal string.",
-            "examples": [
-              "125000",
-              "-69085"
-            ]
-          },
-          "rulesVersion": {
-            "type": "string"
-          },
-          "snapshot": {
-            "anyOf": [
-              {
-                "type": "object",
-                "propertyNames": {
-                  "type": "string"
-                },
-                "additionalProperties": {}
-              },
-              {
-                "type": "null"
-              }
-            ]
-          },
-          "hasDrift": {
-            "type": "boolean"
-          },
-          "computedAt": {
-            "type": "string",
-            "format": "date-time",
-            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$"
-          },
-          "filedAt": {
-            "anyOf": [
-              {
-                "type": "string",
-                "format": "date-time",
-                "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$"
-              },
-              {
-                "type": "null"
-              }
-            ]
-          },
-          "filedBy": {
-            "anyOf": [
-              {
-                "type": "string",
-                "format": "uuid",
-                "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
-              },
-              {
-                "type": "null"
-              }
-            ]
-          }
-        },
-        "required": [
-          "id",
-          "orgId",
-          "period",
-          "status",
-          "turnoverGelMinor",
-          "ytdGelMinor",
-          "rateBp",
-          "byPaymentMethod",
-          "taxGelMinor",
-          "rulesVersion",
-          "snapshot",
-          "hasDrift",
-          "computedAt",
-          "filedAt",
-          "filedBy"
-        ]
-      },
       "AuditLogEntryInput": {
         "type": "object",
         "properties": {
@@ -4281,6 +4151,1130 @@
           "months"
         ]
       },
+      "FilingStatusKindInput": {
+        "type": "string",
+        "enum": [
+          "not_due",
+          "due",
+          "overdue",
+          "filed",
+          "filed_with_drift"
+        ],
+        "description": "`not_due`: no return for the month, or the month is not over. `due`: the month is over and the deadline is today or later. `overdue`: past the deadline, never filed. `filed`: the latest filing matches the live figures. `filed_with_drift`: they differ."
+      },
+      "NotDueReasonInput": {
+        "type": "string",
+        "enum": [
+          "not_required",
+          "period_open"
+        ]
+      },
+      "ReturnLineInput": {
+        "type": "string",
+        "enum": [
+          "income",
+          "line15",
+          "line18",
+          "line19",
+          "line20",
+          "line21",
+          "rate",
+          "tax"
+        ]
+      },
+      "LineDifferenceInput": {
+        "type": "object",
+        "properties": {
+          "line": {
+            "$ref": "#/components/schemas/ReturnLineInput"
+          },
+          "filed": {
+            "type": "string",
+            "pattern": "^(0|-?[1-9][0-9]*)$",
+            "description": "Integer amount in minor units (e.g. tetri, cents), as a decimal string.",
+            "examples": [
+              "125000",
+              "-69085"
+            ]
+          },
+          "live": {
+            "type": "string",
+            "pattern": "^(0|-?[1-9][0-9]*)$",
+            "description": "Integer amount in minor units (e.g. tetri, cents), as a decimal string.",
+            "examples": [
+              "125000",
+              "-69085"
+            ]
+          },
+          "delta": {
+            "type": "string",
+            "pattern": "^(0|-?[1-9][0-9]*)$",
+            "description": "Integer amount in minor units (e.g. tetri, cents), as a decimal string.",
+            "examples": [
+              "125000",
+              "-69085"
+            ]
+          }
+        },
+        "required": [
+          "line",
+          "filed",
+          "live",
+          "delta"
+        ]
+      },
+      "FilingStatusInput": {
+        "type": "object",
+        "properties": {
+          "kind": {
+            "$ref": "#/components/schemas/FilingStatusKindInput"
+          },
+          "reason": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/NotDueReasonInput"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "daysLeft": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 9007199254740991
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "daysOverdue": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "exclusiveMinimum": 0,
+                "maximum": 9007199254740991
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "differences": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LineDifferenceInput"
+            }
+          }
+        },
+        "required": [
+          "kind",
+          "reason",
+          "daysLeft",
+          "daysOverdue",
+          "differences"
+        ]
+      },
+      "FiledFiguresInput": {
+        "type": "object",
+        "properties": {
+          "incomeGelMinor": {
+            "type": "string",
+            "pattern": "^(0|-?[1-9][0-9]*)$",
+            "description": "Integer amount in minor units (e.g. tetri, cents), as a decimal string.",
+            "examples": [
+              "125000",
+              "-69085"
+            ]
+          },
+          "ytdGelMinor": {
+            "type": "string",
+            "pattern": "^(0|-?[1-9][0-9]*)$",
+            "description": "Integer amount in minor units (e.g. tetri, cents), as a decimal string.",
+            "examples": [
+              "125000",
+              "-69085"
+            ]
+          },
+          "byPaymentMethod": {
+            "$ref": "#/components/schemas/IncomeByPaymentMethodInput"
+          },
+          "rateBp": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "taxGelMinor": {
+            "type": "string",
+            "pattern": "^(0|-?[1-9][0-9]*)$",
+            "description": "Integer amount in minor units (e.g. tetri, cents), as a decimal string.",
+            "examples": [
+              "125000",
+              "-69085"
+            ]
+          }
+        },
+        "required": [
+          "incomeGelMinor",
+          "ytdGelMinor",
+          "byPaymentMethod",
+          "rateBp",
+          "taxGelMinor"
+        ]
+      },
+      "DeclarationFilingInput": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          },
+          "period": {
+            "type": "string",
+            "pattern": "^[0-9]{4}-(0[1-9]|1[0-2])$",
+            "examples": [
+              "2026-09"
+            ]
+          },
+          "version": {
+            "type": "integer",
+            "exclusiveMinimum": 0,
+            "maximum": 9007199254740991
+          },
+          "supersedesId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid",
+                "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "rulesVersion": {
+            "type": "string"
+          },
+          "figures": {
+            "$ref": "#/components/schemas/FiledFiguresInput"
+          },
+          "zeroReturn": {
+            "type": "boolean"
+          },
+          "transactionIds": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid",
+              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+            }
+          },
+          "rsReference": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "filedAt": {
+            "type": "string",
+            "format": "date-time",
+            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$"
+          },
+          "filedBy": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "format": "uuid",
+                "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+              },
+              "name": {
+                "type": "string"
+              },
+              "email": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "id",
+              "name",
+              "email"
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "period",
+          "version",
+          "supersedesId",
+          "rulesVersion",
+          "figures",
+          "zeroReturn",
+          "transactionIds",
+          "rsReference",
+          "filedAt",
+          "filedBy"
+        ]
+      },
+      "FilingSummaryInput": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          },
+          "version": {
+            "type": "integer",
+            "exclusiveMinimum": 0,
+            "maximum": 9007199254740991
+          },
+          "filedAt": {
+            "type": "string",
+            "format": "date-time",
+            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$"
+          },
+          "rsReference": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "version",
+          "filedAt",
+          "rsReference"
+        ]
+      },
+      "FileDeclarationRequestInput": {
+        "type": "object",
+        "properties": {
+          "rsReference": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 64
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "supersedesId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid",
+                "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        }
+      },
+      "DeclarationMonthViewInput": {
+        "type": "object",
+        "properties": {
+          "period": {
+            "type": "string",
+            "pattern": "^[0-9]{4}-(0[1-9]|1[0-2])$",
+            "examples": [
+              "2026-09"
+            ]
+          },
+          "rulesVersion": {
+            "type": "string"
+          },
+          "sbsStatus": {
+            "$ref": "#/components/schemas/SbsMonthStatusInput"
+          },
+          "filingRequired": {
+            "type": "boolean"
+          },
+          "incomeGelMinor": {
+            "type": "string",
+            "pattern": "^(0|-?[1-9][0-9]*)$",
+            "description": "Integer amount in minor units (e.g. tetri, cents), as a decimal string.",
+            "examples": [
+              "125000",
+              "-69085"
+            ]
+          },
+          "excludedGelMinor": {
+            "type": "string",
+            "pattern": "^(0|-?[1-9][0-9]*)$",
+            "description": "Integer amount in minor units (e.g. tetri, cents), as a decimal string.",
+            "examples": [
+              "125000",
+              "-69085"
+            ]
+          },
+          "ytdGelMinor": {
+            "type": "string",
+            "pattern": "^(0|-?[1-9][0-9]*)$",
+            "description": "Integer amount in minor units (e.g. tetri, cents), as a decimal string.",
+            "examples": [
+              "125000",
+              "-69085"
+            ]
+          },
+          "byPaymentMethod": {
+            "$ref": "#/components/schemas/IncomeByPaymentMethodInput"
+          },
+          "rateBp": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "taxGelMinor": {
+            "type": "string",
+            "pattern": "^(0|-?[1-9][0-9]*)$",
+            "description": "Integer amount in minor units (e.g. tetri, cents), as a decimal string.",
+            "examples": [
+              "125000",
+              "-69085"
+            ]
+          },
+          "limitCrossedThisMonth": {
+            "type": "boolean"
+          },
+          "zeroReturn": {
+            "type": "boolean"
+          },
+          "negativeIncome": {
+            "type": "boolean"
+          },
+          "deadline": {
+            "type": "string",
+            "format": "date",
+            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+          },
+          "status": {
+            "$ref": "#/components/schemas/FilingStatusInput"
+          },
+          "latestFiling": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/FilingSummaryInput"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "period",
+          "rulesVersion",
+          "sbsStatus",
+          "filingRequired",
+          "incomeGelMinor",
+          "excludedGelMinor",
+          "ytdGelMinor",
+          "byPaymentMethod",
+          "rateBp",
+          "taxGelMinor",
+          "limitCrossedThisMonth",
+          "zeroReturn",
+          "negativeIncome",
+          "deadline",
+          "status",
+          "latestFiling"
+        ]
+      },
+      "DeclarationYearViewInput": {
+        "type": "object",
+        "properties": {
+          "year": {
+            "type": "integer",
+            "minimum": 2000,
+            "maximum": 9999
+          },
+          "months": {
+            "minItems": 12,
+            "maxItems": 12,
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DeclarationMonthViewInput"
+            }
+          },
+          "totalIncomeGelMinor": {
+            "type": "string",
+            "pattern": "^(0|-?[1-9][0-9]*)$",
+            "description": "Integer amount in minor units (e.g. tetri, cents), as a decimal string.",
+            "examples": [
+              "125000",
+              "-69085"
+            ]
+          },
+          "totalTaxGelMinor": {
+            "type": "string",
+            "pattern": "^(0|-?[1-9][0-9]*)$",
+            "description": "Integer amount in minor units (e.g. tetri, cents), as a decimal string.",
+            "examples": [
+              "125000",
+              "-69085"
+            ]
+          },
+          "crossingPeriod": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9]{4}-(0[1-9]|1[0-2])$",
+                "examples": [
+                  "2026-09"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "limitExceeded": {
+            "type": "boolean"
+          },
+          "limitStatus": {
+            "$ref": "#/components/schemas/AnnualLimitStatusInput"
+          },
+          "sbsEffectiveFrom": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date",
+                "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "annualLimitGelMinor": {
+            "type": "string",
+            "pattern": "^(0|-?[1-9][0-9]*)$",
+            "description": "Integer amount in minor units (e.g. tetri, cents), as a decimal string.",
+            "examples": [
+              "125000",
+              "-69085"
+            ]
+          },
+          "annualLimitUsedBp": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "latestYearWithData": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": -9007199254740991,
+                "maximum": 9007199254740991
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "previousYearLimitExceeded": {
+            "type": "boolean"
+          },
+          "today": {
+            "type": "string",
+            "format": "date",
+            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+          }
+        },
+        "required": [
+          "year",
+          "months",
+          "totalIncomeGelMinor",
+          "totalTaxGelMinor",
+          "crossingPeriod",
+          "limitExceeded",
+          "limitStatus",
+          "sbsEffectiveFrom",
+          "annualLimitGelMinor",
+          "annualLimitUsedBp",
+          "latestYearWithData",
+          "previousYearLimitExceeded",
+          "today"
+        ]
+      },
+      "ContributingTransactionInput": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          },
+          "occurredOn": {
+            "type": "string",
+            "format": "date",
+            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+          },
+          "description": {
+            "type": "string"
+          },
+          "source": {
+            "type": "string",
+            "enum": [
+              "manual",
+              "import",
+              "invoice_payment",
+              "reversal"
+            ]
+          },
+          "paymentMethod": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "cash_register",
+                  "pos",
+                  "bank",
+                  "other"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "reversesId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid",
+                "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "incomeGelMinor": {
+            "type": "string",
+            "pattern": "^(0|-?[1-9][0-9]*)$",
+            "description": "Integer amount in minor units (e.g. tetri, cents), as a decimal string.",
+            "examples": [
+              "125000",
+              "-69085"
+            ]
+          },
+          "amountMinor": {
+            "type": "string",
+            "pattern": "^(0|-?[1-9][0-9]*)$",
+            "description": "Integer amount in minor units (e.g. tetri, cents), as a decimal string.",
+            "examples": [
+              "125000",
+              "-69085"
+            ]
+          },
+          "currency": {
+            "type": "string",
+            "pattern": "^[A-Z]{3}$",
+            "examples": [
+              "GEL",
+              "USD",
+              "EUR",
+              "GBP"
+            ]
+          },
+          "counterparty": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "excluded": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "id",
+          "occurredOn",
+          "description",
+          "source",
+          "paymentMethod",
+          "reversesId",
+          "incomeGelMinor",
+          "amountMinor",
+          "currency",
+          "counterparty",
+          "excluded"
+        ]
+      },
+      "PeriodRulesInput": {
+        "type": "object",
+        "properties": {
+          "version": {
+            "type": "string"
+          },
+          "baseRateBp": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          },
+          "increasedRateBp": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          },
+          "annualLimitGelMinor": {
+            "type": "string",
+            "pattern": "^(0|-?[1-9][0-9]*)$",
+            "description": "Integer amount in minor units (e.g. tetri, cents), as a decimal string.",
+            "examples": [
+              "125000",
+              "-69085"
+            ]
+          },
+          "filingDeadlineDayOfNextMonth": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          }
+        },
+        "required": [
+          "version",
+          "baseRateBp",
+          "increasedRateBp",
+          "annualLimitGelMinor",
+          "filingDeadlineDayOfNextMonth"
+        ]
+      },
+      "DeclarationPeriodViewInput": {
+        "type": "object",
+        "properties": {
+          "month": {
+            "$ref": "#/components/schemas/DeclarationMonthViewInput"
+          },
+          "sbsEffectiveFrom": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date",
+                "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "rules": {
+            "$ref": "#/components/schemas/PeriodRulesInput"
+          },
+          "transactions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ContributingTransactionInput"
+            }
+          },
+          "filings": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DeclarationFilingInput"
+            }
+          },
+          "transactionChanges": {
+            "anyOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "added": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "format": "uuid",
+                      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                    }
+                  },
+                  "removed": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "format": "uuid",
+                      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                    }
+                  }
+                },
+                "required": [
+                  "added",
+                  "removed"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "fileBlocker": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/NotDueReasonInput"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "today": {
+            "type": "string",
+            "format": "date",
+            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+          }
+        },
+        "required": [
+          "month",
+          "sbsEffectiveFrom",
+          "rules",
+          "transactions",
+          "filings",
+          "transactionChanges",
+          "fileBlocker",
+          "today"
+        ]
+      },
+      "CounterpartyIncomeInput": {
+        "type": "object",
+        "properties": {
+          "counterparty": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "incomeGelMinor": {
+            "type": "string",
+            "pattern": "^(0|-?[1-9][0-9]*)$",
+            "description": "Integer amount in minor units (e.g. tetri, cents), as a decimal string.",
+            "examples": [
+              "125000",
+              "-69085"
+            ]
+          },
+          "transactionCount": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          }
+        },
+        "required": [
+          "counterparty",
+          "incomeGelMinor",
+          "transactionCount"
+        ]
+      },
+      "CurrencyIncomeInput": {
+        "type": "object",
+        "properties": {
+          "currency": {
+            "type": "string",
+            "pattern": "^[A-Z]{3}$",
+            "examples": [
+              "GEL",
+              "USD",
+              "EUR",
+              "GBP"
+            ]
+          },
+          "amountMinor": {
+            "type": "string",
+            "pattern": "^(0|-?[1-9][0-9]*)$",
+            "description": "Integer amount in minor units (e.g. tetri, cents), as a decimal string.",
+            "examples": [
+              "125000",
+              "-69085"
+            ]
+          },
+          "incomeGelMinor": {
+            "type": "string",
+            "pattern": "^(0|-?[1-9][0-9]*)$",
+            "description": "Integer amount in minor units (e.g. tetri, cents), as a decimal string.",
+            "examples": [
+              "125000",
+              "-69085"
+            ]
+          },
+          "transactionCount": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          }
+        },
+        "required": [
+          "currency",
+          "amountMinor",
+          "incomeGelMinor",
+          "transactionCount"
+        ]
+      },
+      "DashboardViewInput": {
+        "type": "object",
+        "properties": {
+          "year": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          },
+          "sbsEffectiveFrom": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date",
+                "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "annualLimitGelMinor": {
+            "type": "string",
+            "pattern": "^(0|-?[1-9][0-9]*)$",
+            "description": "Integer amount in minor units (e.g. tetri, cents), as a decimal string.",
+            "examples": [
+              "125000",
+              "-69085"
+            ]
+          },
+          "annualLimitUsedBp": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "latestYearWithData": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": -9007199254740991,
+                "maximum": 9007199254740991
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "ytdIncomeGelMinor": {
+            "type": "string",
+            "pattern": "^(0|-?[1-9][0-9]*)$",
+            "description": "Integer amount in minor units (e.g. tetri, cents), as a decimal string.",
+            "examples": [
+              "125000",
+              "-69085"
+            ]
+          },
+          "limitStatus": {
+            "$ref": "#/components/schemas/AnnualLimitStatusInput"
+          },
+          "latestMonth": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/DeclarationFiguresInput"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "nextDeadline": {
+            "anyOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "period": {
+                    "type": "string",
+                    "pattern": "^[0-9]{4}-(0[1-9]|1[0-2])$",
+                    "examples": [
+                      "2026-09"
+                    ]
+                  },
+                  "deadline": {
+                    "type": "string",
+                    "format": "date",
+                    "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+                  },
+                  "taxGelMinor": {
+                    "type": "string",
+                    "pattern": "^(0|-?[1-9][0-9]*)$",
+                    "description": "Integer amount in minor units (e.g. tetri, cents), as a decimal string.",
+                    "examples": [
+                      "125000",
+                      "-69085"
+                    ]
+                  },
+                  "zeroReturn": {
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "period",
+                  "deadline",
+                  "taxGelMinor",
+                  "zeroReturn"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "months": {
+            "minItems": 12,
+            "maxItems": 12,
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DashboardMonthInput"
+            }
+          },
+          "byCounterparty": {
+            "type": "object",
+            "properties": {
+              "top": {
+                "maxItems": 5,
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/CounterpartyIncomeInput"
+                }
+              },
+              "other": {
+                "type": "object",
+                "properties": {
+                  "incomeGelMinor": {
+                    "type": "string",
+                    "pattern": "^(0|-?[1-9][0-9]*)$",
+                    "description": "Integer amount in minor units (e.g. tetri, cents), as a decimal string.",
+                    "examples": [
+                      "125000",
+                      "-69085"
+                    ]
+                  },
+                  "transactionCount": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 9007199254740991
+                  },
+                  "counterpartyCount": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 9007199254740991
+                  }
+                },
+                "required": [
+                  "incomeGelMinor",
+                  "transactionCount",
+                  "counterpartyCount"
+                ]
+              }
+            },
+            "required": [
+              "top",
+              "other"
+            ]
+          },
+          "currencyMix": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CurrencyIncomeInput"
+            }
+          },
+          "nextReturn": {
+            "anyOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "period": {
+                    "type": "string",
+                    "pattern": "^[0-9]{4}-(0[1-9]|1[0-2])$",
+                    "examples": [
+                      "2026-09"
+                    ]
+                  },
+                  "deadline": {
+                    "type": "string",
+                    "format": "date",
+                    "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+                  },
+                  "taxGelMinor": {
+                    "type": "string",
+                    "pattern": "^(0|-?[1-9][0-9]*)$",
+                    "description": "Integer amount in minor units (e.g. tetri, cents), as a decimal string.",
+                    "examples": [
+                      "125000",
+                      "-69085"
+                    ]
+                  },
+                  "zeroReturn": {
+                    "type": "boolean"
+                  },
+                  "status": {
+                    "$ref": "#/components/schemas/FilingStatusInput"
+                  }
+                },
+                "required": [
+                  "period",
+                  "deadline",
+                  "taxGelMinor",
+                  "zeroReturn",
+                  "status"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "statusCounts": {
+            "type": "object",
+            "propertyNames": {
+              "$ref": "#/components/schemas/FilingStatusKindInput"
+            },
+            "additionalProperties": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "required": [
+              "not_due",
+              "due",
+              "overdue",
+              "filed",
+              "filed_with_drift"
+            ]
+          },
+          "today": {
+            "type": "string",
+            "format": "date",
+            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+          }
+        },
+        "required": [
+          "year",
+          "sbsEffectiveFrom",
+          "annualLimitGelMinor",
+          "annualLimitUsedBp",
+          "latestYearWithData",
+          "ytdIncomeGelMinor",
+          "limitStatus",
+          "latestMonth",
+          "nextDeadline",
+          "months",
+          "byCounterparty",
+          "currencyMix",
+          "nextReturn",
+          "statusCounts",
+          "today"
+        ]
+      },
       "Problem": {
         "type": "object",
         "properties": {
@@ -6272,137 +7266,6 @@
           "pos",
           "bank",
           "other"
-        ],
-        "additionalProperties": false
-      },
-      "Declaration": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "format": "uuid",
-            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
-          },
-          "orgId": {
-            "type": "string",
-            "format": "uuid",
-            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
-          },
-          "period": {
-            "type": "string",
-            "pattern": "^[0-9]{4}-(0[1-9]|1[0-2])$",
-            "examples": [
-              "2026-09"
-            ]
-          },
-          "status": {
-            "type": "string",
-            "enum": [
-              "draft",
-              "filed"
-            ]
-          },
-          "turnoverGelMinor": {
-            "type": "string",
-            "pattern": "^(0|-?[1-9][0-9]*)$",
-            "description": "Integer amount in minor units (e.g. tetri, cents), as a decimal string.",
-            "examples": [
-              "125000",
-              "-69085"
-            ]
-          },
-          "ytdGelMinor": {
-            "type": "string",
-            "pattern": "^(0|-?[1-9][0-9]*)$",
-            "description": "Integer amount in minor units (e.g. tetri, cents), as a decimal string.",
-            "examples": [
-              "125000",
-              "-69085"
-            ]
-          },
-          "rateBp": {
-            "type": "integer",
-            "minimum": 0,
-            "maximum": 9007199254740991
-          },
-          "byPaymentMethod": {
-            "$ref": "#/components/schemas/IncomeByPaymentMethod"
-          },
-          "taxGelMinor": {
-            "type": "string",
-            "pattern": "^(0|-?[1-9][0-9]*)$",
-            "description": "Integer amount in minor units (e.g. tetri, cents), as a decimal string.",
-            "examples": [
-              "125000",
-              "-69085"
-            ]
-          },
-          "rulesVersion": {
-            "type": "string"
-          },
-          "snapshot": {
-            "anyOf": [
-              {
-                "type": "object",
-                "propertyNames": {
-                  "type": "string"
-                },
-                "additionalProperties": {}
-              },
-              {
-                "type": "null"
-              }
-            ]
-          },
-          "hasDrift": {
-            "type": "boolean"
-          },
-          "computedAt": {
-            "type": "string",
-            "format": "date-time",
-            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$"
-          },
-          "filedAt": {
-            "anyOf": [
-              {
-                "type": "string",
-                "format": "date-time",
-                "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$"
-              },
-              {
-                "type": "null"
-              }
-            ]
-          },
-          "filedBy": {
-            "anyOf": [
-              {
-                "type": "string",
-                "format": "uuid",
-                "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
-              },
-              {
-                "type": "null"
-              }
-            ]
-          }
-        },
-        "required": [
-          "id",
-          "orgId",
-          "period",
-          "status",
-          "turnoverGelMinor",
-          "ytdGelMinor",
-          "rateBp",
-          "byPaymentMethod",
-          "taxGelMinor",
-          "rulesVersion",
-          "snapshot",
-          "hasDrift",
-          "computedAt",
-          "filedAt",
-          "filedBy"
         ],
         "additionalProperties": false
       },
@@ -8638,6 +9501,1150 @@
           "months"
         ],
         "additionalProperties": false
+      },
+      "FilingStatusKind": {
+        "type": "string",
+        "enum": [
+          "not_due",
+          "due",
+          "overdue",
+          "filed",
+          "filed_with_drift"
+        ],
+        "description": "`not_due`: no return for the month, or the month is not over. `due`: the month is over and the deadline is today or later. `overdue`: past the deadline, never filed. `filed`: the latest filing matches the live figures. `filed_with_drift`: they differ."
+      },
+      "NotDueReason": {
+        "type": "string",
+        "enum": [
+          "not_required",
+          "period_open"
+        ]
+      },
+      "ReturnLine": {
+        "type": "string",
+        "enum": [
+          "income",
+          "line15",
+          "line18",
+          "line19",
+          "line20",
+          "line21",
+          "rate",
+          "tax"
+        ]
+      },
+      "LineDifference": {
+        "type": "object",
+        "properties": {
+          "line": {
+            "$ref": "#/components/schemas/ReturnLine"
+          },
+          "filed": {
+            "type": "string",
+            "pattern": "^(0|-?[1-9][0-9]*)$",
+            "description": "Integer amount in minor units (e.g. tetri, cents), as a decimal string.",
+            "examples": [
+              "125000",
+              "-69085"
+            ]
+          },
+          "live": {
+            "type": "string",
+            "pattern": "^(0|-?[1-9][0-9]*)$",
+            "description": "Integer amount in minor units (e.g. tetri, cents), as a decimal string.",
+            "examples": [
+              "125000",
+              "-69085"
+            ]
+          },
+          "delta": {
+            "type": "string",
+            "pattern": "^(0|-?[1-9][0-9]*)$",
+            "description": "Integer amount in minor units (e.g. tetri, cents), as a decimal string.",
+            "examples": [
+              "125000",
+              "-69085"
+            ]
+          }
+        },
+        "required": [
+          "line",
+          "filed",
+          "live",
+          "delta"
+        ],
+        "additionalProperties": false
+      },
+      "FilingStatus": {
+        "type": "object",
+        "properties": {
+          "kind": {
+            "$ref": "#/components/schemas/FilingStatusKind"
+          },
+          "reason": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/NotDueReason"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "daysLeft": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 9007199254740991
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "daysOverdue": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "exclusiveMinimum": 0,
+                "maximum": 9007199254740991
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "differences": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LineDifference"
+            }
+          }
+        },
+        "required": [
+          "kind",
+          "reason",
+          "daysLeft",
+          "daysOverdue",
+          "differences"
+        ],
+        "additionalProperties": false
+      },
+      "FiledFigures": {
+        "type": "object",
+        "properties": {
+          "incomeGelMinor": {
+            "type": "string",
+            "pattern": "^(0|-?[1-9][0-9]*)$",
+            "description": "Integer amount in minor units (e.g. tetri, cents), as a decimal string.",
+            "examples": [
+              "125000",
+              "-69085"
+            ]
+          },
+          "ytdGelMinor": {
+            "type": "string",
+            "pattern": "^(0|-?[1-9][0-9]*)$",
+            "description": "Integer amount in minor units (e.g. tetri, cents), as a decimal string.",
+            "examples": [
+              "125000",
+              "-69085"
+            ]
+          },
+          "byPaymentMethod": {
+            "$ref": "#/components/schemas/IncomeByPaymentMethod"
+          },
+          "rateBp": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "taxGelMinor": {
+            "type": "string",
+            "pattern": "^(0|-?[1-9][0-9]*)$",
+            "description": "Integer amount in minor units (e.g. tetri, cents), as a decimal string.",
+            "examples": [
+              "125000",
+              "-69085"
+            ]
+          }
+        },
+        "required": [
+          "incomeGelMinor",
+          "ytdGelMinor",
+          "byPaymentMethod",
+          "rateBp",
+          "taxGelMinor"
+        ],
+        "additionalProperties": false
+      },
+      "DeclarationFiling": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          },
+          "period": {
+            "type": "string",
+            "pattern": "^[0-9]{4}-(0[1-9]|1[0-2])$",
+            "examples": [
+              "2026-09"
+            ]
+          },
+          "version": {
+            "type": "integer",
+            "exclusiveMinimum": 0,
+            "maximum": 9007199254740991
+          },
+          "supersedesId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid",
+                "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "rulesVersion": {
+            "type": "string"
+          },
+          "figures": {
+            "$ref": "#/components/schemas/FiledFigures"
+          },
+          "zeroReturn": {
+            "type": "boolean"
+          },
+          "transactionIds": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid",
+              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+            }
+          },
+          "rsReference": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "filedAt": {
+            "type": "string",
+            "format": "date-time",
+            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$"
+          },
+          "filedBy": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "format": "uuid",
+                "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+              },
+              "name": {
+                "type": "string"
+              },
+              "email": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "id",
+              "name",
+              "email"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "id",
+          "period",
+          "version",
+          "supersedesId",
+          "rulesVersion",
+          "figures",
+          "zeroReturn",
+          "transactionIds",
+          "rsReference",
+          "filedAt",
+          "filedBy"
+        ],
+        "additionalProperties": false
+      },
+      "FilingSummary": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          },
+          "version": {
+            "type": "integer",
+            "exclusiveMinimum": 0,
+            "maximum": 9007199254740991
+          },
+          "filedAt": {
+            "type": "string",
+            "format": "date-time",
+            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$"
+          },
+          "rsReference": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "version",
+          "filedAt",
+          "rsReference"
+        ],
+        "additionalProperties": false
+      },
+      "FileDeclarationRequest": {
+        "type": "object",
+        "properties": {
+          "rsReference": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 64
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "supersedesId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid",
+                "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "additionalProperties": false
+      },
+      "DeclarationMonthView": {
+        "type": "object",
+        "properties": {
+          "period": {
+            "type": "string",
+            "pattern": "^[0-9]{4}-(0[1-9]|1[0-2])$",
+            "examples": [
+              "2026-09"
+            ]
+          },
+          "rulesVersion": {
+            "type": "string"
+          },
+          "sbsStatus": {
+            "$ref": "#/components/schemas/SbsMonthStatus"
+          },
+          "filingRequired": {
+            "type": "boolean"
+          },
+          "incomeGelMinor": {
+            "type": "string",
+            "pattern": "^(0|-?[1-9][0-9]*)$",
+            "description": "Integer amount in minor units (e.g. tetri, cents), as a decimal string.",
+            "examples": [
+              "125000",
+              "-69085"
+            ]
+          },
+          "excludedGelMinor": {
+            "type": "string",
+            "pattern": "^(0|-?[1-9][0-9]*)$",
+            "description": "Integer amount in minor units (e.g. tetri, cents), as a decimal string.",
+            "examples": [
+              "125000",
+              "-69085"
+            ]
+          },
+          "ytdGelMinor": {
+            "type": "string",
+            "pattern": "^(0|-?[1-9][0-9]*)$",
+            "description": "Integer amount in minor units (e.g. tetri, cents), as a decimal string.",
+            "examples": [
+              "125000",
+              "-69085"
+            ]
+          },
+          "byPaymentMethod": {
+            "$ref": "#/components/schemas/IncomeByPaymentMethod"
+          },
+          "rateBp": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "taxGelMinor": {
+            "type": "string",
+            "pattern": "^(0|-?[1-9][0-9]*)$",
+            "description": "Integer amount in minor units (e.g. tetri, cents), as a decimal string.",
+            "examples": [
+              "125000",
+              "-69085"
+            ]
+          },
+          "limitCrossedThisMonth": {
+            "type": "boolean"
+          },
+          "zeroReturn": {
+            "type": "boolean"
+          },
+          "negativeIncome": {
+            "type": "boolean"
+          },
+          "deadline": {
+            "type": "string",
+            "format": "date",
+            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+          },
+          "status": {
+            "$ref": "#/components/schemas/FilingStatus"
+          },
+          "latestFiling": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/FilingSummary"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "period",
+          "rulesVersion",
+          "sbsStatus",
+          "filingRequired",
+          "incomeGelMinor",
+          "excludedGelMinor",
+          "ytdGelMinor",
+          "byPaymentMethod",
+          "rateBp",
+          "taxGelMinor",
+          "limitCrossedThisMonth",
+          "zeroReturn",
+          "negativeIncome",
+          "deadline",
+          "status",
+          "latestFiling"
+        ],
+        "additionalProperties": false
+      },
+      "DeclarationYearView": {
+        "type": "object",
+        "properties": {
+          "year": {
+            "type": "integer",
+            "minimum": 2000,
+            "maximum": 9999
+          },
+          "months": {
+            "minItems": 12,
+            "maxItems": 12,
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DeclarationMonthView"
+            }
+          },
+          "totalIncomeGelMinor": {
+            "type": "string",
+            "pattern": "^(0|-?[1-9][0-9]*)$",
+            "description": "Integer amount in minor units (e.g. tetri, cents), as a decimal string.",
+            "examples": [
+              "125000",
+              "-69085"
+            ]
+          },
+          "totalTaxGelMinor": {
+            "type": "string",
+            "pattern": "^(0|-?[1-9][0-9]*)$",
+            "description": "Integer amount in minor units (e.g. tetri, cents), as a decimal string.",
+            "examples": [
+              "125000",
+              "-69085"
+            ]
+          },
+          "crossingPeriod": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9]{4}-(0[1-9]|1[0-2])$",
+                "examples": [
+                  "2026-09"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "limitExceeded": {
+            "type": "boolean"
+          },
+          "limitStatus": {
+            "$ref": "#/components/schemas/AnnualLimitStatus"
+          },
+          "sbsEffectiveFrom": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date",
+                "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "annualLimitGelMinor": {
+            "type": "string",
+            "pattern": "^(0|-?[1-9][0-9]*)$",
+            "description": "Integer amount in minor units (e.g. tetri, cents), as a decimal string.",
+            "examples": [
+              "125000",
+              "-69085"
+            ]
+          },
+          "annualLimitUsedBp": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "latestYearWithData": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": -9007199254740991,
+                "maximum": 9007199254740991
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "previousYearLimitExceeded": {
+            "type": "boolean"
+          },
+          "today": {
+            "type": "string",
+            "format": "date",
+            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+          }
+        },
+        "required": [
+          "year",
+          "months",
+          "totalIncomeGelMinor",
+          "totalTaxGelMinor",
+          "crossingPeriod",
+          "limitExceeded",
+          "limitStatus",
+          "sbsEffectiveFrom",
+          "annualLimitGelMinor",
+          "annualLimitUsedBp",
+          "latestYearWithData",
+          "previousYearLimitExceeded",
+          "today"
+        ],
+        "additionalProperties": false
+      },
+      "ContributingTransaction": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          },
+          "occurredOn": {
+            "type": "string",
+            "format": "date",
+            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+          },
+          "description": {
+            "type": "string"
+          },
+          "source": {
+            "type": "string",
+            "enum": [
+              "manual",
+              "import",
+              "invoice_payment",
+              "reversal"
+            ]
+          },
+          "paymentMethod": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "cash_register",
+                  "pos",
+                  "bank",
+                  "other"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "reversesId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid",
+                "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "incomeGelMinor": {
+            "type": "string",
+            "pattern": "^(0|-?[1-9][0-9]*)$",
+            "description": "Integer amount in minor units (e.g. tetri, cents), as a decimal string.",
+            "examples": [
+              "125000",
+              "-69085"
+            ]
+          },
+          "amountMinor": {
+            "type": "string",
+            "pattern": "^(0|-?[1-9][0-9]*)$",
+            "description": "Integer amount in minor units (e.g. tetri, cents), as a decimal string.",
+            "examples": [
+              "125000",
+              "-69085"
+            ]
+          },
+          "currency": {
+            "type": "string",
+            "pattern": "^[A-Z]{3}$",
+            "examples": [
+              "GEL",
+              "USD",
+              "EUR",
+              "GBP"
+            ]
+          },
+          "counterparty": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "excluded": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "id",
+          "occurredOn",
+          "description",
+          "source",
+          "paymentMethod",
+          "reversesId",
+          "incomeGelMinor",
+          "amountMinor",
+          "currency",
+          "counterparty",
+          "excluded"
+        ],
+        "additionalProperties": false
+      },
+      "PeriodRules": {
+        "type": "object",
+        "properties": {
+          "version": {
+            "type": "string"
+          },
+          "baseRateBp": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          },
+          "increasedRateBp": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          },
+          "annualLimitGelMinor": {
+            "type": "string",
+            "pattern": "^(0|-?[1-9][0-9]*)$",
+            "description": "Integer amount in minor units (e.g. tetri, cents), as a decimal string.",
+            "examples": [
+              "125000",
+              "-69085"
+            ]
+          },
+          "filingDeadlineDayOfNextMonth": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          }
+        },
+        "required": [
+          "version",
+          "baseRateBp",
+          "increasedRateBp",
+          "annualLimitGelMinor",
+          "filingDeadlineDayOfNextMonth"
+        ],
+        "additionalProperties": false
+      },
+      "DeclarationPeriodView": {
+        "type": "object",
+        "properties": {
+          "month": {
+            "$ref": "#/components/schemas/DeclarationMonthView"
+          },
+          "sbsEffectiveFrom": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date",
+                "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "rules": {
+            "$ref": "#/components/schemas/PeriodRules"
+          },
+          "transactions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ContributingTransaction"
+            }
+          },
+          "filings": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DeclarationFiling"
+            }
+          },
+          "transactionChanges": {
+            "anyOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "added": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "format": "uuid",
+                      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                    }
+                  },
+                  "removed": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "format": "uuid",
+                      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                    }
+                  }
+                },
+                "required": [
+                  "added",
+                  "removed"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "fileBlocker": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/NotDueReason"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "today": {
+            "type": "string",
+            "format": "date",
+            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+          }
+        },
+        "required": [
+          "month",
+          "sbsEffectiveFrom",
+          "rules",
+          "transactions",
+          "filings",
+          "transactionChanges",
+          "fileBlocker",
+          "today"
+        ],
+        "additionalProperties": false
+      },
+      "CounterpartyIncome": {
+        "type": "object",
+        "properties": {
+          "counterparty": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "incomeGelMinor": {
+            "type": "string",
+            "pattern": "^(0|-?[1-9][0-9]*)$",
+            "description": "Integer amount in minor units (e.g. tetri, cents), as a decimal string.",
+            "examples": [
+              "125000",
+              "-69085"
+            ]
+          },
+          "transactionCount": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          }
+        },
+        "required": [
+          "counterparty",
+          "incomeGelMinor",
+          "transactionCount"
+        ],
+        "additionalProperties": false
+      },
+      "CurrencyIncome": {
+        "type": "object",
+        "properties": {
+          "currency": {
+            "type": "string",
+            "pattern": "^[A-Z]{3}$",
+            "examples": [
+              "GEL",
+              "USD",
+              "EUR",
+              "GBP"
+            ]
+          },
+          "amountMinor": {
+            "type": "string",
+            "pattern": "^(0|-?[1-9][0-9]*)$",
+            "description": "Integer amount in minor units (e.g. tetri, cents), as a decimal string.",
+            "examples": [
+              "125000",
+              "-69085"
+            ]
+          },
+          "incomeGelMinor": {
+            "type": "string",
+            "pattern": "^(0|-?[1-9][0-9]*)$",
+            "description": "Integer amount in minor units (e.g. tetri, cents), as a decimal string.",
+            "examples": [
+              "125000",
+              "-69085"
+            ]
+          },
+          "transactionCount": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          }
+        },
+        "required": [
+          "currency",
+          "amountMinor",
+          "incomeGelMinor",
+          "transactionCount"
+        ],
+        "additionalProperties": false
+      },
+      "DashboardView": {
+        "type": "object",
+        "properties": {
+          "year": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          },
+          "sbsEffectiveFrom": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date",
+                "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "annualLimitGelMinor": {
+            "type": "string",
+            "pattern": "^(0|-?[1-9][0-9]*)$",
+            "description": "Integer amount in minor units (e.g. tetri, cents), as a decimal string.",
+            "examples": [
+              "125000",
+              "-69085"
+            ]
+          },
+          "annualLimitUsedBp": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "latestYearWithData": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": -9007199254740991,
+                "maximum": 9007199254740991
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "ytdIncomeGelMinor": {
+            "type": "string",
+            "pattern": "^(0|-?[1-9][0-9]*)$",
+            "description": "Integer amount in minor units (e.g. tetri, cents), as a decimal string.",
+            "examples": [
+              "125000",
+              "-69085"
+            ]
+          },
+          "limitStatus": {
+            "$ref": "#/components/schemas/AnnualLimitStatus"
+          },
+          "latestMonth": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/DeclarationFigures"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "nextDeadline": {
+            "anyOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "period": {
+                    "type": "string",
+                    "pattern": "^[0-9]{4}-(0[1-9]|1[0-2])$",
+                    "examples": [
+                      "2026-09"
+                    ]
+                  },
+                  "deadline": {
+                    "type": "string",
+                    "format": "date",
+                    "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+                  },
+                  "taxGelMinor": {
+                    "type": "string",
+                    "pattern": "^(0|-?[1-9][0-9]*)$",
+                    "description": "Integer amount in minor units (e.g. tetri, cents), as a decimal string.",
+                    "examples": [
+                      "125000",
+                      "-69085"
+                    ]
+                  },
+                  "zeroReturn": {
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "period",
+                  "deadline",
+                  "taxGelMinor",
+                  "zeroReturn"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "months": {
+            "minItems": 12,
+            "maxItems": 12,
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DashboardMonth"
+            }
+          },
+          "byCounterparty": {
+            "type": "object",
+            "properties": {
+              "top": {
+                "maxItems": 5,
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/CounterpartyIncome"
+                }
+              },
+              "other": {
+                "type": "object",
+                "properties": {
+                  "incomeGelMinor": {
+                    "type": "string",
+                    "pattern": "^(0|-?[1-9][0-9]*)$",
+                    "description": "Integer amount in minor units (e.g. tetri, cents), as a decimal string.",
+                    "examples": [
+                      "125000",
+                      "-69085"
+                    ]
+                  },
+                  "transactionCount": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 9007199254740991
+                  },
+                  "counterpartyCount": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 9007199254740991
+                  }
+                },
+                "required": [
+                  "incomeGelMinor",
+                  "transactionCount",
+                  "counterpartyCount"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "required": [
+              "top",
+              "other"
+            ],
+            "additionalProperties": false
+          },
+          "currencyMix": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CurrencyIncome"
+            }
+          },
+          "nextReturn": {
+            "anyOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "period": {
+                    "type": "string",
+                    "pattern": "^[0-9]{4}-(0[1-9]|1[0-2])$",
+                    "examples": [
+                      "2026-09"
+                    ]
+                  },
+                  "deadline": {
+                    "type": "string",
+                    "format": "date",
+                    "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+                  },
+                  "taxGelMinor": {
+                    "type": "string",
+                    "pattern": "^(0|-?[1-9][0-9]*)$",
+                    "description": "Integer amount in minor units (e.g. tetri, cents), as a decimal string.",
+                    "examples": [
+                      "125000",
+                      "-69085"
+                    ]
+                  },
+                  "zeroReturn": {
+                    "type": "boolean"
+                  },
+                  "status": {
+                    "$ref": "#/components/schemas/FilingStatus"
+                  }
+                },
+                "required": [
+                  "period",
+                  "deadline",
+                  "taxGelMinor",
+                  "zeroReturn",
+                  "status"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "statusCounts": {
+            "type": "object",
+            "propertyNames": {
+              "$ref": "#/components/schemas/FilingStatusKind"
+            },
+            "additionalProperties": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "required": [
+              "not_due",
+              "due",
+              "overdue",
+              "filed",
+              "filed_with_drift"
+            ]
+          },
+          "today": {
+            "type": "string",
+            "format": "date",
+            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+          }
+        },
+        "required": [
+          "year",
+          "sbsEffectiveFrom",
+          "annualLimitGelMinor",
+          "annualLimitUsedBp",
+          "latestYearWithData",
+          "ytdIncomeGelMinor",
+          "limitStatus",
+          "latestMonth",
+          "nextDeadline",
+          "months",
+          "byCounterparty",
+          "currencyMix",
+          "nextReturn",
+          "statusCounts",
+          "today"
+        ],
+        "additionalProperties": false
       }
     }
   },
@@ -10090,11 +12097,11 @@
     "/v1/orgs/{orgId}/declarations": {
       "get": {
         "operationId": "getDeclarationYear",
-        "summary": "Monthly SBS declaration figures for a year, laid out like the return",
+        "summary": "Monthly SBS declaration figures for a year, with filing status and drift",
         "tags": [
           "declarations"
         ],
-        "description": "Per month: line 15 (`ytdGelMinor`), lines 18–21 (`byPaymentMethod`), rate, tax and deadline. Computed from posted transactions on every request; nothing is filed. Without `year`: the latest year with posted transactions, else the current year.",
+        "description": "Per month: line 15 (`ytdGelMinor`), lines 18–21 (`byPaymentMethod`), rate, tax and deadline, computed from posted transactions on every request, plus `status` against the latest filing (drift lists the lines that moved). Without `year`: the latest year with posted transactions, else the current year.",
         "parameters": [
           {
             "schema": {
@@ -10123,7 +12130,134 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/DeclarationYearResponse"
+                  "$ref": "#/components/schemas/DeclarationYearView"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error (RFC 9457 problem details)",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/orgs/{orgId}/declarations/{period}": {
+      "get": {
+        "operationId": "getDeclarationPeriod",
+        "summary": "One monthly return laid out like rs.ge, with its transactions and filings",
+        "tags": [
+          "declarations"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+            },
+            "in": "path",
+            "name": "orgId",
+            "required": true
+          },
+          {
+            "schema": {
+              "type": "string",
+              "pattern": "^[0-9]{4}-(0[1-9]|1[0-2])$"
+            },
+            "example": "2026-09",
+            "in": "path",
+            "name": "period",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeclarationPeriodView"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error (RFC 9457 problem details)",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/orgs/{orgId}/declarations/{period}/file": {
+      "post": {
+        "operationId": "fileDeclaration",
+        "summary": "Record that the return was filed on rs.ge: stores an immutable snapshot",
+        "tags": [
+          "declarations"
+        ],
+        "description": "Snapshots the live figures, rules version and contributing transactions of the month. Nothing is sent to rs.ge. If the month is already filed, this files a correction: send the latest filing id as `supersedesId` (409 otherwise). Snapshots are never changed or deleted. 409 also when the month is not over yet or needs no return.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FileDeclarationRequestInput"
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+            },
+            "in": "path",
+            "name": "orgId",
+            "required": true
+          },
+          {
+            "schema": {
+              "type": "string",
+              "pattern": "^[0-9]{4}-(0[1-9]|1[0-2])$"
+            },
+            "example": "2026-09",
+            "in": "path",
+            "name": "period",
+            "required": true
+          },
+          {
+            "schema": {
+              "type": "string",
+              "pattern": "^[\\x21-\\x7e]{1,255}$"
+            },
+            "in": "header",
+            "name": "idempotency-key",
+            "required": false,
+            "description": "Client-chosen key; replays return the stored response for 24 h."
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeclarationFiling"
                 }
               }
             }
@@ -10144,11 +12278,11 @@
     "/v1/orgs/{orgId}/dashboard": {
       "get": {
         "operationId": "getDashboard",
-        "summary": "Year-to-date SBS income, latest month, next deadline and limit progress",
+        "summary": "Year-to-date SBS income, income by month, counterparty and currency, deadlines",
         "tags": [
           "dashboard"
         ],
-        "description": "Without `year`: the latest year with posted transactions, else the current year in Tbilisi.",
+        "description": "Without `year`: the latest year with posted transactions, else the current year in Tbilisi. Counterparty and currency figures cover SBS income from the status start.",
         "parameters": [
           {
             "schema": {
@@ -10177,7 +12311,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/DashboardResponse"
+                  "$ref": "#/components/schemas/DashboardView"
                 }
               }
             }
@@ -10237,7 +12371,7 @@
     },
     {
       "name": "declarations",
-      "description": "Monthly SBS declaration figures"
+      "description": "Monthly SBS declaration figures and filings"
     },
     {
       "name": "dashboard",

@@ -22,7 +22,7 @@ With the fixture `fixtures/statements/bog/bog-gbp-2025-06.xlsx` and SBS start �
 | Upload to S3, parse in a worker job, SSE progress | API parses synchronously (statements are small), stores batch + parsed rows in Postgres, and never stores the file |
 | Commit in a worker job, in chunks | API commits in one request. Rates are resolved with `resolveRate` before the DB transaction; missing rates are backfilled inline |
 | Categorisation rules engine | Fixed suggestions: incoming payment → `Income: Services` (SBS, payment method `bank`); fx_conversion → FX Clearing; anything else → user must pick an account or skip |
-| Stored declarations, filing, drift | Computed on request with `computeDeclarationYear` from posted transactions. No filing |
+| Stored declarations, filing, drift | Computed on request with `computeDeclarationYear` from posted transactions. Filing and drift came after the MVP (WS-08, ADR 0013): filing stores an immutable snapshot, and drift compares it with the live figures |
 | Manual transactions, invoices, accountant mode, audit UI, exports | Out. Reversal is in |
 | Cross-statement FX matching | Not needed: each leg balances in its own currency through FX Clearing (GBP statement posts the GBP leg; a USD statement would post the USD leg) |
 

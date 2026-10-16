@@ -37,6 +37,9 @@ describe('cross-tenant harness', () => {
         'POST /v1/orgs/:orgId/transactions/:transactionId/reverse',
         'GET /v1/orgs/:orgId/declarations',
         'GET /v1/orgs/:orgId/dashboard',
+        // WS-08 declarations.
+        'GET /v1/orgs/:orgId/declarations/:period',
+        'POST /v1/orgs/:orgId/declarations/:period/file',
       ]),
     );
   });
