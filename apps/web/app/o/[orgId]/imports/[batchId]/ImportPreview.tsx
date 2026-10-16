@@ -15,10 +15,11 @@ import {
   toast,
 } from '@ie-ledger/ui';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { ArrowLeft, FileQuestion } from 'lucide-react';
+import { ArrowLeft, FileQuestion, Wand2 } from 'lucide-react';
 import { createContext, useContext, useMemo, useState } from 'react';
 import { Amount } from '@/components/Amount';
 import { Notice } from '@/components/Notice';
+import { RuleDialog } from '@/components/RuleDialog';
 import { type ApiError, errorMessage, isApiError } from '@/lib/api/api-error';
 import { newIdempotencyKey } from '@/lib/api/browser';
 import type { Schemas } from '@/lib/api/client';
@@ -31,6 +32,10 @@ import {
   importRowsQuery,
   type ImportRowView,
   ledgerKeys,
+  applyImportRules,
+  bulkUpdateImportRows,
+  type Rule,
+  rulesQuery,
   updateImportRow,
   type UploadStatementResponse,
 } from '@/lib/api/ledger';
@@ -54,8 +59,14 @@ interface RowContext {
   editable: boolean;
   committed: boolean;
   blocked: ReadonlySet<string>;
+  rules: ReadonlyMap<string, Rule>;
+  selected: ReadonlySet<string>;
+  /** Rows a bulk action can change (not duplicates). */
+  selectable: readonly ImportRowView[];
   onChoose: (row: ImportRowView, accountId: string | null) => void;
   onSkip: (row: ImportRowView, skip: boolean) => void;
+  onSelect: (rows: readonly ImportRowView[], selected: boolean) => void;
+  onCreateRule: (row: ImportRowView) => void;
 }
 
 const RowCtx = createContext<RowContext | null>(null);
@@ -88,9 +99,64 @@ function StatusCell({ row }: { row: ImportRowView }) {
   }
   const s = ROW_STATUS[row.status];
   return (
-    <Badge tone={s.tone} dot>
-      {s.label}
-    </Badge>
+    <span className="flex min-w-0 flex-col items-start gap-0.5">
+      <Badge tone={s.tone} dot>
+        {s.label}
+      </Badge>
+      <RuleNote row={row} />
+    </span>
+  );
+}
+
+/** Which rule suggested the account, while the user has not chosen another. */
+function RuleNote({ row }: { row: ImportRowView }) {
+  const { rules } = useRowCtx();
+  if (row.suggestedRuleId === null || row.chosenAccountId !== null || row.status === 'duplicate') {
+    return null;
+  }
+  const rule = rules.get(row.suggestedRuleId);
+  return (
+    <span className="max-w-full truncate text-xs text-fg-muted" title={rule?.name}>
+      Rule: {rule?.name ?? 'deleted rule'}
+    </span>
+  );
+}
+
+function SelectCell({ row }: { row: ImportRowView }) {
+  const { editable, committed, selected, onSelect } = useRowCtx();
+  if (!editable || committed || row.status === 'duplicate') return null;
+  return (
+    <input
+      type="checkbox"
+      className="size-4 accent-accent"
+      aria-label={`Select ${rowName(row)}`}
+      checked={selected.has(row.id)}
+      onChange={(e) => {
+        onSelect([row], e.target.checked);
+      }}
+    />
+  );
+}
+
+function SelectAllHeader() {
+  const { editable, committed, selected, selectable, onSelect } = useRowCtx();
+  if (!editable || committed || selectable.length === 0) {
+    return <span className="sr-only">Select</span>;
+  }
+  const all = selectable.every((r) => selected.has(r.id));
+  return (
+    <input
+      type="checkbox"
+      className="size-4 accent-accent"
+      aria-label="Select all rows"
+      checked={all}
+      ref={(el) => {
+        if (el) el.indeterminate = !all && selected.size > 0;
+      }}
+      onChange={(e) => {
+        onSelect(selectable, e.target.checked);
+      }}
+    />
   );
 }
 
@@ -117,26 +183,44 @@ function AccountCell({ row }: { row: ImportRowView }) {
 }
 
 function SkipCell({ row }: { row: ImportRowView }) {
-  const { editable, committed, onSkip } = useRowCtx();
+  const { editable, committed, onSkip, onCreateRule } = useRowCtx();
   if (!editable || committed || row.status === 'duplicate') return null;
   const skipped = row.status === 'skipped';
   return (
-    <Button
-      size="sm"
-      variant="ghost"
-      aria-label={`${skipped ? 'Include' : 'Skip'} ${rowName(row)}`}
-      onPress={() => {
-        onSkip(row, !skipped);
-      }}
-    >
-      {skipped ? 'Include' : 'Skip'}
-    </Button>
+    <span className="flex items-center gap-0.5">
+      <Button
+        size="icon-sm"
+        variant="ghost"
+        aria-label={`Create rule from ${rowName(row)}`}
+        onPress={() => {
+          onCreateRule(row);
+        }}
+      >
+        <Wand2 aria-hidden />
+      </Button>
+      <Button
+        size="sm"
+        variant="ghost"
+        aria-label={`${skipped ? 'Include' : 'Skip'} ${rowName(row)}`}
+        onPress={() => {
+          onSkip(row, !skipped);
+        }}
+      >
+        {skipped ? 'Include' : 'Skip'}
+      </Button>
+    </span>
   );
 }
 
 const col = createDataTableColumns<ImportRowView>();
 
 const COLUMNS = [
+  col.display({
+    id: 'select',
+    header: () => <SelectAllHeader />,
+    cell: ({ row }) => <SelectCell row={row.original} />,
+    meta: { width: '2.75rem' },
+  }),
   col.accessor('bookedOn', {
     header: 'Date',
     cell: (info) => formatIsoDate(info.getValue()),
@@ -183,9 +267,9 @@ const COLUMNS = [
   }),
   col.display({
     id: 'skip',
-    header: () => <span className="sr-only">Skip</span>,
+    header: () => <span className="sr-only">Row actions</span>,
     cell: ({ row }) => <SkipCell row={row.original} />,
-    meta: { width: '5.5rem', align: 'end' },
+    meta: { width: '8rem', align: 'end' },
   }),
 ];
 
@@ -202,16 +286,21 @@ function RowCard({ row }: { row: ImportRowView }) {
       )}
     >
       <div className="flex items-start justify-between gap-3">
-        <div className="flex min-w-0 flex-col">
-          <span className="font-medium break-words">{row.counterparty ?? row.description}</span>
-          {row.counterparty ? (
-            <span
-              className="line-clamp-3 text-xs break-words text-fg-muted"
-              title={row.description}
-            >
-              {row.description}
-            </span>
-          ) : null}
+        <div className="flex min-w-0 items-start gap-2">
+          <span className="pt-1">
+            <SelectCell row={row} />
+          </span>
+          <div className="flex min-w-0 flex-col">
+            <span className="font-medium break-words">{row.counterparty ?? row.description}</span>
+            {row.counterparty ? (
+              <span
+                className="line-clamp-3 text-xs break-words text-fg-muted"
+                title={row.description}
+              >
+                {row.description}
+              </span>
+            ) : null}
+          </div>
         </div>
         <Amount
           minor={row.amountMinor}
@@ -442,6 +531,10 @@ export function ImportPreview({
     queryClient.getQueryData<UploadStatementResponse>(ledgerKeys.importUpload(orgId, batchId)),
   );
   const [blocked, setBlocked] = useState<ReadonlySet<string>>(new Set());
+  const [selected, setSelected] = useState<ReadonlySet<string>>(new Set());
+  const [bulkAccount, setBulkAccount] = useState<string | null>(null);
+  const [ruleFrom, setRuleFrom] = useState<ImportRowView | null>(null);
+  const rulesQ = useQuery(rulesQuery(orgId));
   const narrow = useMediaQuery(NARROW_SCREEN);
 
   const rowsKey = ledgerKeys.importRows(orgId, batchId);
@@ -480,6 +573,62 @@ export function ImportPreview({
       }
     },
     onSettled: () => void queryClient.invalidateQueries({ queryKey: batchKey }),
+  });
+
+  const unblock = (ids: readonly string[]) => {
+    setBlocked((b) => {
+      const next = new Set(b);
+      for (const id of ids) next.delete(id);
+      return next;
+    });
+  };
+
+  const bulk = useMutation({
+    mutationFn: (body: Schemas['BulkUpdateImportRowsRequestInput']) =>
+      bulkUpdateImportRows(orgId, batchId, body, newIdempotencyKey()),
+    onSuccess: (result) => {
+      const byId = new Map(result.rows.map((r) => [r.id, r]));
+      queryClient.setQueryData<ImportRowView[]>(rowsKey, (rows) =>
+        rows?.map((r) => byId.get(r.id) ?? r),
+      );
+      unblock(
+        result.rows.filter((r) => r.accountId !== null || r.status !== 'new').map((r) => r.id),
+      );
+      setSelected(new Set());
+      setBulkAccount(null);
+      const n = result.rows.length;
+      toast({ title: `Updated ${n} row${n === 1 ? '' : 's'}`, tone: 'positive' });
+    },
+    onError: (err) => {
+      toast({
+        title: 'Could not change the rows',
+        description: errorMessage(err),
+        tone: 'negative',
+      });
+    },
+    onSettled: () => void queryClient.invalidateQueries({ queryKey: batchKey }),
+  });
+
+  const reapply = useMutation({
+    mutationFn: () => applyImportRules(orgId, batchId, newIdempotencyKey()),
+    onSuccess: (result) => {
+      queryClient.setQueryData<ImportRowView[]>(rowsKey, result.rows);
+      unblock(result.rows.filter((r) => r.accountId !== null).map((r) => r.id));
+      toast({
+        title:
+          result.updated === 0
+            ? 'Rules applied: no row changed'
+            : `Rules applied: ${result.updated} row${result.updated === 1 ? '' : 's'} updated`,
+        tone: 'positive',
+      });
+    },
+    onError: (err) => {
+      toast({
+        title: 'Could not apply the rules',
+        description: errorMessage(err),
+        tone: 'negative',
+      });
+    },
   });
 
   const commit = useMutation({
@@ -523,6 +672,20 @@ export function ImportPreview({
             editable,
             committed,
             blocked,
+            rules: new Map((rulesQ.data ?? []).map((r) => [r.id, r])),
+            selected,
+            selectable: (rowsQ.data ?? []).filter((r) => r.status !== 'duplicate'),
+            onSelect: (list, on) => {
+              setSelected((prev) => {
+                const next = new Set(prev);
+                for (const r of list) {
+                  if (on) next.add(r.id);
+                  else next.delete(r.id);
+                }
+                return next;
+              });
+            },
+            onCreateRule: setRuleFrom,
             onChoose: (row, accountId) => {
               patchRow.mutate({ row, body: { accountId } });
             },
@@ -533,7 +696,7 @@ export function ImportPreview({
         : null,
     // patchRow.mutate is stable.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [detail, accountsQ.data, editable, committed, blocked],
+    [detail, accountsQ.data, editable, committed, blocked, rulesQ.data, selected, rowsQ.data],
   );
 
   if (batchQ.isError) {
@@ -644,16 +807,86 @@ export function ImportPreview({
                 ? 'No rows to book.'
                 : `${toBook.length} row${toBook.length === 1 ? '' : 's'} will be booked, each converted to GEL at the NBG rate of its date.`}
             </p>
+            <div className="flex flex-wrap gap-2">
+              <Button
+                variant="secondary"
+                isPending={reapply.isPending}
+                isDisabled={commit.isPending}
+                onPress={() => {
+                  reapply.mutate();
+                }}
+              >
+                <Wand2 aria-hidden />
+                Re-apply rules
+              </Button>
+              <Button
+                isPending={commit.isPending}
+                isDisabled={patchRow.isPending || bulk.isPending || reapply.isPending}
+                onPress={() => {
+                  commit.mutate(newIdempotencyKey());
+                }}
+              >
+                {toBook.length === 0
+                  ? 'Close import'
+                  : `Book ${toBook.length} transaction${toBook.length === 1 ? '' : 's'}`}
+              </Button>
+            </div>
+          </div>
+        ) : null}
+
+        {editable && selected.size > 0 ? (
+          <div
+            role="region"
+            aria-label="Bulk actions"
+            className="flex flex-col gap-3 rounded-lg border border-accent/40 bg-surface p-3 sm:flex-row sm:flex-wrap sm:items-end"
+          >
+            <p className="text-sm font-medium sm:self-center">{selected.size} selected</p>
+            <Select
+              label="Set account"
+              placeholder="Choose account"
+              className="sm:w-64"
+              options={rowAccountOptions(
+                accountsQ.data ?? [],
+                batch.accountId,
+                rows?.[0]?.currency ?? '',
+              )}
+              value={bulkAccount}
+              onChange={setBulkAccount}
+            />
             <Button
-              isPending={commit.isPending}
-              isDisabled={patchRow.isPending}
+              isDisabled={bulkAccount === null}
+              isPending={bulk.isPending}
               onPress={() => {
-                commit.mutate(newIdempotencyKey());
+                if (bulkAccount) bulk.mutate({ rowIds: [...selected], accountId: bulkAccount });
               }}
             >
-              {toBook.length === 0
-                ? 'Close import'
-                : `Book ${toBook.length} transaction${toBook.length === 1 ? '' : 's'}`}
+              Apply to selected
+            </Button>
+            <Button
+              variant="secondary"
+              isDisabled={bulk.isPending}
+              onPress={() => {
+                bulk.mutate({ rowIds: [...selected], skip: true });
+              }}
+            >
+              Skip selected
+            </Button>
+            <Button
+              variant="secondary"
+              isDisabled={bulk.isPending}
+              onPress={() => {
+                bulk.mutate({ rowIds: [...selected], skip: false });
+              }}
+            >
+              Include selected
+            </Button>
+            <Button
+              variant="ghost"
+              onPress={() => {
+                setSelected(new Set());
+              }}
+            >
+              Clear selection
             </Button>
           </div>
         ) : null}
@@ -680,6 +913,35 @@ export function ImportPreview({
           </RowCtx.Provider>
         )}
       </div>
+      <RuleDialog
+        orgId={orgId}
+        title="Create rule from this row"
+        isOpen={ruleFrom !== null}
+        onOpenChange={(open) => {
+          if (!open) setRuleFrom(null);
+        }}
+        initial={ruleFrom ? rulePrefill(ruleFrom) : undefined}
+        onSaved={async (rule) => {
+          await queryClient.invalidateQueries({ queryKey: ledgerKeys.rules(orgId) });
+          toast({ title: `Created “${rule.name}”`, tone: 'positive' });
+          // Apply it straight away to the rows nobody has edited.
+          reapply.mutate();
+        }}
+      />
     </>
   );
+}
+
+/** A rule that would catch lines like this one: same counterparty (or text), direction, currency. */
+function rulePrefill(row: ImportRowView): Partial<Schemas['CreateRuleRequestInput']> {
+  const counterparty = row.counterparty?.trim() || null;
+  const text = row.description.trim().slice(0, 60);
+  return {
+    name: (counterparty ?? text).slice(0, 60) || 'New rule',
+    counterpartyContains: counterparty,
+    descriptionContains: counterparty ? null : text,
+    direction: row.amountMinor.startsWith('-') ? 'out' : 'in',
+    currency: row.currency,
+    ...(row.accountId ? { targetAccountId: row.accountId } : {}),
+  };
 }
