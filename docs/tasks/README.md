@@ -1,5 +1,7 @@
 # Work plan for parallel agents
 
+> **Current focus: the MVP in [`docs/MVP.md`](../MVP.md).** Everything below stays the full plan; WS-06 to WS-10 resume after the MVP, starting from what it built.
+
 Each `WS-*.md` file is a self-contained brief for one subagent. A brief lists what the agent owns (directories it may write), what it consumes, what it must deliver, and how "done" is checked.
 
 ## Rules for every agent

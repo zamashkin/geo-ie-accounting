@@ -4,6 +4,7 @@ Bookkeeping and tax figures for individual entrepreneurs in Georgia on the 1% sm
 
 Status: foundation (WS-00). The web app, API and worker boot and talk to each other; the features come next.
 
+- [MVP plan (current focus)](docs/MVP.md)
 - [Product spec](docs/SPEC.md)
 - [Architecture](docs/ARCHITECTURE.md)
 - [Decision records](docs/adr/)
