@@ -22,6 +22,13 @@
       "when": 1792082432570,
       "tag": "0002_idempotency_scope",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1792140141637,
+      "tag": "0003_mvp_imports",
+      "breakpoints": true
     }
   ]
 }

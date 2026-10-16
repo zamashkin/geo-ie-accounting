@@ -1,4 +1,4 @@
-import type { GenericCsvMapping, ImportBatchStats } from '@ie-ledger/contracts';
+import type { GenericCsvMapping, ImportBatchStats, ParseWarning } from '@ie-ledger/contracts';
 import { sql } from 'drizzle-orm';
 import {
   boolean,
@@ -40,12 +40,20 @@ export const importBatches = pgTable(
       .notNull()
       .references(() => accounts.id),
     bankFormat: parserIdEnum('bank_format').notNull(),
-    /** Object storage key of the encrypted upload. */
-    fileKey: text('file_key').notNull(),
+    /**
+     * Object storage key of the encrypted upload. null: the file was not stored (the MVP parses
+     * the request body and keeps only the parsed rows, ADR 0012).
+     */
+    fileKey: text('file_key'),
     fileSha256: text('file_sha256').notNull(),
     fileName: text('file_name').notNull(),
     status: importBatchStatusEnum('status').notNull().default('uploaded'),
     stats: jsonb('stats').$type<Partial<ImportBatchStats>>().notNull().default({}),
+    /** Parser warnings (contracts ParseWarning). May quote statement text: never log. */
+    warnings: jsonb('warnings').$type<ParseWarning[]>().notNull().default([]),
+    /** Statement period from the file header, when it has one. */
+    periodFrom: date('period_from', { mode: 'string' }),
+    periodTo: date('period_to', { mode: 'string' }),
     error: jsonb('error').$type<Record<string, unknown>>(),
     createdBy: uuid('created_by')
       .notNull()
@@ -79,6 +87,8 @@ export const importRows = pgTable(
     counterpartyAccount: text('counterparty_account'),
     description: text('description').notNull(),
     bankReference: text('bank_reference'),
+    /** Statement document number; the cross-format dedupe key (domain documentDedupeHash). */
+    documentNumber: text('document_number'),
     operationType: operationTypeEnum('operation_type').notNull().default('other'),
     bankGelAmountMinor: minor('bank_gel_amount_minor'),
     counterAmountMinor: minor('counter_amount_minor'),

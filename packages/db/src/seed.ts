@@ -1,7 +1,10 @@
+import { readFileSync } from 'node:fs';
 import { hashPassword } from '@better-auth/utils/password';
 import { and, eq } from 'drizzle-orm';
+import { z } from 'zod';
 import { seedChartOfAccounts } from './chart-of-accounts';
 import type { Db } from './client';
+import { upsertRates, type NewExchangeRate, type UpsertRatesResult } from './repositories/rates';
 import { authAccounts, memberships, organizations, users } from './schema/index';
 
 /** Fixed ids so the seed is idempotent and tests/docs can refer to the demo org. */
@@ -76,4 +79,57 @@ export async function seedDemo(db: Db): Promise<SeedResult> {
       accounts: accountCount,
     };
   });
+}
+
+// ── Offline NBG rates ───────────────────────────────────────────────────────────────────
+
+/**
+ * Recorded NBG responses (fixtures/nbg/) for the dates the BoG statement fixture books on, so
+ * the demo import works without network: 04.06 and 11.06 (incoming payments) and 05.06 (the
+ * conversions). See fixtures/nbg/README.md.
+ */
+export const DEMO_RATE_FIXTURES = [
+  'GBP_2025-06-04.json',
+  'GBP_2025-06-05.json',
+  'GBP_2025-06-11.json',
+] as const;
+
+const NBG_FIXTURES_DIR = new URL('../../../fixtures/nbg/', import.meta.url);
+
+// Only the fields the seed needs. The full parser lives in packages/nbg, which db may not import.
+const FixtureBody = z.array(
+  z.object({
+    currencies: z.array(
+      z.object({
+        code: z.string().regex(/^[A-Z]{3}$/),
+        quantity: z.int().positive(),
+        rateFormated: z.string().regex(/^[0-9]+(\.[0-9]{1,6})?$/),
+        validFromDate: z.string(),
+        date: z.string(),
+      }),
+    ),
+  }),
+);
+
+/** NBG writes Tbilisi wall-clock time with a `Z` suffix (fixtures/nbg/README.md). */
+const tbilisiWallClockToUtc = (s: string) => new Date(s.replace(/Z$/, '+04:00'));
+
+export function readRateFixture(name: string): NewExchangeRate[] {
+  const body = FixtureBody.parse(
+    JSON.parse(readFileSync(new URL(name, NBG_FIXTURES_DIR), 'utf8')) as unknown,
+  );
+  return body.flatMap((group) =>
+    group.currencies.map((c) => ({
+      currency: c.code,
+      validFrom: c.validFromDate.slice(0, 10),
+      rate: c.rateFormated,
+      quantity: c.quantity,
+      setAt: tbilisiWallClockToUtc(c.date),
+    })),
+  );
+}
+
+/** Stores the demo's NBG rates. Idempotent: existing rows are kept (see `upsertRates`). */
+export async function seedDemoRates(db: Db): Promise<UpsertRatesResult> {
+  return upsertRates(db, DEMO_RATE_FIXTURES.flatMap(readRateFixture));
 }

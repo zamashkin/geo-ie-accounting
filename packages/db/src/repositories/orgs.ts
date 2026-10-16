@@ -36,6 +36,35 @@ export async function createOrganization(
   return org;
 }
 
+export interface OrganizationPatch {
+  name?: string | undefined;
+  taxId?: string | null | undefined;
+  sbsEffectiveFrom?: string | null | undefined;
+}
+
+/** Updates the given fields and returns the row before and after, or null if there is no org. */
+export async function updateOrganization(
+  tx: Tx,
+  orgId: string,
+  patch: OrganizationPatch,
+): Promise<{ before: OrganizationRow; after: OrganizationRow } | null> {
+  const [before] = await tx
+    .select()
+    .from(organizations)
+    .where(eq(organizations.id, orgId))
+    .for('update');
+  if (!before) return null;
+  const set = Object.fromEntries(Object.entries(patch).filter(([, v]) => v !== undefined));
+  if (Object.keys(set).length === 0) return { before, after: before };
+  const [after] = await tx
+    .update(organizations)
+    .set(set)
+    .where(eq(organizations.id, orgId))
+    .returning();
+  if (!after) throw new Error('organization update returned no row');
+  return { before, after };
+}
+
 /** Organisations the user is a member of, oldest first. `cursor` is the last org id seen. */
 export async function listOrganizationsForUser(
   db: DbOrTx,
