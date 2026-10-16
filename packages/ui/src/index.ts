@@ -7,7 +7,6 @@ export {
   DEFAULT_LOCALE,
   formatMoney,
   formatMoneyToParts,
-  minorUnitExponent,
   parseMoneyInput,
   type FormatMoneyOptions,
   type ParseMoneyResult,

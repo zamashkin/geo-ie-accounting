@@ -67,11 +67,7 @@ export function Select<K extends Key = string>({
             trigger truncates the label, so the full text is in a tooltip. */}
         <SelectValue<SelectOption<K>> className="truncate data-[placeholder]:text-fg-subtle">
           {({ selectedText, defaultChildren, isPlaceholder }) =>
-            isPlaceholder ? (
-              defaultChildren
-            ) : (
-              <span title={selectedText ?? undefined}>{selectedText}</span>
-            )
+            isPlaceholder ? defaultChildren : <span title={selectedText}>{selectedText}</span>
           }
         </SelectValue>
         <ChevronsUpDown aria-hidden className="size-4 shrink-0 text-fg-muted" />

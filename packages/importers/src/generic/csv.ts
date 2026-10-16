@@ -8,10 +8,10 @@ import type {
 } from '@ie-ledger/contracts';
 import type { Delimiter } from '../lib/csv';
 import { isBlankRecord, parseCsv, sniffDelimiter } from '../lib/csv';
-import { currencyExponent, isCurrencyCode } from '../lib/currency';
+import { isCurrencyCode, iso4217Exponent } from '@ie-ledger/domain';
 import { parseDate } from '../lib/dates';
 import type { DecimalParts } from '../lib/decimal';
-import { isZero, parseDecimal, toMinor } from '../lib/decimal';
+import { isZero, parseAmountText, toMinor } from '../lib/decimal';
 import { blankToNull, collapseLines, decodeText, looksBinary } from '../lib/text';
 import type { StatementParser } from '../parser';
 import { EMPTY_META, safeDetect, safeParse } from '../parser';
@@ -124,7 +124,7 @@ function parseImpl(
 
   const cell = (cells: readonly string[], c: number | null) => (c === null ? '' : (cells[c] ?? ''));
   const parseAmount = (text: string): DecimalParts | null | 'invalid' =>
-    text.trim() === '' ? null : (parseDecimal(text, mapping.decimalSeparator) ?? 'invalid');
+    text.trim() === '' ? null : (parseAmountText(text, mapping.decimalSeparator) ?? 'invalid');
 
   /** Signed amount in minor units, or null (with a warning) when the row has no usable amount. */
   const readAmount = (
@@ -133,7 +133,7 @@ function parseImpl(
     rowIndex: number,
     currency: string,
   ): bigint | null => {
-    const exp = currencyExponent(currency);
+    const exp = iso4217Exponent(currency);
     const minor = (p: DecimalParts) => {
       const r = toMinor(p, exp);
       if (r.rounded && !r.floatNoise) {

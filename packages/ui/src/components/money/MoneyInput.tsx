@@ -1,5 +1,6 @@
 'use client';
 
+import { iso4217Exponent } from '@ie-ledger/domain';
 import { useState } from 'react';
 import {
   Group,
@@ -9,13 +10,7 @@ import {
 } from 'react-aria-components';
 import { cx } from '../../lib/cx';
 import { fieldBox } from '../../lib/styles';
-import {
-  formatMoney,
-  minorUnitExponent,
-  type ParseMoneyResult,
-  parseMoneyInput,
-  toMinor,
-} from '../../money/format';
+import { formatMoney, type ParseMoneyResult, parseMoneyInput, toMinor } from '../../money/format';
 import { Description, type FieldChromeProps, FieldError, Label } from '../field/Field';
 
 export interface MoneyInputProps
@@ -43,7 +38,7 @@ const REASONS: Record<Exclude<ParseMoneyResult, { ok: true }>['reason'], (cur: s
     empty: () => 'Enter an amount',
     invalid: () => 'Use digits and a dot for decimals, e.g. 1250.50',
     too_many_decimals: (cur) => {
-      const exp = minorUnitExponent(cur);
+      const exp = iso4217Exponent(cur);
       return exp === 0 ? `${cur} has no decimals` : `${cur} allows ${exp} decimal places`;
     },
     negative: () => 'The amount cannot be negative',

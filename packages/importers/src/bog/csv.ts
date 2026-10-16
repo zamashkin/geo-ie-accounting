@@ -7,10 +7,10 @@
 import type { OperationType, ParsedRow, ParseOptions, StatementMeta } from '@ie-ledger/contracts';
 import type { CsvRecord } from '../lib/csv';
 import { isBlankRecord, parseCsv } from '../lib/csv';
-import { isCurrencyCode } from '../lib/currency';
+import { isCurrencyCode } from '@ie-ledger/domain';
 import { parseDate } from '../lib/dates';
 import type { DecimalParts } from '../lib/decimal';
-import { isZero, parseDecimal } from '../lib/decimal';
+import { isZero, parseAmountText } from '../lib/decimal';
 import { blankToNull, collapseLines, decodeText, looksBinary, swiftName } from '../lib/text';
 import type { StatementParser } from '../parser';
 import { EMPTY_META, safeDetect, safeParse } from '../parser';
@@ -160,7 +160,7 @@ function parseImpl(
   }
 
   const amount = (text: string): DecimalParts | null =>
-    text.trim() === '' ? null : parseDecimal(text, '.');
+    text.trim() === '' ? null : parseAmountText(text, '.');
   const rows: ParsedRow[] = [];
   let totals: { debit: bigint; credit: bigint } | null = null;
 

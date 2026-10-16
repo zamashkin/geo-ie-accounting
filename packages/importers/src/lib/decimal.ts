@@ -1,8 +1,10 @@
-// Decimal text -> bigint minor units, without ever going through a JS number.
+// Statement amount text -> bigint minor units, without ever going through a JS number.
 //
-// TODO(WS-01 consolidation): packages/domain had no decimal parser when WS-03 started. Once domain
-// exposes one (money parsing from a decimal string), replace `toMinor` with it and keep only the
-// statement-specific tolerance here (thousands separators, parentheses, Excel exponent notation).
+// Only the statement-specific tolerance lives here: thousands separators, parentheses, trailing
+// minus signs, Excel exponent notation. packages/domain's `parseDecimal` is deliberately strict
+// (canonical "1234.50" only, exact), so it cannot read bank exports; the step from digits to
+// minor units rounds with domain `round` and exponents come from domain `iso4217Exponent`.
+import { round } from '@ie-ledger/domain';
 
 /** A decimal split into sign and digit strings, e.g. "-1,180.5" -> { negative, "1180", "5" }. */
 export interface DecimalParts {
@@ -27,7 +29,7 @@ const GROUPED_COMMA = /^(\d{1,3})(?:([.' ])\d{3})?(?:\2\d{3})*$/;
  * `,` decimals) and a trailing decimal separator (`900.` as BoG writes it). Returns null if the
  * text is not a single number.
  */
-export function parseDecimal(
+export function parseAmountText(
   input: string,
   decimalSeparator: DecimalSeparator = '.',
 ): DecimalParts | null {
@@ -117,13 +119,20 @@ export interface MinorResult {
   floatNoise: boolean;
 }
 
-/** Converts decimal parts to integer minor units for a currency with `exponent` decimals. */
+/**
+ * Converts decimal parts to integer minor units for a currency with `exponent` decimals. Extra
+ * digits round half away from zero (domain `round`, `half_up`).
+ */
 export function toMinor(parts: DecimalParts, exponent: number): MinorResult {
-  const kept = parts.fracDigits.slice(0, exponent).padEnd(exponent, '0');
   const dropped = parts.fracDigits.slice(exponent);
-  let minor = BigInt(parts.intDigits + kept);
+  const digits = BigInt(
+    parts.intDigits + parts.fracDigits.slice(0, exponent).padEnd(exponent, '0'),
+  );
+  const minor =
+    dropped === ''
+      ? digits
+      : round(BigInt(parts.intDigits + parts.fracDigits), 10n ** BigInt(dropped.length), 'half_up');
   const rounded = /[1-9]/.test(dropped);
-  if (rounded && dropped.charCodeAt(0) >= 0x35 /* '5' */) minor += 1n;
   const floatNoise = rounded && /^(?:0{6,}|9{6,})\d*$/.test(dropped);
   return { minor: parts.negative ? -minor : minor, rounded, floatNoise };
 }

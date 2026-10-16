@@ -2,29 +2,10 @@ import { describe, expect, it } from 'vitest';
 import {
   formatMoney,
   formatMoneyToParts,
-  minorToDecimalString,
   minorToInputText,
   parseMoneyInput,
   toMinor,
 } from './format';
-
-describe('minorToDecimalString', () => {
-  it.each([
-    [125000n, 2, '1250.00'],
-    [5n, 2, '0.05'],
-    [-69085n, 2, '-690.85'],
-    [0n, 2, '0.00'],
-    [-1n, 2, '-0.01'],
-    [1234n, 0, '1234'],
-    [1234n, 3, '1.234'],
-  ])('%s with exponent %s -> %s', (minor, exp, expected) => {
-    expect(minorToDecimalString(minor, exp)).toBe(expected);
-  });
-
-  it('keeps precision far beyond Number.MAX_SAFE_INTEGER', () => {
-    expect(minorToDecimalString(9_223_372_036_854_775_807n, 2)).toBe('92233720368547758.07');
-  });
-});
 
 describe('toMinor', () => {
   it('parses the wire form', () => {

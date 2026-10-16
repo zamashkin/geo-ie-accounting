@@ -1,10 +1,10 @@
 // Shared Bank of Georgia rules. Field semantics: fixtures/statements/bog/FORMAT.md.
 
 import type { OperationType, ParsedRow, StatementMeta } from '@ie-ledger/contracts';
-import { currencyExponent, isCurrencyCode } from '../lib/currency';
+import { isCurrencyCode, iso4217Exponent } from '@ie-ledger/domain';
 import { parseDate } from '../lib/dates';
 import type { DecimalParts } from '../lib/decimal';
-import { parseDecimal, toMinor } from '../lib/decimal';
+import { parseAmountText, toMinor } from '../lib/decimal';
 import type { Warnings } from '../warnings';
 
 /** BoG operation codes seen so far. Anything else maps to `other` with a warning. */
@@ -53,7 +53,7 @@ export function minorOf(
   warnings: Warnings,
   rowIndex: number | null,
 ): bigint {
-  const { minor, rounded, floatNoise } = toMinor(parts, currencyExponent(currency));
+  const { minor, rounded, floatNoise } = toMinor(parts, iso4217Exponent(currency));
   if (rounded && !floatNoise) {
     warnings.add(
       'amount_rounded',
@@ -76,7 +76,7 @@ export function counterAmountFromText(
   const m = /Counter-amount:\s*([A-Z]{3})\s*(\d[\d,]*(?:\.\d+)?)/.exec(text);
   if (!m) return null;
   const currency = m[1] ?? '';
-  const parts = parseDecimal(m[2] ?? '', '.');
+  const parts = parseAmountText(m[2] ?? '', '.');
   if (parts === null) return null;
   return {
     amountMinor: minorOf({ ...parts, negative: false }, currency, warnings, rowIndex),
