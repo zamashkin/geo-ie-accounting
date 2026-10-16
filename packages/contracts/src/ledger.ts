@@ -196,6 +196,10 @@ export const ListTransactionsQuery = PaginationQuery.extend({
   /** Only transactions with a posting on this account. */
   accountId: Uuid.optional(),
   source: TransactionSource.optional(),
+  /** Case-insensitive text in the description or the imported line's counterparty. */
+  q: z.string().trim().min(1).max(200).optional(),
+  /** `true`: only transactions with a posting on an SBS income account (what is declared). */
+  taxable: z.enum(['true', 'false']).optional(),
 }).refine((q) => !q.from || !q.to || q.from <= q.to, {
   message: '`from` must not be after `to`',
   path: ['from'],

@@ -7,9 +7,9 @@ import type {
   TransactionSource,
 } from '@ie-ledger/contracts';
 import type { TransactionDraft } from '@ie-ledger/domain';
-import { and, desc, eq, exists, gte, inArray, lt, lte, or, sql } from 'drizzle-orm';
+import { and, desc, eq, exists, gte, ilike, inArray, lt, lte, or, sql } from 'drizzle-orm';
 import type { DbOrTx, Tx } from '../client';
-import { accounts, exchangeRates, postings, transactions } from '../schema/index';
+import { accounts, exchangeRates, importRows, postings, transactions } from '../schema/index';
 
 export type TransactionRow = typeof transactions.$inferSelect;
 export type PostingRow = typeof postings.$inferSelect;
@@ -150,6 +150,15 @@ export interface TransactionFilter {
   /** Transactions with at least one posting on this account. */
   accountId?: string | undefined;
   source?: TransactionSource | undefined;
+  /** Case-insensitive substring of the description or of the imported line's counterparty. */
+  text?: string | undefined;
+  /** Only transactions with a posting on an `sbs` income account. */
+  taxableOnly?: boolean | undefined;
+}
+
+/** `%`, `_` and `\` taken literally in ILIKE. */
+function likePattern(text: string): string {
+  return `%${text.replace(/[\\%_]/g, (c) => `\\${c}`)}%`;
 }
 
 /** Newest first, keyset-paginated. Returns up to `limit + 1` rows so callers can tell a next page. */
@@ -179,6 +188,41 @@ export async function listTransactions(
                     eq(postings.orgId, orgId),
                     eq(postings.transactionId, transactions.id),
                     eq(postings.accountId, filter.accountId),
+                  ),
+                ),
+            )
+          : undefined,
+        filter.text
+          ? or(
+              ilike(transactions.description, likePattern(filter.text)),
+              exists(
+                db
+                  .select({ one: sql`1` })
+                  .from(importRows)
+                  .where(
+                    and(
+                      eq(importRows.orgId, orgId),
+                      eq(importRows.transactionId, transactions.id),
+                      ilike(importRows.counterparty, likePattern(filter.text)),
+                    ),
+                  ),
+              ),
+            )
+          : undefined,
+        filter.taxableOnly
+          ? exists(
+              db
+                .select({ one: sql`1` })
+                .from(postings)
+                .innerJoin(
+                  accounts,
+                  and(eq(accounts.id, postings.accountId), eq(accounts.orgId, orgId)),
+                )
+                .where(
+                  and(
+                    eq(postings.orgId, orgId),
+                    eq(postings.transactionId, transactions.id),
+                    eq(accounts.incomeClass, 'sbs'),
                   ),
                 ),
             )

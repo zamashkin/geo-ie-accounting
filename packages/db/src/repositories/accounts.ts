@@ -68,6 +68,92 @@ export async function getDefaultSbsIncomeAccount(
   return row ?? null;
 }
 
+/** Locks one account of the org until the transaction ends (rename / archive). */
+export async function lockAccount(
+  tx: Tx,
+  orgId: string,
+  accountId: string,
+): Promise<AccountRow | null> {
+  const [row] = await tx
+    .select()
+    .from(accounts)
+    .where(and(eq(accounts.orgId, orgId), eq(accounts.id, accountId)))
+    .for('update');
+  return row ?? null;
+}
+
+export type NewAccount = Pick<
+  typeof accounts.$inferInsert,
+  'name' | 'kind' | 'currency' | 'incomeClass' | 'bank' | 'iban'
+>;
+
+/** A user-created account (never a system account). */
+export async function createAccount(
+  tx: Tx,
+  orgId: string,
+  values: NewAccount,
+): Promise<AccountRow> {
+  const [row] = await tx
+    .insert(accounts)
+    .values({ ...values, orgId, systemKey: null })
+    .returning();
+  if (!row) throw new Error('account insert returned no row');
+  return row;
+}
+
+/** Name and archive flag are the only things that change on an account. */
+export async function updateAccount(
+  tx: Tx,
+  orgId: string,
+  accountId: string,
+  patch: { name?: string; archivedAt?: Date | null },
+): Promise<AccountRow> {
+  const [row] = await tx
+    .update(accounts)
+    .set(patch)
+    .where(and(eq(accounts.orgId, orgId), eq(accounts.id, accountId)))
+    .returning();
+  if (!row) throw new Error('account update returned no row');
+  return row;
+}
+
+export interface AccountCurrencySum {
+  accountId: string;
+  currency: string;
+  /** Σ amount_minor, debit-positive. */
+  amountMinor: bigint;
+}
+
+/**
+ * Σ of the postings per account and currency, debit-positive, zero sums left out. Reversals are
+ * postings too, so a reversed line nets out. `accountId` narrows it to one account.
+ */
+export async function accountBalances(
+  db: DbOrTx,
+  orgId: string,
+  opts: { accountId?: string } = {},
+): Promise<AccountCurrencySum[]> {
+  const total = sql<string>`sum(${postings.amountMinor})`;
+  const rows = await db
+    .select({ accountId: postings.accountId, currency: postings.currency, total })
+    .from(postings)
+    .where(
+      and(
+        eq(postings.orgId, orgId),
+        opts.accountId ? eq(postings.accountId, opts.accountId) : undefined,
+      ),
+    )
+    .groupBy(postings.accountId, postings.currency)
+    .having(sql`${total} <> 0`)
+    .orderBy(postings.accountId, postings.currency);
+  // numeric sum comes back as a decimal string; it is an integer by construction.
+  return rows.map((r) => ({
+    accountId: r.accountId,
+    currency: r.currency,
+    amountMinor: BigInt(r.total),
+  }));
+}
+
 export interface BankAccountKey {
   /** IBAN without the currency suffix BoG prints after it. */
   iban: string;

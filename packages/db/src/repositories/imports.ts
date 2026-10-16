@@ -130,6 +130,27 @@ export async function getImportRow(
   return row ?? null;
 }
 
+/** Rows of a batch by id, in statement order. Ids of other batches or orgs are not returned. */
+export async function getImportRowsByIds(
+  db: DbOrTx,
+  orgId: string,
+  batchId: string,
+  rowIds: readonly string[],
+): Promise<ImportRowRow[]> {
+  if (rowIds.length === 0) return [];
+  return db
+    .select()
+    .from(importRows)
+    .where(
+      and(
+        eq(importRows.orgId, orgId),
+        eq(importRows.batchId, batchId),
+        inArray(importRows.id, [...new Set(rowIds)]),
+      ),
+    )
+    .orderBy(asc(importRows.rowIndex));
+}
+
 export async function updateImportRow(
   tx: Tx,
   orgId: string,
@@ -137,6 +158,8 @@ export async function updateImportRow(
   patch: {
     status?: ImportRowStatus;
     chosenAccountId?: string | null;
+    suggestedAccountId?: string | null;
+    suggestedRuleId?: string | null;
     transactionId?: string | null;
   },
 ): Promise<ImportRowRow> {

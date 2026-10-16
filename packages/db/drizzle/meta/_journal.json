@@ -29,6 +29,13 @@
       "when": 1792140141637,
       "tag": "0003_mvp_imports",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1792186652028,
+      "tag": "0004_rules_accounts",
+      "breakpoints": true
     }
   ]
 }

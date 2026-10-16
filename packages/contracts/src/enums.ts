@@ -70,13 +70,10 @@ export const OPERATION_TYPES = [
 export const OperationType = z.enum(OPERATION_TYPES);
 export type OperationType = z.output<typeof OperationType>;
 
-export const RULE_FIELDS = ['counterparty', 'description'] as const;
-export const RuleField = z.enum(RULE_FIELDS);
-export type RuleField = z.output<typeof RuleField>;
-
-export const RULE_OPS = ['contains', 'equals', 'regex'] as const;
-export const RuleOp = z.enum(RULE_OPS);
-export type RuleOp = z.output<typeof RuleOp>;
+/** Direction a categorisation rule matches: `in` = money arrived, `out` = money left. */
+export const RULE_DIRECTIONS = ['in', 'out'] as const;
+export const RuleDirection = z.enum(RULE_DIRECTIONS);
+export type RuleDirection = z.output<typeof RuleDirection>;
 
 export const INVOICE_STATUSES = ['draft', 'issued', 'paid', 'void'] as const;
 export const InvoiceStatus = z.enum(INVOICE_STATUSES);

@@ -22,6 +22,17 @@ export const MinorUnits = z.codec(MinorUnitsString, z.bigint().min(INT64_MIN).ma
 });
 export type MinorUnits = z.output<typeof MinorUnits>;
 
+/** A strictly positive amount in minor units (an amount the user enters; the event sets the sign). */
+export const PositiveMinorUnits = z.codec(
+  z
+    .string()
+    .regex(/^[1-9][0-9]*$/, 'Expected a positive amount in minor units, as a string')
+    .meta({ description: 'Positive integer amount in minor units, as a decimal string.' }),
+  z.bigint().min(1n).max(INT64_MAX),
+  { decode: (s) => BigInt(s), encode: (n) => n.toString() },
+);
+export type PositiveMinorUnits = z.output<typeof PositiveMinorUnits>;
+
 /**
  * ISO 4217 alphabetic code. Any code is accepted on the wire (statements and NBG carry many);
  * which currencies the app supports and their minor-unit exponents live in packages/domain.

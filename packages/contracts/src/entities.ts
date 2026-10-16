@@ -12,8 +12,7 @@ import {
   ParserId,
   PaymentMethod,
   Role,
-  RuleField,
-  RuleOp,
+  RuleDirection,
   SystemAccountKey,
   TransactionSource,
 } from './enums';
@@ -226,6 +225,8 @@ export const ImportRow = z
     dedupeHash: z.string(),
     status: ImportRowStatus,
     suggestedAccountId: Uuid.nullable(),
+    /** The categorisation rule behind `suggestedAccountId`; null for the fixed suggestions. */
+    suggestedRuleId: Uuid.nullable(),
     chosenAccountId: Uuid.nullable(),
     transactionId: Uuid.nullable(),
   })
@@ -242,17 +243,28 @@ export const TransactionFingerprint = z.object({
 });
 export type TransactionFingerprint = z.output<typeof TransactionFingerprint>;
 
+/**
+ * Suggests `targetAccountId` for an imported line when every condition that is set holds (unset
+ * = any). Text conditions are case-insensitive substrings; the amount range is inclusive, on the
+ * absolute amount, in minor units of `currency` (so it needs `currency`). The lowest `priority`
+ * that matches wins.
+ */
 export const CategorizationRule = z
   .object({
     id: Uuid,
     orgId: Uuid,
+    name: z.string().min(1).max(200),
     priority: z.int(),
-    field: RuleField,
-    op: RuleOp,
-    value: z.string().min(1).max(500),
+    counterpartyContains: z.string().max(200).nullable(),
+    descriptionContains: z.string().max(200).nullable(),
+    direction: RuleDirection.nullable(),
+    currency: CurrencyCode.nullable(),
+    amountMinMinor: MinorUnits.nullable(),
+    amountMaxMinor: MinorUnits.nullable(),
     targetAccountId: Uuid,
     isActive: z.boolean(),
     createdAt: Timestamp,
+    updatedAt: Timestamp,
   })
   .meta({ id: 'CategorizationRule' });
 export type CategorizationRule = z.output<typeof CategorizationRule>;

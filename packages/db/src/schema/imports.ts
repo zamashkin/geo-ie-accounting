@@ -2,8 +2,10 @@ import type { GenericCsvMapping, ImportBatchStats, ParseWarning } from '@ie-ledg
 import { sql } from 'drizzle-orm';
 import {
   boolean,
+  type AnyPgColumn,
   check,
   date,
+  foreignKey,
   index,
   integer,
   jsonb,
@@ -20,8 +22,7 @@ import {
   importRowStatusEnum,
   operationTypeEnum,
   parserIdEnum,
-  ruleFieldEnum,
-  ruleOpEnum,
+  ruleDirectionEnum,
 } from './enums';
 import { accounts, transactions } from './ledger';
 import { organizations } from './tenancy';
@@ -96,6 +97,11 @@ export const importRows = pgTable(
     dedupeHash: text('dedupe_hash').notNull(),
     status: importRowStatusEnum('status').notNull(),
     suggestedAccountId: uuid('suggested_account_id').references(() => accounts.id),
+    /** The rule that made the suggestion; null for the fixed suggestions or none. */
+    suggestedRuleId: uuid('suggested_rule_id').references(
+      (): AnyPgColumn => categorizationRules.id,
+      { onDelete: 'set null' },
+    ),
     chosenAccountId: uuid('chosen_account_id').references(() => accounts.id),
     transactionId: uuid('transaction_id').references(() => transactions.id),
     createdAt: createdAt(),
@@ -123,22 +129,47 @@ export const transactionFingerprints = pgTable(
   (t) => [primaryKey({ columns: [t.orgId, t.accountId, t.dedupeHash] })],
 );
 
+/**
+ * Categorisation rules for statement imports (packages/domain categorisation.ts). Every set
+ * condition must hold; the lowest `priority` that matches suggests `target_account_id`.
+ */
 export const categorizationRules = pgTable(
   'categorization_rules',
   {
     id: id(),
     orgId: orgId(),
+    name: text('name').notNull(),
     priority: integer('priority').notNull().default(100),
-    field: ruleFieldEnum('field').notNull(),
-    op: ruleOpEnum('op').notNull(),
-    value: text('value').notNull(),
-    targetAccountId: uuid('target_account_id')
-      .notNull()
-      .references(() => accounts.id),
+    /** Case-insensitive substring conditions; null = any. */
+    counterpartyContains: text('counterparty_contains'),
+    descriptionContains: text('description_contains'),
+    direction: ruleDirectionEnum('direction'),
+    currency: currency('currency'),
+    /** Inclusive bounds on the absolute amount, minor units of `currency`. */
+    amountMinMinor: minor('amount_min_minor'),
+    amountMaxMinor: minor('amount_max_minor'),
+    targetAccountId: uuid('target_account_id').notNull(),
     isActive: boolean('is_active').notNull().default(true),
     createdAt: createdAt(),
+    updatedAt: timestamptz('updated_at').notNull().defaultNow(),
   },
-  (t) => [index('categorization_rules_org_priority_idx').on(t.orgId, t.priority)],
+  (t) => [
+    index('categorization_rules_org_priority_idx').on(t.orgId, t.priority),
+    // The target account belongs to the same org.
+    foreignKey({
+      name: 'categorization_rules_target_account_fk',
+      columns: [t.targetAccountId, t.orgId],
+      foreignColumns: [accounts.id, accounts.orgId],
+    }),
+    check(
+      'categorization_rules_amount_range',
+      sql`(${t.amountMinMinor} is null and ${t.amountMaxMinor} is null) or ${t.currency} is not null`,
+    ),
+    check(
+      'categorization_rules_amount_order',
+      sql`${t.amountMinMinor} is null or ${t.amountMaxMinor} is null or ${t.amountMinMinor} <= ${t.amountMaxMinor}`,
+    ),
+  ],
 );
 
 export const columnMappings = pgTable(

@@ -11,8 +11,7 @@ import {
   PARSER_IDS,
   PAYMENT_METHODS,
   ROLES,
-  RULE_FIELDS,
-  RULE_OPS,
+  RULE_DIRECTIONS,
   TRANSACTION_SOURCES,
 } from '@ie-ledger/contracts';
 import { pgEnum } from 'drizzle-orm/pg-core';
@@ -30,7 +29,6 @@ export const parserIdEnum = pgEnum('parser_id', PARSER_IDS);
 export const importBatchStatusEnum = pgEnum('import_batch_status', IMPORT_BATCH_STATUSES);
 export const importRowStatusEnum = pgEnum('import_row_status', IMPORT_ROW_STATUSES);
 export const operationTypeEnum = pgEnum('operation_type', OPERATION_TYPES);
-export const ruleFieldEnum = pgEnum('rule_field', RULE_FIELDS);
-export const ruleOpEnum = pgEnum('rule_op', RULE_OPS);
+export const ruleDirectionEnum = pgEnum('rule_direction', RULE_DIRECTIONS);
 export const invoiceStatusEnum = pgEnum('invoice_status', INVOICE_STATUSES);
 export const declarationStatusEnum = pgEnum('declaration_status', DECLARATION_STATUSES);
