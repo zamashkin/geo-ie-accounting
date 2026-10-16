@@ -8,7 +8,8 @@
     "build": "next build",
     "start": "next start --port 3000",
     "gen:api": "openapi-typescript ../api/openapi.json --output src/lib/api/schema.gen.ts",
-    "typecheck": "next typegen && tsc -p tsconfig.json",
+    "typegen": "next typegen",
+    "typecheck": "tsc -p tsconfig.json",
     "lint": "eslint .",
     "test": "vitest run"
   },
