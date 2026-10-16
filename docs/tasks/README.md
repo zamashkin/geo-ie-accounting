@@ -66,16 +66,13 @@ These don't block Phase 0 or the BoG parsers. Add files to `fixtures/statements/
 
 ## Follow-ups found in review
 
-- MVP: at 360px the import preview table scrolls sideways, so picking an account on a phone is awkward. Use a card per row on narrow screens. Long account names truncate in the 1280px preview select.
-- MVP: commit does not compare the bank's GEL amount with ours (FORMAT.md: warn when they differ by more than 1 tetri).
-- MVP: the 422 unassigned-row commit path, the 409 and the 503 `rate_unavailable` messages are not tested end to end (the fixture has no unassigned row).
-- MVP: `/` always opens the first membership. Remember the last-used workspace.
-- MVP: dashboard and declarations default to the current year; with only older data, default to the latest year that has transactions.
+- MVP: the bank GEL warnings (`bank_gel_mismatch`) come back only in the commit response, so they're gone once the import page reloads. If they should stay visible, store them on the batch.
+- MVP: on phones the import preview renders every row as a card with no virtualisation. That's fine for BoG statements (tens of lines). A statement with thousands of lines would need paging.
+- Web lint after `next dev`: the route types `next dev` writes to `.next/types` make `no-unnecessary-type-assertion` flag the 9 `as Route` casts. With the types from `next typegen`, which turbo runs before lint (and CI uses), the casts are needed and lint is clean. After a dev session, run `pnpm --filter @ie-ledger/web typegen` before linting, or find a cast-free way to build the hrefs.
 
 - WS-01: the Order N38 rule set starts 2026-03-01, but the order came into force around 2026-03-07/08 (30 days after publication on 06.02.2026). Confirm the exact date with the accountant (Q3) and adjust `effectiveFrom`. It only matters for SBS applications filed 1–7 March 2026.
 - WS-01: deadlines don't move when the 15th falls on a weekend or public holiday. Ask the accountant whether they should.
 - WS-08: add a test in db or api that the domain and contracts enum lists match.
-- WS-03: `packages/importers/src/lib/{decimal,currency}.ts` duplicate helpers that now exist in `packages/domain` (merged in parallel). Switch importers to the domain helpers and delete the copies.
 - WS-03: unverified BoG cases (overdrawn balances in the CSV, outgoing payments, GEL/USD accounts, the credit side of conversions) need the extra statements listed under "Inputs needed".
 - WS-07: the dedupe hash differs between BoG CSV (no operation ID) and XLSX for the same operation. Match across formats on date + amount + document number. Match bank accounts on IBAN + currency, because BoG uses one IBAN for all of a client's currency accounts.
 - WS-02: `POST /v1/rates/backfill` uses a stub `x-admin-token` guard (`STUB(WS-05)`). Replace it with a real admin role. Rates are global, so this route has no audit row or `Idempotency-Key`, because both tables require an `org_id`. Decide how global admin actions are audited.
@@ -87,5 +84,4 @@ These don't block Phase 0 or the BoG parsers. Add files to `fixtures/statements/
 - WS-05: worker job to call `deleteExpiredIdempotencyKeys`; move Better Auth's in-memory rate limiter to the DB before running more than one API instance; member role change/removal with a last-owner guard; consider default-deny guards on every `/v1` route.
 - WS-04: CI needs a Storybook job (`pnpm exec playwright install --with-deps chromium`, then `pnpm --filter @ie-ledger/ui build-storybook` and `test:storybook`). The unit `test` script stays Node-only.
 - WS-04: switch the web to real auth (`NEXT_PUBLIC_AUTH_MODE=api`, `NEXT_PUBLIC_API_URL`) and run the sign-in, invite and org-switch flow end to end against WS-05. Add password reset pages. After sign-in, return users to the page they asked for (needs `proxy.ts`).
-- WS-04/WS-01: swap `packages/ui/src/money/format.ts` and `packages/importers/src/lib/{decimal,currency}.ts` for the domain helpers.
 - Bundle: `/sign-in` ships 269 KB gzip (zod + full contracts + react-hook-form). Contracts subpath exports would save about 37 KB.
