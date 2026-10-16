@@ -9,10 +9,11 @@ import {
   DatePicker,
   EmptyState,
   Select,
+  TextField,
 } from '@ie-ledger/ui';
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 import { ArrowLeftRight } from 'lucide-react';
-import { useMemo } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { z } from 'zod';
 import { Amount } from '@/components/Amount';
 import { Notice } from '@/components/Notice';
@@ -33,13 +34,17 @@ import { TransactionSheet } from './TransactionSheet';
 const SOURCES = ['import', 'reversal', 'manual', 'invoice_payment'] as const;
 const isoDate = z.string().regex(/^\d{4}-\d{2}-\d{2}$/);
 
-/** `?from=&to=&account=&source=` filter the list; `?tx=` opens a transaction. */
+/**
+ * `?from=&to=&account=&source=&q=&taxable=1` filter the list; `?tx=` opens a transaction.
+ */
 const params = defineTableParams({
   filters: z.object({
     from: isoDate.optional(),
     to: isoDate.optional(),
     account: z.uuid().optional(),
     source: z.enum(SOURCES).optional(),
+    q: z.string().trim().min(1).max(200).optional(),
+    taxable: z.literal('1').optional(),
     tx: z.uuid().optional(),
   }),
   sortable: [],
@@ -122,10 +127,47 @@ function Filters({
     [accounts.data],
   );
   const active = Object.entries(filters).some(([k, v]) => k !== 'tx' && v !== undefined);
+  const [search, setSearch] = useState(filters.q ?? '');
+  const [prevQ, setPrevQ] = useState(filters.q);
+  // Follow the URL when it changes elsewhere (Clear filters, Back).
+  if (filters.q !== prevQ) {
+    setPrevQ(filters.q);
+    setSearch(filters.q ?? '');
+  }
+  // Typing updates the URL after a pause, not on every keystroke.
+  useEffect(() => {
+    const q = search.trim() === '' ? undefined : search.trim();
+    if (q === filters.q) return;
+    const timer = setTimeout(() => {
+      onChange({ q });
+    }, 350);
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [search, filters.q, onChange]);
 
   return (
     <fieldset className="mb-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-[repeat(4,minmax(0,1fr))_auto] lg:items-end">
       <legend className="sr-only">Filters</legend>
+      <TextField
+        type="search"
+        label="Search"
+        description="Description or counterparty"
+        value={search}
+        onChange={setSearch}
+        className="sm:col-span-2"
+      />
+      <label className="flex items-center gap-2 self-center text-sm sm:col-span-2 lg:col-span-3">
+        <input
+          type="checkbox"
+          className="size-4 accent-accent"
+          checked={filters.taxable === '1'}
+          onChange={(e) => {
+            onChange({ taxable: e.target.checked ? '1' : undefined });
+          }}
+        />
+        Taxable only (small-business income)
+      </label>
       <DatePicker
         label="From"
         value={filters.from ?? null}
@@ -165,7 +207,14 @@ function Filters({
         variant="ghost"
         isDisabled={!active}
         onPress={() => {
-          onChange({ from: undefined, to: undefined, account: undefined, source: undefined });
+          onChange({
+            from: undefined,
+            to: undefined,
+            account: undefined,
+            source: undefined,
+            q: undefined,
+            taxable: undefined,
+          });
         }}
       >
         Clear filters
@@ -177,9 +226,12 @@ function Filters({
 export function TransactionsView({ orgId, canWrite }: { orgId: string; canWrite: boolean }) {
   const [state, setState] = useTableParams(params);
   const { filters } = state;
-  const setFilters = (patch: Partial<Params>) => {
-    setState({ filters: { ...filters, ...patch } });
-  };
+  const setFilters = useCallback(
+    (patch: Partial<Params>) => {
+      setState({ filters: { ...filters, ...patch } });
+    },
+    [filters, setState],
+  );
 
   const query: TransactionFilters = useMemo(
     () => ({
@@ -187,8 +239,10 @@ export function TransactionsView({ orgId, canWrite }: { orgId: string; canWrite:
       to: filters.to,
       accountId: filters.account,
       source: filters.source,
+      q: filters.q,
+      taxable: filters.taxable === '1' ? true : undefined,
     }),
-    [filters.from, filters.to, filters.account, filters.source],
+    [filters.from, filters.to, filters.account, filters.source, filters.q, filters.taxable],
   );
   const list = useInfiniteQuery(transactionsQuery(orgId, query));
   const rows = useMemo(() => list.data?.pages.flatMap((p) => p.items) ?? [], [list.data]);
