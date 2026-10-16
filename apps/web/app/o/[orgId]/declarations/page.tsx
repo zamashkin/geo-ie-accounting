@@ -1,17 +1,19 @@
 import { Badge, ButtonLink, Card, PageContainer, PageHeader, cx } from '@ie-ledger/ui';
-import type { Metadata } from 'next';
+import type { Metadata, Route } from 'next';
+import Link from 'next/link';
 import { Notice } from '@/components/Notice';
 import type { Schemas } from '@/lib/api/client';
 import { serverApi, serverRead } from '@/lib/api/server';
 import { formatBp, formatIsoDate, formatMinor, formatPeriod, parseMinor } from '@/lib/format';
 import { orgHref } from '@/lib/nav';
 import { parseYearParam, yearOptions } from '@/lib/years';
+import { FilingStatusBadge } from '../_components/FilingStatusBadge';
 import { LimitMeter } from '../_components/LimitMeter';
 import { YearPicker } from '../_components/YearPicker';
 
 export const metadata: Metadata = { title: 'Declarations' };
 
-type Month = Schemas['DeclarationFigures'];
+type Month = Schemas['DeclarationMonthView'];
 
 const PAYMENT_LINES = [
   { key: 'cash_register', line: '18', label: 'Cash register' },
@@ -23,10 +25,9 @@ const PAYMENT_LINES = [
 const amount = (minor: string) => formatMinor(minor, 'GEL', { display: 'none' });
 
 function ReturnStatus({ month }: { month: Month }) {
-  if (!month.filingRequired) return <span className="text-fg-muted">Not required</span>;
   return (
     <span className="flex flex-wrap gap-1">
-      {month.zeroReturn ? <Badge tone="info">Zero return</Badge> : <Badge>Return due</Badge>}
+      <FilingStatusBadge status={month.status} zeroReturn={month.zeroReturn} />
       {month.sbsStatus === 'partial' ? <Badge tone="warning">Status from mid-month</Badge> : null}
       {month.negativeIncome ? <Badge tone="negative">Needs a correction</Badge> : null}
       {month.limitCrossedThisMonth ? <Badge tone="negative">Limit crossed</Badge> : null}
@@ -53,13 +54,14 @@ export default async function DeclarationsPage({
   );
 
   const excludedTotal = decl.months.reduce((sum, m) => sum + parseMinor(m.excludedGelMinor), 0n);
+  const drifted = decl.months.filter((m) => m.status.kind === 'filed_with_drift');
   const showExcluded = decl.sbsEffectiveFrom === null || excludedTotal !== 0n;
 
   return (
     <PageContainer>
       <PageHeader
         title="Declarations"
-        description={`Monthly small-business return figures for ${decl.year}, computed from the ledger. Copy them into rs.ge; nothing is filed from here.`}
+        description={`Monthly small-business return figures for ${decl.year}, computed from the ledger. Open a month to copy its figures into rs.ge and record the filing.`}
         actions={
           <YearPicker year={decl.year} years={yearOptions(decl.year, decl.sbsEffectiveFrom)} />
         }
@@ -85,6 +87,12 @@ export default async function DeclarationsPage({
           <Notice tone="info" title="Income before the status start is excluded">
             {formatMinor(excludedTotal.toString(), 'GEL')} booked before{' '}
             {formatIsoDate(decl.sbsEffectiveFrom)} is not declared.
+          </Notice>
+        ) : null}
+        {drifted.length > 0 ? (
+          <Notice tone="warning" title="Filed figures changed">
+            The live figures of {drifted.map((m) => formatPeriod(m.period)).join(', ')} differ from
+            what was filed. Open the month to see what moved and file a correction.
           </Notice>
         ) : null}
         {decl.limitExceeded ? (
@@ -130,6 +138,9 @@ export default async function DeclarationsPage({
                 >
                   Month
                 </th>
+                <th scope="col" className={cx(th, 'text-start')}>
+                  Status
+                </th>
                 <th scope="col" className={cx(th, 'text-end')}>
                   Income
                 </th>
@@ -151,9 +162,6 @@ export default async function DeclarationsPage({
                 </th>
                 <th scope="col" className={cx(th, 'text-start')}>
                   Deadline
-                </th>
-                <th scope="col" className={cx(th, 'text-start')}>
-                  Return
                 </th>
                 {showExcluded ? (
                   <th scope="col" className={cx(th, 'text-end')}>
@@ -177,8 +185,16 @@ export default async function DeclarationsPage({
                     scope="row"
                     className={cx(th, 'sticky start-0 z-10 bg-surface text-start font-medium')}
                   >
-                    {formatPeriod(m.period)}
+                    <Link
+                      href={orgHref(orgId, `/declarations/${m.period}`) as Route}
+                      className="text-accent underline-offset-4 hover:underline"
+                    >
+                      {formatPeriod(m.period)}
+                    </Link>
                   </th>
+                  <td data-col="return" className="px-2.5 py-2">
+                    <ReturnStatus month={m} />
+                  </td>
                   <td data-col="income" className={cx(td, 'text-end')}>
                     {amount(m.incomeGelMinor)}
                   </td>
@@ -199,9 +215,6 @@ export default async function DeclarationsPage({
                   <td data-col="deadline" className={td}>
                     <time dateTime={m.deadline}>{formatIsoDate(m.deadline)}</time>
                   </td>
-                  <td data-col="return" className="px-2.5 py-2">
-                    <ReturnStatus month={m} />
-                  </td>
                   {showExcluded ? (
                     <td data-col="excluded" className={cx(td, 'text-end')}>
                       {amount(m.excludedGelMinor)}
@@ -218,6 +231,7 @@ export default async function DeclarationsPage({
                 >
                   {decl.year} total
                 </th>
+                <td />
                 <td data-col="income" className={cx(td, 'text-end')}>
                   {amount(decl.totalIncomeGelMinor)}
                 </td>
@@ -225,7 +239,7 @@ export default async function DeclarationsPage({
                 <td data-col="tax" className={cx(td, 'text-end')}>
                   {amount(decl.totalTaxGelMinor)}
                 </td>
-                <td colSpan={showExcluded ? 3 : 2} />
+                <td colSpan={showExcluded ? 2 : 1} />
               </tr>
             </tfoot>
           </table>

@@ -50,7 +50,7 @@ Phase 1 and later briefs are written against the contracts produced in WS-00. Co
 | 05 | Auth + tenancy | merged | ws/05-auth-tenancy |
 | 06 | Ledger API + UI | todo | |
 | 07 | Import pipeline | todo | |
-| 08 | Declarations + dashboard | todo | |
+| 08 | Declarations + dashboard | done on the MVP model (ADR 0013): filing, drift, period page, dashboard aggregates | |
 | 09 | Invoices | todo | |
 | 10 | Hardening + deploy | todo | |
 

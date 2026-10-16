@@ -5,3 +5,18 @@
 /* App sources (packages/ui registers its own). */
 @source '../app';
 @source '../src';
+
+/* Print view (declaration period page): only the main content, on white, without the shell. */
+@media print {
+  aside,
+  body header {
+    display: none !important;
+  }
+  .lg\:ps-sidebar {
+    padding-inline-start: 0 !important;
+  }
+  body,
+  .bg-canvas {
+    background: white !important;
+  }
+}
