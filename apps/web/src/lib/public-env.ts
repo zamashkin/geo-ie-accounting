@@ -7,10 +7,10 @@ const PublicEnv = z.object({
   /** API base URL as the browser sees it. */
   apiUrl: z.url().default('http://localhost:4000'),
   /**
-   * `mock`: auth pages and the session use a local mock (until WS-05's Better Auth is wired).
-   * `api`: real calls to the API.
+   * `api` (default): Better Auth in the API. `mock`: a local stand-in for the auth pages only,
+   * for UI work without a running API (the org pages always need the API).
    */
-  authMode: z.enum(['mock', 'api']).default('mock'),
+  authMode: z.enum(['mock', 'api']).default('api'),
 });
 export type PublicEnv = z.output<typeof PublicEnv>;
 
