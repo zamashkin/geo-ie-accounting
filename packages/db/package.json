@@ -20,6 +20,7 @@
     "db:seed": "node --env-file-if-exists=.env --import tsx src/scripts/seed.ts"
   },
   "dependencies": {
+    "@better-auth/utils": "0.4.2",
     "@ie-ledger/contracts": "workspace:*",
     "@ie-ledger/domain": "workspace:*",
     "drizzle-orm": "0.45.4",

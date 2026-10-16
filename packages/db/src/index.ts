@@ -9,3 +9,7 @@ export {
 export { DbEnv, loadDbEnv } from './env';
 export { DEMO, seedDemo, type SeedResult } from './seed';
 export * from './repositories/rates';
+export * from './repositories/orgs';
+export * from './repositories/members';
+export * from './repositories/audit';
+export * from './repositories/idempotency';

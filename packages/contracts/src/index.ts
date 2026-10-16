@@ -10,3 +10,4 @@ export * from './health';
 export * from './domain';
 export * from './parse-warnings';
 export * from './rates';
+export * from './tenancy';

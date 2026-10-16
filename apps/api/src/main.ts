@@ -1,6 +1,7 @@
 import { createDb } from '@ie-ledger/db';
 import { sql } from 'drizzle-orm';
 import { buildApp, LOG_REDACT_PATHS } from './app';
+import { createSmtpMailer } from './auth/mailer';
 import { loadEnv } from './env';
 import { createRatesRouteDeps } from './routes/rates/index';
 
@@ -15,6 +16,8 @@ const { db, close: closeDb } = createDb({
   },
 });
 
+const mailer = createSmtpMailer({ url: env.SMTP_URL, from: env.MAIL_FROM });
+
 const app = await buildApp(
   {
     version: env.APP_VERSION,
@@ -24,8 +27,18 @@ const app = await buildApp(
       redact: LOG_REDACT_PATHS,
       ...(env.LOG_PRETTY ? { transport: { target: 'pino-pretty' } } : {}),
     },
+    auth: {
+      baseUrl: env.API_PUBLIC_URL,
+      ...(env.BETTER_AUTH_SECRET ? { secret: env.BETTER_AUTH_SECRET } : {}),
+      trustedOrigins: [env.WEB_ORIGIN],
+      secureCookies: env.API_PUBLIC_URL.startsWith('https://'),
+      cookieDomain: env.AUTH_COOKIE_DOMAIN,
+      rateLimit: env.NODE_ENV !== 'test',
+    },
   },
   {
+    db,
+    mailer,
     checkDatabase: async () => {
       try {
         await db.execute(sql`select 1`);
@@ -45,6 +58,7 @@ async function shutdown(signal: NodeJS.Signals) {
   app.log.info({ signal }, 'shutting down');
   try {
     await app.close();
+    mailer.close?.();
     await closeDb();
     process.exit(0);
   } catch (err) {

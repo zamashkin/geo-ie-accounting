@@ -10,6 +10,7 @@ import {
   isResponseSerializationError,
 } from 'fastify-type-provider-zod';
 import { STATUS_CODES } from 'node:http';
+import { problemFromDbError } from './plugins/db-errors';
 
 /** Throw from a route to answer with RFC 9457 problem+json. */
 export class HttpProblem extends Error {
@@ -90,6 +91,8 @@ export function registerProblemHandlers(app: FastifyInstance) {
       req.log.error({ err }, 'response does not match its schema');
       return send(reply, body(req, 500, 'internal_error'));
     }
+    const db = problemFromDbError(err);
+    if (db) return send(reply, body(req, db.status, db.code, db.detail));
     const status = err.statusCode ?? 500;
     if (status >= 400 && status < 500) {
       return send(reply, body(req, status, CODE_BY_STATUS[status] ?? 'bad_request', err.message));

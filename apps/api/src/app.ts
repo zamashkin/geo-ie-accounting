@@ -8,6 +8,11 @@ import {
   type ZodTypeProvider,
 } from 'fastify-type-provider-zod';
 import { jsonSchemaTransform, jsonSchemaTransformObject } from './openapi';
+import type { Db } from '@ie-ledger/db';
+import type { AuthSettings } from './auth/better-auth';
+import type { Mailer } from './auth/mailer';
+import { DEV_AUTH_SETTINGS, registerPlatform } from './plugins/index';
+import { REPLAYED_HEADER } from './plugins/mutations';
 import { registerProblemHandlers } from './problem';
 import { healthRoutes } from './routes/health';
 import { ratesRoutes, unavailableRatesDeps, type RatesRouteDeps } from './routes/rates/index';
@@ -16,12 +21,16 @@ export interface AppConfig {
   version: string;
   webOrigin: string;
   logger: NonNullable<FastifyServerOptions['logger']>;
+  /** Better Auth settings; local-dev defaults when omitted (OpenAPI script, unit tests). */
+  auth?: Partial<AuthSettings>;
 }
 
 /** External dependencies, injected so tests and the OpenAPI script can run without a database. */
 export interface AppDeps {
   checkDatabase: () => Promise<boolean>;
   rates?: RatesRouteDeps;
+  db?: Db;
+  mailer?: Mailer;
 }
 
 const REQUEST_ID_HEADER = 'x-request-id';
@@ -58,7 +67,8 @@ export async function buildApp(config: AppConfig, deps: AppDeps) {
   await app.register(cors, {
     origin: config.webOrigin,
     credentials: true,
-    exposedHeaders: [REQUEST_ID_HEADER],
+    methods: ['GET', 'HEAD', 'POST', 'PUT', 'PATCH', 'DELETE'],
+    exposedHeaders: [REQUEST_ID_HEADER, REPLAYED_HEADER],
   });
 
   await app.register(swagger, {
@@ -72,10 +82,22 @@ export async function buildApp(config: AppConfig, deps: AppDeps) {
         version: '0.1.0',
       },
       servers: [{ url: 'http://localhost:4000', description: 'Local development' }],
-      tags: [{ name: 'system', description: 'Health and metadata' }],
+      tags: [
+        { name: 'system', description: 'Health and metadata' },
+        { name: 'auth', description: 'Session (Better Auth itself is mounted at /v1/auth/*)' },
+        { name: 'orgs', description: 'Organizations' },
+        { name: 'members', description: 'Members and invitations' },
+      ],
     },
     transform: jsonSchemaTransform,
     transformObject: jsonSchemaTransformObject,
+  });
+
+  await registerPlatform(app, {
+    webOrigin: config.webOrigin,
+    auth: { ...DEV_AUTH_SETTINGS, trustedOrigins: [config.webOrigin], ...config.auth },
+    db: deps.db,
+    mailer: deps.mailer,
   });
 
   await app.register(healthRoutes, {
