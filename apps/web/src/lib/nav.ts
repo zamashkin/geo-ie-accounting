@@ -9,6 +9,7 @@ export const ORG_NAV = [
 ] as const;
 
 export const ORG_SETTINGS_NAV = [
+  { key: 'workspace', label: 'Workspace', path: '/settings', match: 'exact' },
   { key: 'accounts', label: 'Accounts', path: '/settings/accounts', match: 'prefix' },
   { key: 'rules', label: 'Rules', path: '/settings/rules', match: 'prefix' },
   { key: 'members', label: 'Members', path: '/settings/members', match: 'prefix' },
@@ -16,6 +17,9 @@ export const ORG_SETTINGS_NAV = [
 ] as const;
 
 export type OrgNavKey = (typeof ORG_NAV)[number]['key'] | (typeof ORG_SETTINGS_NAV)[number]['key'];
+
+/** Workspace creation (first run, and "New workspace" in the switcher). */
+export const NEW_ORG_PATH = '/orgs/new';
 
 export function orgHref(orgId: string, path = ''): string {
   return `/o/${orgId}${path}`;

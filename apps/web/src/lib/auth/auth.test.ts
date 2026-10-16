@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 import { safeNextPath } from './client';
-import { AUTH_PATHS, HttpAuthClient } from './http-client';
+import { AUTH_PATHS, HttpAuthClient, withAbsoluteCallback } from './http-client';
 import { MockAuthClient } from './mock-client';
 import { decodeMockSession, encodeMockSession } from './mock-data';
 
@@ -110,5 +110,19 @@ describe('safeNextPath', () => {
     [null, '/fallback'],
   ])('%j -> %s', (next, expected) => {
     expect(safeNextPath(next, '/fallback')).toBe(expected);
+  });
+});
+
+describe('withAbsoluteCallback', () => {
+  it('puts a relative callback on the web origin', () => {
+    expect(
+      withAbsoluteCallback({ email: 'a@b.ge', callbackURL: '/o/1' }, 'http://localhost:3000'),
+    ).toEqual({ email: 'a@b.ge', callbackURL: 'http://localhost:3000/o/1' });
+  });
+
+  it('leaves bodies without a relative callback alone', () => {
+    const body: { email: string; callbackURL?: string } = { email: 'a@b.ge' };
+    expect(withAbsoluteCallback(body, 'http://localhost:3000')).toBe(body);
+    expect(withAbsoluteCallback({ callbackURL: '/x' }, undefined)).toEqual({ callbackURL: '/x' });
   });
 });

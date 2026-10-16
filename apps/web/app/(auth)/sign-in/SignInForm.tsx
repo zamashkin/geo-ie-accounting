@@ -9,7 +9,7 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { authClient } from '@/lib/auth/client';
-import { applyApiError, FormAlert } from '../_components/form-helpers';
+import { applyApiError, FormAlert } from '@/components/form-helpers';
 
 function PasswordForm({ next }: { next: string }) {
   const router = useRouter();

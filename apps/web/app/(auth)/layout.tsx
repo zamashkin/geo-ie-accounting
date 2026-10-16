@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import { BrandMark } from './_components/BrandMark';
+import { BrandMark } from '@/components/BrandMark';
 
 /** Centered card on a quiet background for sign-in, sign-up and invitations. */
 export default function AuthLayout({ children }: { children: ReactNode }) {

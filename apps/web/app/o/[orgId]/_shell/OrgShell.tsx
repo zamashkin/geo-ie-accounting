@@ -5,6 +5,7 @@ import { AppShell, type NavSection, OrgSwitcher, SidebarNav, toast, UserMenu } f
 import {
   ArrowLeftRight,
   Banknote,
+  Building2,
   FileText,
   History,
   LayoutDashboard,
@@ -19,7 +20,7 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { type ReactNode, useMemo } from 'react';
 import { errorMessage } from '@/lib/api/api-error';
-import { ORG_NAV, ORG_SETTINGS_NAV, type OrgNavKey, orgHref } from '@/lib/nav';
+import { NEW_ORG_PATH, ORG_NAV, ORG_SETTINGS_NAV, type OrgNavKey, orgHref } from '@/lib/nav';
 import { useThemePreference } from '@/lib/theme';
 
 const ICONS: Record<OrgNavKey, ReactNode> = {
@@ -33,6 +34,7 @@ const ICONS: Record<OrgNavKey, ReactNode> = {
   rules: <ListFilter />,
   members: <UserCog />,
   audit: <History />,
+  workspace: <Building2 />,
 };
 
 function Brand() {
@@ -117,6 +119,7 @@ export function OrgShell({
           orgs={session.memberships.map((m) => ({ id: m.orgId, name: m.orgName, role: m.role }))}
           currentOrgId={orgId}
           getOrgHref={(id) => orgHref(id)}
+          createHref={NEW_ORG_PATH}
         />
       }
       nav={<SidebarNav sections={sections} currentPath={pathname} />}
