@@ -383,12 +383,49 @@ export interface paths {
             cookie?: never;
         };
         /**
-         * Monthly SBS declaration figures for a year, laid out like the return
-         * @description Per month: line 15 (`ytdGelMinor`), lines 18–21 (`byPaymentMethod`), rate, tax and deadline. Computed from posted transactions on every request; nothing is filed. Without `year`: the latest year with posted transactions, else the current year.
+         * Monthly SBS declaration figures for a year, with filing status and drift
+         * @description Per month: line 15 (`ytdGelMinor`), lines 18–21 (`byPaymentMethod`), rate, tax and deadline, computed from posted transactions on every request, plus `status` against the latest filing (drift lists the lines that moved). Without `year`: the latest year with posted transactions, else the current year.
          */
         get: operations["getDeclarationYear"];
         put?: never;
         post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/orgs/{orgId}/declarations/{period}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** One monthly return laid out like rs.ge, with its transactions and filings */
+        get: operations["getDeclarationPeriod"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/orgs/{orgId}/declarations/{period}/file": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Record that the return was filed on rs.ge: stores an immutable snapshot
+         * @description Snapshots the live figures, rules version and contributing transactions of the month. Nothing is sent to rs.ge. If the month is already filed, this files a correction: send the latest filing id as `supersedesId` (409 otherwise). Snapshots are never changed or deleted. 409 also when the month is not over yet or needs no return.
+         */
+        post: operations["fileDeclaration"];
         delete?: never;
         options?: never;
         head?: never;
@@ -403,8 +440,8 @@ export interface paths {
             cookie?: never;
         };
         /**
-         * Year-to-date SBS income, latest month, next deadline and limit progress
-         * @description Without `year`: the latest year with posted transactions, else the current year in Tbilisi.
+         * Year-to-date SBS income, income by month, counterparty and currency, deadlines
+         * @description Without `year`: the latest year with posted transactions, else the current year in Tbilisi. Counterparty and currency figures cover SBS income from the status start.
          */
         get: operations["getDashboard"];
         put?: never;
@@ -877,45 +914,6 @@ export interface components {
              * @example -69085
              */
             other: string;
-        };
-        DeclarationInput: {
-            /** Format: uuid */
-            id: string;
-            /** Format: uuid */
-            orgId: string;
-            /** @example 2026-09 */
-            period: string;
-            /** @enum {string} */
-            status: "draft" | "filed";
-            /**
-             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
-             * @example 125000
-             * @example -69085
-             */
-            turnoverGelMinor: string;
-            /**
-             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
-             * @example 125000
-             * @example -69085
-             */
-            ytdGelMinor: string;
-            rateBp: number;
-            byPaymentMethod: components["schemas"]["IncomeByPaymentMethodInput"];
-            /**
-             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
-             * @example 125000
-             * @example -69085
-             */
-            taxGelMinor: string;
-            rulesVersion: string;
-            snapshot: {
-                [key: string]: unknown;
-            } | null;
-            hasDrift: boolean;
-            /** Format: date-time */
-            computedAt: string;
-            filedAt: string | null;
-            filedBy: string | null;
         };
         AuditLogEntryInput: {
             /** Format: uuid */
@@ -1473,6 +1471,326 @@ export interface components {
             } | null;
             months: components["schemas"]["DashboardMonthInput"][];
         };
+        /**
+         * @description `not_due`: no return for the month, or the month is not over. `due`: the month is over and the deadline is today or later. `overdue`: past the deadline, never filed. `filed`: the latest filing matches the live figures. `filed_with_drift`: they differ.
+         * @enum {string}
+         */
+        FilingStatusKindInput: "not_due" | "due" | "overdue" | "filed" | "filed_with_drift";
+        /** @enum {string} */
+        NotDueReasonInput: "not_required" | "period_open";
+        /** @enum {string} */
+        ReturnLineInput: "income" | "line15" | "line18" | "line19" | "line20" | "line21" | "rate" | "tax";
+        LineDifferenceInput: {
+            line: components["schemas"]["ReturnLineInput"];
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            filed: string;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            live: string;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            delta: string;
+        };
+        FilingStatusInput: {
+            kind: components["schemas"]["FilingStatusKindInput"];
+            reason: components["schemas"]["NotDueReasonInput"] | null;
+            daysLeft: number | null;
+            daysOverdue: number | null;
+            differences: components["schemas"]["LineDifferenceInput"][];
+        };
+        FiledFiguresInput: {
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            incomeGelMinor: string;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            ytdGelMinor: string;
+            byPaymentMethod: components["schemas"]["IncomeByPaymentMethodInput"];
+            rateBp: number;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            taxGelMinor: string;
+        };
+        DeclarationFilingInput: {
+            /** Format: uuid */
+            id: string;
+            /** @example 2026-09 */
+            period: string;
+            version: number;
+            supersedesId: string | null;
+            rulesVersion: string;
+            figures: components["schemas"]["FiledFiguresInput"];
+            zeroReturn: boolean;
+            transactionIds: string[];
+            rsReference: string | null;
+            /** Format: date-time */
+            filedAt: string;
+            filedBy: {
+                /** Format: uuid */
+                id: string;
+                name: string;
+                email: string;
+            };
+        };
+        FilingSummaryInput: {
+            /** Format: uuid */
+            id: string;
+            version: number;
+            /** Format: date-time */
+            filedAt: string;
+            rsReference: string | null;
+        };
+        FileDeclarationRequestInput: {
+            rsReference?: string | null;
+            supersedesId?: string | null;
+        };
+        DeclarationMonthViewInput: {
+            /** @example 2026-09 */
+            period: string;
+            rulesVersion: string;
+            sbsStatus: components["schemas"]["SbsMonthStatusInput"];
+            filingRequired: boolean;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            incomeGelMinor: string;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            excludedGelMinor: string;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            ytdGelMinor: string;
+            byPaymentMethod: components["schemas"]["IncomeByPaymentMethodInput"];
+            rateBp: number;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            taxGelMinor: string;
+            limitCrossedThisMonth: boolean;
+            zeroReturn: boolean;
+            negativeIncome: boolean;
+            /** Format: date */
+            deadline: string;
+            status: components["schemas"]["FilingStatusInput"];
+            latestFiling: components["schemas"]["FilingSummaryInput"] | null;
+        };
+        DeclarationYearViewInput: {
+            year: number;
+            months: components["schemas"]["DeclarationMonthViewInput"][];
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            totalIncomeGelMinor: string;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            totalTaxGelMinor: string;
+            crossingPeriod: string | null;
+            limitExceeded: boolean;
+            limitStatus: components["schemas"]["AnnualLimitStatusInput"];
+            sbsEffectiveFrom: string | null;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            annualLimitGelMinor: string;
+            annualLimitUsedBp: number;
+            latestYearWithData: number | null;
+            previousYearLimitExceeded: boolean;
+            /** Format: date */
+            today: string;
+        };
+        ContributingTransactionInput: {
+            /** Format: uuid */
+            id: string;
+            /** Format: date */
+            occurredOn: string;
+            description: string;
+            /** @enum {string} */
+            source: "manual" | "import" | "invoice_payment" | "reversal";
+            paymentMethod: ("cash_register" | "pos" | "bank" | "other") | null;
+            reversesId: string | null;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            incomeGelMinor: string;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            amountMinor: string;
+            /**
+             * @example GEL
+             * @example USD
+             * @example EUR
+             * @example GBP
+             */
+            currency: string;
+            counterparty: string | null;
+            excluded: boolean;
+        };
+        PeriodRulesInput: {
+            version: string;
+            baseRateBp: number;
+            increasedRateBp: number;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            annualLimitGelMinor: string;
+            filingDeadlineDayOfNextMonth: number;
+        };
+        DeclarationPeriodViewInput: {
+            month: components["schemas"]["DeclarationMonthViewInput"];
+            sbsEffectiveFrom: string | null;
+            rules: components["schemas"]["PeriodRulesInput"];
+            transactions: components["schemas"]["ContributingTransactionInput"][];
+            filings: components["schemas"]["DeclarationFilingInput"][];
+            transactionChanges: {
+                added: string[];
+                removed: string[];
+            } | null;
+            fileBlocker: components["schemas"]["NotDueReasonInput"] | null;
+            /** Format: date */
+            today: string;
+        };
+        CounterpartyIncomeInput: {
+            counterparty: string | null;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            incomeGelMinor: string;
+            transactionCount: number;
+        };
+        CurrencyIncomeInput: {
+            /**
+             * @example GEL
+             * @example USD
+             * @example EUR
+             * @example GBP
+             */
+            currency: string;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            amountMinor: string;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            incomeGelMinor: string;
+            transactionCount: number;
+        };
+        DashboardViewInput: {
+            year: number;
+            sbsEffectiveFrom: string | null;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            annualLimitGelMinor: string;
+            annualLimitUsedBp: number;
+            latestYearWithData: number | null;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            ytdIncomeGelMinor: string;
+            limitStatus: components["schemas"]["AnnualLimitStatusInput"];
+            latestMonth: components["schemas"]["DeclarationFiguresInput"] | null;
+            nextDeadline: {
+                /** @example 2026-09 */
+                period: string;
+                /** Format: date */
+                deadline: string;
+                /**
+                 * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+                 * @example 125000
+                 * @example -69085
+                 */
+                taxGelMinor: string;
+                zeroReturn: boolean;
+            } | null;
+            months: components["schemas"]["DashboardMonthInput"][];
+            byCounterparty: {
+                top: components["schemas"]["CounterpartyIncomeInput"][];
+                other: {
+                    /**
+                     * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+                     * @example 125000
+                     * @example -69085
+                     */
+                    incomeGelMinor: string;
+                    transactionCount: number;
+                    counterpartyCount: number;
+                };
+            };
+            currencyMix: components["schemas"]["CurrencyIncomeInput"][];
+            nextReturn: {
+                /** @example 2026-09 */
+                period: string;
+                /** Format: date */
+                deadline: string;
+                /**
+                 * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+                 * @example 125000
+                 * @example -69085
+                 */
+                taxGelMinor: string;
+                zeroReturn: boolean;
+                status: components["schemas"]["FilingStatusInput"];
+            } | null;
+            statusCounts: {
+                [key: string]: number;
+            };
+            /** Format: date */
+            today: string;
+        };
         Problem: {
             /** @description URI reference identifying the problem type. */
             type: string;
@@ -1931,45 +2249,6 @@ export interface components {
              * @example -69085
              */
             other: string;
-        };
-        Declaration: {
-            /** Format: uuid */
-            id: string;
-            /** Format: uuid */
-            orgId: string;
-            /** @example 2026-09 */
-            period: string;
-            /** @enum {string} */
-            status: "draft" | "filed";
-            /**
-             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
-             * @example 125000
-             * @example -69085
-             */
-            turnoverGelMinor: string;
-            /**
-             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
-             * @example 125000
-             * @example -69085
-             */
-            ytdGelMinor: string;
-            rateBp: number;
-            byPaymentMethod: components["schemas"]["IncomeByPaymentMethod"];
-            /**
-             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
-             * @example 125000
-             * @example -69085
-             */
-            taxGelMinor: string;
-            rulesVersion: string;
-            snapshot: {
-                [key: string]: unknown;
-            } | null;
-            hasDrift: boolean;
-            /** Format: date-time */
-            computedAt: string;
-            filedAt: string | null;
-            filedBy: string | null;
         };
         AuditLogEntry: {
             /** Format: uuid */
@@ -2526,6 +2805,326 @@ export interface components {
                 zeroReturn: boolean;
             } | null;
             months: components["schemas"]["DashboardMonth"][];
+        };
+        /**
+         * @description `not_due`: no return for the month, or the month is not over. `due`: the month is over and the deadline is today or later. `overdue`: past the deadline, never filed. `filed`: the latest filing matches the live figures. `filed_with_drift`: they differ.
+         * @enum {string}
+         */
+        FilingStatusKind: "not_due" | "due" | "overdue" | "filed" | "filed_with_drift";
+        /** @enum {string} */
+        NotDueReason: "not_required" | "period_open";
+        /** @enum {string} */
+        ReturnLine: "income" | "line15" | "line18" | "line19" | "line20" | "line21" | "rate" | "tax";
+        LineDifference: {
+            line: components["schemas"]["ReturnLine"];
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            filed: string;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            live: string;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            delta: string;
+        };
+        FilingStatus: {
+            kind: components["schemas"]["FilingStatusKind"];
+            reason: components["schemas"]["NotDueReason"] | null;
+            daysLeft: number | null;
+            daysOverdue: number | null;
+            differences: components["schemas"]["LineDifference"][];
+        };
+        FiledFigures: {
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            incomeGelMinor: string;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            ytdGelMinor: string;
+            byPaymentMethod: components["schemas"]["IncomeByPaymentMethod"];
+            rateBp: number;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            taxGelMinor: string;
+        };
+        DeclarationFiling: {
+            /** Format: uuid */
+            id: string;
+            /** @example 2026-09 */
+            period: string;
+            version: number;
+            supersedesId: string | null;
+            rulesVersion: string;
+            figures: components["schemas"]["FiledFigures"];
+            zeroReturn: boolean;
+            transactionIds: string[];
+            rsReference: string | null;
+            /** Format: date-time */
+            filedAt: string;
+            filedBy: {
+                /** Format: uuid */
+                id: string;
+                name: string;
+                email: string;
+            };
+        };
+        FilingSummary: {
+            /** Format: uuid */
+            id: string;
+            version: number;
+            /** Format: date-time */
+            filedAt: string;
+            rsReference: string | null;
+        };
+        FileDeclarationRequest: {
+            rsReference?: string | null;
+            supersedesId?: string | null;
+        };
+        DeclarationMonthView: {
+            /** @example 2026-09 */
+            period: string;
+            rulesVersion: string;
+            sbsStatus: components["schemas"]["SbsMonthStatus"];
+            filingRequired: boolean;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            incomeGelMinor: string;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            excludedGelMinor: string;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            ytdGelMinor: string;
+            byPaymentMethod: components["schemas"]["IncomeByPaymentMethod"];
+            rateBp: number;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            taxGelMinor: string;
+            limitCrossedThisMonth: boolean;
+            zeroReturn: boolean;
+            negativeIncome: boolean;
+            /** Format: date */
+            deadline: string;
+            status: components["schemas"]["FilingStatus"];
+            latestFiling: components["schemas"]["FilingSummary"] | null;
+        };
+        DeclarationYearView: {
+            year: number;
+            months: components["schemas"]["DeclarationMonthView"][];
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            totalIncomeGelMinor: string;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            totalTaxGelMinor: string;
+            crossingPeriod: string | null;
+            limitExceeded: boolean;
+            limitStatus: components["schemas"]["AnnualLimitStatus"];
+            sbsEffectiveFrom: string | null;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            annualLimitGelMinor: string;
+            annualLimitUsedBp: number;
+            latestYearWithData: number | null;
+            previousYearLimitExceeded: boolean;
+            /** Format: date */
+            today: string;
+        };
+        ContributingTransaction: {
+            /** Format: uuid */
+            id: string;
+            /** Format: date */
+            occurredOn: string;
+            description: string;
+            /** @enum {string} */
+            source: "manual" | "import" | "invoice_payment" | "reversal";
+            paymentMethod: ("cash_register" | "pos" | "bank" | "other") | null;
+            reversesId: string | null;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            incomeGelMinor: string;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            amountMinor: string;
+            /**
+             * @example GEL
+             * @example USD
+             * @example EUR
+             * @example GBP
+             */
+            currency: string;
+            counterparty: string | null;
+            excluded: boolean;
+        };
+        PeriodRules: {
+            version: string;
+            baseRateBp: number;
+            increasedRateBp: number;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            annualLimitGelMinor: string;
+            filingDeadlineDayOfNextMonth: number;
+        };
+        DeclarationPeriodView: {
+            month: components["schemas"]["DeclarationMonthView"];
+            sbsEffectiveFrom: string | null;
+            rules: components["schemas"]["PeriodRules"];
+            transactions: components["schemas"]["ContributingTransaction"][];
+            filings: components["schemas"]["DeclarationFiling"][];
+            transactionChanges: {
+                added: string[];
+                removed: string[];
+            } | null;
+            fileBlocker: components["schemas"]["NotDueReason"] | null;
+            /** Format: date */
+            today: string;
+        };
+        CounterpartyIncome: {
+            counterparty: string | null;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            incomeGelMinor: string;
+            transactionCount: number;
+        };
+        CurrencyIncome: {
+            /**
+             * @example GEL
+             * @example USD
+             * @example EUR
+             * @example GBP
+             */
+            currency: string;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            amountMinor: string;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            incomeGelMinor: string;
+            transactionCount: number;
+        };
+        DashboardView: {
+            year: number;
+            sbsEffectiveFrom: string | null;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            annualLimitGelMinor: string;
+            annualLimitUsedBp: number;
+            latestYearWithData: number | null;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            ytdIncomeGelMinor: string;
+            limitStatus: components["schemas"]["AnnualLimitStatus"];
+            latestMonth: components["schemas"]["DeclarationFigures"] | null;
+            nextDeadline: {
+                /** @example 2026-09 */
+                period: string;
+                /** Format: date */
+                deadline: string;
+                /**
+                 * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+                 * @example 125000
+                 * @example -69085
+                 */
+                taxGelMinor: string;
+                zeroReturn: boolean;
+            } | null;
+            months: components["schemas"]["DashboardMonth"][];
+            byCounterparty: {
+                top: components["schemas"]["CounterpartyIncome"][];
+                other: {
+                    /**
+                     * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+                     * @example 125000
+                     * @example -69085
+                     */
+                    incomeGelMinor: string;
+                    transactionCount: number;
+                    counterpartyCount: number;
+                };
+            };
+            currencyMix: components["schemas"]["CurrencyIncome"][];
+            nextReturn: {
+                /** @example 2026-09 */
+                period: string;
+                /** Format: date */
+                deadline: string;
+                /**
+                 * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+                 * @example 125000
+                 * @example -69085
+                 */
+                taxGelMinor: string;
+                zeroReturn: boolean;
+                status: components["schemas"]["FilingStatus"];
+            } | null;
+            statusCounts: {
+                [key: string]: number;
+            };
+            /** Format: date */
+            today: string;
         };
     };
     responses: never;
@@ -3391,7 +3990,80 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["DeclarationYearResponse"];
+                    "application/json": components["schemas"]["DeclarationYearView"];
+                };
+            };
+            /** @description Error (RFC 9457 problem details) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    getDeclarationPeriod: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                orgId: string;
+                /** @example 2026-09 */
+                period: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Default Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DeclarationPeriodView"];
+                };
+            };
+            /** @description Error (RFC 9457 problem details) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    fileDeclaration: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description Client-chosen key; replays return the stored response for 24 h. */
+                "idempotency-key"?: string;
+            };
+            path: {
+                orgId: string;
+                /** @example 2026-09 */
+                period: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["FileDeclarationRequestInput"];
+            };
+        };
+        responses: {
+            /** @description Default Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DeclarationFiling"];
                 };
             };
             /** @description Error (RFC 9457 problem details) */
@@ -3424,7 +4096,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["DashboardResponse"];
+                    "application/json": components["schemas"]["DashboardView"];
                 };
             };
             /** @description Error (RFC 9457 problem details) */
