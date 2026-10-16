@@ -44,7 +44,7 @@ Phase 1 and later briefs are written against the contracts produced in WS-00. Co
 | 01 | Domain core | merged | ws/01-domain |
 | 02 | NBG rates | merged | ws/02-nbg-rates |
 | 03 | Statement parsers | merged for BoG + generic CSV; TBC waits for fixtures | ws/03-importers |
-| 04 | Web shell + UI kit | in progress | ws/04-web-shell |
+| 04 | Web shell + UI kit | merged | ws/04-web-shell |
 | 05 | Auth + tenancy | merged | ws/05-auth-tenancy |
 | 06 | Ledger API + UI | todo | |
 | 07 | Import pipeline | todo | |
@@ -77,3 +77,7 @@ These don't block Phase 0 or the BoG parsers. Add files to `fixtures/statements/
 - CI: `@ie-ledger/worker#test` failed once under a full parallel turbo run, then passed alone and on re-run. Watch for flakiness.
 - WS-05: add `users.is_admin` + `requireAdmin()` and replace WS-02's `x-admin-token` stub on `POST /v1/rates/backfill` (now `config: { tx: false }`, so it skips the request transaction and idempotency). Decide how global admin actions get audited (audit_log.org_id is NOT NULL).
 - WS-05: worker job to call `deleteExpiredIdempotencyKeys`; move Better Auth's in-memory rate limiter to the DB before running more than one API instance; member role change/removal with a last-owner guard; consider default-deny guards on every `/v1` route.
+- WS-04: CI needs a Storybook job (`pnpm exec playwright install --with-deps chromium`, then `pnpm --filter @ie-ledger/ui build-storybook` and `test:storybook`). The unit `test` script stays Node-only.
+- WS-04: switch the web to real auth (`NEXT_PUBLIC_AUTH_MODE=api`, `NEXT_PUBLIC_API_URL`) and run the sign-in, invite and org-switch flow end to end against WS-05. Add password reset pages. After sign-in, return users to the page they asked for (needs `proxy.ts`).
+- WS-04/WS-01: swap `packages/ui/src/money/format.ts` and `packages/importers/src/lib/{decimal,currency}.ts` for the domain helpers.
+- Bundle: `/sign-in` ships 269 KB gzip (zod + full contracts + react-hook-form). Contracts subpath exports would save about 37 KB.
