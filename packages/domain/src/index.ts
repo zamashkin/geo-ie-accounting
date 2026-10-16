@@ -11,5 +11,6 @@ export * from './ledger';
 export * from './tax/rules';
 export * from './tax/declaration';
 export * from './dedupe';
+export * from './categorisation';
 export * from './format';
 export { sha256Hex, utf8Encode } from './sha256';
