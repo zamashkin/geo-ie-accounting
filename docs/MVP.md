@@ -53,9 +53,12 @@ Starts after MVP-A is merged. Owns `apps/web/**` pages for the demo path.
 
 ```sh
 cd ~/Documents/ie-ledger
+pnpm env:init   # first time only
 docker compose up -d --wait && pnpm db:migrate && pnpm db:seed && pnpm dev
 # open http://localhost:3000, sign in as demo@ie-ledger.local / demo-password-2026
 # upload fixtures/statements/bog/bog-gbp-2025-06.xlsx, or a real statement from fixtures/statements/raw/
 ```
+
+With the stack running, `pnpm e2e` runs the whole demo path in Playwright, and `E2E_SCREENSHOTS=1 pnpm e2e` regenerates `docs/screenshots/`.
 
 Real statements stay on this machine: the MVP stores parsed rows in the local Postgres only.

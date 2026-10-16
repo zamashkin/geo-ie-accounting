@@ -1,0 +1,249 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>IE Ledger Map</title>
+<style>
+  :root {
+    --bg: #f7f6f2; --card: #ffffff; --ink: #1d1f24; --muted: #5f6470; --line: #d9d6cc;
+    --web: #2f6fdb; --api: #0f8a6a; --worker: #b5651d; --data: #7a4bc2; --ext: #6b7280; --planned: #a3a3a3;
+    --web-bg: #e8f0fd; --api-bg: #e3f4ee; --worker-bg: #fbeedf; --data-bg: #efe8fa; --ext-bg: #eef0f3;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #15171b; --card: #1e2127; --ink: #e8e8ea; --muted: #a0a5b0; --line: #343842;
+      --web: #6fa0f0; --api: #4cc4a0; --worker: #e39a55; --data: #b28cf0; --ext: #9aa1ad; --planned: #6b6b6b;
+      --web-bg: #1c2a42; --api-bg: #16322a; --worker-bg: #3a2a19; --data-bg: #2b2140; --ext-bg: #262a31;
+    }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 15px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif; }
+  main { max-width: 1040px; margin: 0 auto; padding: 32px 16px 64px; }
+  h1 { font-size: 28px; margin: 0 0 4px; }
+  h2 { font-size: 19px; margin: 40px 0 12px; }
+  p.lead { color: var(--muted); margin: 0 0 8px; max-width: 70ch; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 16px; }
+  svg { width: 100%; height: auto; display: block; }
+  svg text { fill: var(--ink); font: 13px system-ui, sans-serif; }
+  svg .sub { fill: var(--muted); font-size: 11.5px; }
+  svg .lbl { fill: var(--muted); font-size: 11px; }
+  .legend { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 10px; color: var(--muted); font-size: 13px; }
+  .legend span::before { content: ""; display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 6px; background: var(--c); vertical-align: -1px; }
+  .grid { display: grid; gap: 12px; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); }
+  .pkg { border-left: 4px solid var(--c); }
+  .pkg h3 { margin: 0 0 2px; font-size: 15px; font-family: ui-monospace, Menlo, monospace; }
+  .pkg p { margin: 0 0 8px; color: var(--muted); font-size: 13.5px; }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; }
+  .chip { font-size: 12px; padding: 2px 8px; border-radius: 999px; background: var(--ext-bg); color: var(--ink); white-space: nowrap; }
+  .steps { list-style: none; padding: 0; margin: 0; display: grid; gap: 10px; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); counter-reset: s; }
+  .steps li { counter-increment: s; background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 12px; font-size: 13.5px; }
+  .steps li::before { content: counter(s); display: inline-grid; place-items: center; width: 22px; height: 22px; border-radius: 50%; background: var(--api); color: var(--card); font-weight: 600; font-size: 12px; margin-bottom: 6px; }
+  .steps b { display: block; margin-bottom: 2px; }
+  .steps span { color: var(--muted); }
+  .scroll { overflow-x: auto; }
+  table { border-collapse: collapse; width: 100%; font-size: 13.5px; }
+  th, td { text-align: left; padding: 7px 10px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+  th { color: var(--muted); font-weight: 600; }
+  td.num { text-align: right; font-variant-numeric: tabular-nums; font-family: ui-monospace, Menlo, monospace; }
+  .two { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
+  .bar { height: 10px; border-radius: 5px; background: var(--ext-bg); overflow: hidden; margin: 6px 0 2px; }
+  .bar i { display: block; height: 100%; background: var(--api); }
+  .stat { display: flex; justify-content: space-between; font-size: 13.5px; }
+  .stat b { font-variant-numeric: tabular-nums; }
+  ul.plain { margin: 0; padding-left: 18px; }
+  ul.plain li { margin: 3px 0; }
+  .muted { color: var(--muted); }
+  code { font-family: ui-monospace, Menlo, monospace; font-size: 12.5px; background: var(--ext-bg); padding: 1px 5px; border-radius: 4px; }
+</style>
+</head>
+<body>
+<main>
+  <h1>IE Ledger: map of the app</h1>
+  <p class="lead">A bookkeeping and 1% small-business tax tool for Georgian individual entrepreneurs. You upload bank statements, the app books them as double-entry transactions in GEL at NBG rates, and works out each month's return.</p>
+
+  <h2>System overview</h2>
+  <div class="card">
+    <svg viewBox="0 0 960 430" role="img" aria-label="Browser talks to the Next.js web app and the Fastify API; API and worker share Postgres; worker fetches NBG rates; API sends mail through Mailpit; S3 storage is planned">
+      <defs>
+        <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="var(--muted)"/></marker>
+      </defs>
+      <!-- browser -->
+      <rect x="20" y="170" width="140" height="80" rx="10" fill="var(--ext-bg)" stroke="var(--ext)"/>
+      <text x="90" y="205" text-anchor="middle" font-weight="600">Browser</text>
+      <text x="90" y="225" text-anchor="middle" class="sub">you</text>
+
+      <!-- web -->
+      <rect x="230" y="40" width="210" height="120" rx="10" fill="var(--web-bg)" stroke="var(--web)"/>
+      <text x="335" y="70" text-anchor="middle" font-weight="600">apps/web</text>
+      <text x="335" y="90" text-anchor="middle" class="sub">Next.js 16 · React 19 · :3000</text>
+      <text x="335" y="110" text-anchor="middle" class="sub">Server Components read pages</text>
+      <text x="335" y="128" text-anchor="middle" class="sub">Tailwind 4 · React Aria UI</text>
+      <text x="335" y="146" text-anchor="middle" class="sub">TanStack Query · openapi-fetch</text>
+
+      <!-- api -->
+      <rect x="230" y="250" width="210" height="140" rx="10" fill="var(--api-bg)" stroke="var(--api)"/>
+      <text x="335" y="280" text-anchor="middle" font-weight="600">apps/api</text>
+      <text x="335" y="300" text-anchor="middle" class="sub">Fastify 5 · Zod · OpenAPI · :4000</text>
+      <text x="335" y="320" text-anchor="middle" class="sub">Better Auth (sessions, roles)</text>
+      <text x="335" y="338" text-anchor="middle" class="sub">imports · transactions · reports</text>
+      <text x="335" y="356" text-anchor="middle" class="sub">audit log · idempotency keys</text>
+      <text x="335" y="374" text-anchor="middle" class="sub">tenancy guards per org</text>
+
+      <!-- postgres -->
+      <rect x="540" y="170" width="190" height="110" rx="10" fill="var(--data-bg)" stroke="var(--data)"/>
+      <text x="635" y="200" text-anchor="middle" font-weight="600">Postgres 17</text>
+      <text x="635" y="220" text-anchor="middle" class="sub">Drizzle ORM + migrations</text>
+      <text x="635" y="238" text-anchor="middle" class="sub">ledger triggers (sum = 0)</text>
+      <text x="635" y="256" text-anchor="middle" class="sub">pg-boss job queue</text>
+
+      <!-- worker -->
+      <rect x="540" y="330" width="190" height="80" rx="10" fill="var(--worker-bg)" stroke="var(--worker)"/>
+      <text x="635" y="360" text-anchor="middle" font-weight="600">apps/worker</text>
+      <text x="635" y="380" text-anchor="middle" class="sub">pg-boss 12 · daily NBG rates</text>
+      <text x="635" y="397" text-anchor="middle" class="sub">rate backfills</text>
+
+      <!-- externals -->
+      <rect x="800" y="330" width="140" height="80" rx="10" fill="var(--ext-bg)" stroke="var(--ext)"/>
+      <text x="870" y="362" text-anchor="middle" font-weight="600">NBG API</text>
+      <text x="870" y="382" text-anchor="middle" class="sub">official GEL rates</text>
+
+      <rect x="800" y="40" width="140" height="70" rx="10" fill="var(--ext-bg)" stroke="var(--ext)"/>
+      <text x="870" y="70" text-anchor="middle" font-weight="600">Mailpit</text>
+      <text x="870" y="90" text-anchor="middle" class="sub">dev SMTP · :8025</text>
+
+      <rect x="800" y="170" width="140" height="70" rx="10" fill="none" stroke="var(--planned)" stroke-dasharray="5 4"/>
+      <text x="870" y="200" text-anchor="middle" font-weight="600" fill="var(--planned)" style="fill:var(--planned)">RustFS (S3)</text>
+      <text x="870" y="220" text-anchor="middle" class="sub">planned: file storage</text>
+
+      <!-- arrows -->
+      <path d="M160 195 L228 115" stroke="var(--muted)" fill="none" marker-end="url(#a)"/>
+      <text x="150" y="140" class="lbl">pages</text>
+      <path d="M160 228 L228 300" stroke="var(--muted)" fill="none" marker-end="url(#a)"/>
+      <text x="120" y="285" class="lbl">mutations (cookie</text>
+      <text x="120" y="299" class="lbl">+ Origin check)</text>
+      <path d="M335 160 L335 248" stroke="var(--muted)" fill="none" marker-end="url(#a)"/>
+      <text x="343" y="210" class="lbl">server reads, cookies forwarded</text>
+      <path d="M440 300 L538 245" stroke="var(--muted)" fill="none" marker-end="url(#a)"/>
+      <text x="455" y="258" class="lbl">SQL</text>
+      <path d="M635 328 L635 282" stroke="var(--muted)" fill="none" marker-end="url(#a)"/>
+      <text x="643" y="310" class="lbl">jobs + rates</text>
+      <path d="M730 370 L798 370" stroke="var(--muted)" fill="none" marker-end="url(#a)"/>
+      <path d="M440 270 C 600 120, 700 80, 798 78" stroke="var(--muted)" fill="none" marker-end="url(#a)"/>
+      <text x="560" y="120" class="lbl">sign-up / magic-link mail</text>
+      <path d="M440 330 C 520 360, 520 380, 538 380" stroke="var(--muted)" fill="none" marker-end="url(#a)"/>
+      <text x="458" y="395" class="lbl">enqueue backfill</text>
+    </svg>
+    <div class="legend">
+      <span style="--c:var(--web)">Frontend</span>
+      <span style="--c:var(--api)">Backend API</span>
+      <span style="--c:var(--worker)">Background jobs</span>
+      <span style="--c:var(--data)">Data</span>
+      <span style="--c:var(--ext)">External / dev services</span>
+      <span style="--c:var(--planned)">Planned, not used by the MVP</span>
+    </div>
+  </div>
+
+  <h2>Monorepo parts</h2>
+  <p class="lead">pnpm workspaces + Turborepo. Apps depend on packages, never the other way round, and <code>web</code> never touches the database.</p>
+  <div class="grid">
+    <div class="card pkg" style="--c:var(--web)"><h3>apps/web</h3><p>Pages: sign-in, workspace setup, dashboard, imports, transactions, declarations, settings.</p><div class="chips"><span class="chip">Next.js 16.4</span><span class="chip">React 19.3</span><span class="chip">Tailwind 4</span><span class="chip">TanStack Query</span><span class="chip">react-hook-form</span><span class="chip">openapi-fetch</span></div></div>
+    <div class="card pkg" style="--c:var(--api)"><h3>apps/api</h3><p>REST API under <code>/v1</code>, documented as OpenAPI. Every write is one DB transaction with an audit row.</p><div class="chips"><span class="chip">Fastify 5.12</span><span class="chip">Better Auth 1.7</span><span class="chip">Zod type provider</span><span class="chip">multipart</span><span class="chip">pino</span></div></div>
+    <div class="card pkg" style="--c:var(--worker)"><h3>apps/worker</h3><p>Background jobs on a Postgres-backed queue: fetches and backfills NBG rates.</p><div class="chips"><span class="chip">pg-boss 12</span><span class="chip">pino</span></div></div>
+    <div class="card pkg" style="--c:var(--data)"><h3>packages/db</h3><p>Schema, migrations, repositories, seed, rate resolution.</p><div class="chips"><span class="chip">Drizzle 0.45</span><span class="chip">node-postgres</span><span class="chip">Testcontainers</span></div></div>
+    <div class="card pkg" style="--c:var(--data)"><h3>packages/domain</h3><p>Pure TypeScript: money as bigint, FX conversion, ledger rules, dated tax rules, declaration maths.</p><div class="chips"><span class="chip">no dependencies</span><span class="chip">fast-check</span></div></div>
+    <div class="card pkg" style="--c:var(--data)"><h3>packages/contracts</h3><p>Zod schemas for every request, response, job and event. The single source of truth for shapes.</p><div class="chips"><span class="chip">Zod 4</span><span class="chip">→ OpenAPI → web types</span></div></div>
+    <div class="card pkg" style="--c:var(--data)"><h3>packages/importers</h3><p>Detects and parses bank statements: BoG CSV and XLSX (own XLSX reader on top of fflate).</p><div class="chips"><span class="chip">fflate</span><span class="chip">TBC: later</span></div></div>
+    <div class="card pkg" style="--c:var(--data)"><h3>packages/nbg</h3><p>Client for the National Bank of Georgia rates API, tested against recorded responses.</p><div class="chips"><span class="chip">Zod</span><span class="chip">23 fixtures</span></div></div>
+    <div class="card pkg" style="--c:var(--web)"><h3>packages/ui</h3><p>Accessible design-system components with stories and axe checks.</p><div class="chips"><span class="chip">React Aria</span><span class="chip">TanStack Table</span><span class="chip">Storybook 10</span></div></div>
+    <div class="card pkg" style="--c:var(--ext)"><h3>packages/config</h3><p>Shared TypeScript, ESLint and boundary rules.</p><div class="chips"><span class="chip">TypeScript 6</span><span class="chip">ESLint 10</span><span class="chip">Prettier</span></div></div>
+  </div>
+
+  <h2>What happens when you upload a statement</h2>
+  <ol class="steps">
+    <li><b>Upload</b><span>XLSX or CSV, up to 5 MB, sent to the API. The file itself is never stored.</span></li>
+    <li><b>Detect + parse</b><span><code>importers</code> recognises the BoG format and reads each line.</span></li>
+    <li><b>Match account</b><span>By IBAN + currency, or a new bank account is set up.</span></li>
+    <li><b>Dedupe</b><span>Fingerprints skip lines that are already booked, across CSV and XLSX.</span></li>
+    <li><b>Preview</b><span>Suggested category per row; you change it or skip the row.</span></li>
+    <li><b>Commit</b><span>NBG rate per day, double-entry postings, audit row, all in one transaction.</span></li>
+    <li><b>Declare</b><span><code>domain</code> computes the monthly return lines, rate and deadline.</span></li>
+  </ol>
+
+  <h2>Example: June 2025 from the demo statement</h2>
+  <div class="two">
+    <div class="card scroll">
+      <table>
+        <thead><tr><th>Date</th><th>Line</th><th>Booked to</th><th class="num">GBP</th><th class="num">NBG rate</th><th class="num">GEL</th></tr></thead>
+        <tbody>
+          <tr><td>04 Jun</td><td>Incoming payment</td><td>Income: Services</td><td class="num">1,180.00</td><td class="num">3.6924</td><td class="num">4,357.03</td></tr>
+          <tr><td>05 Jun</td><td>Conversion</td><td>FX Clearing</td><td class="num">−690.85</td><td class="num">3.6948</td><td class="num">−2,552.55</td></tr>
+          <tr><td>05 Jun</td><td>Conversion</td><td>FX Clearing</td><td class="num">−489.00</td><td class="num">3.6948</td><td class="num">−1,806.76</td></tr>
+          <tr><td>11 Jun</td><td>Incoming payment</td><td>Income: Services</td><td class="num">364.00</td><td class="num">3.6858</td><td class="num">1,341.63</td></tr>
+        </tbody>
+      </table>
+      <p class="muted" style="font-size:13px;margin:10px 0 0">Every transaction has two postings that sum to zero, e.g. the bank account +1,180.00 GBP against Income −1,180.00 GBP. A database trigger refuses anything that doesn't balance. Conversions go to FX Clearing, so they never count as income.</p>
+    </div>
+    <div class="card">
+      <div class="stat"><span>Income (lines 15 and 20, bank)</span><b>GEL 5,698.66</b></div>
+      <div class="stat"><span>Rate</span><b>1%</b></div>
+      <div class="stat"><span>Tax</span><b>GEL 56.99</b></div>
+      <div class="stat"><span>Return and payment due</span><b>2025-07-15</b></div>
+      <div style="margin-top:14px" class="stat"><span>Year to date vs GEL 500,000 limit</span><b>1.13%</b></div>
+      <div class="bar" aria-hidden="true"><i style="width:1.13%;min-width:4px"></i></div>
+      <p class="muted" style="font-size:13px;margin:10px 0 0">Crossing the limit moves the whole month of crossing and the rest of the year to 3%. All rates, limits and deadlines live in one dated rules file in <code>domain</code>.</p>
+    </div>
+  </div>
+
+  <h2>How it's tested</h2>
+  <div class="two">
+    <div class="card">
+      <table>
+        <tbody>
+          <tr><td>Unit tests (all packages)</td><td class="num">31 turbo tasks</td></tr>
+          <tr><td>Integration, real Postgres: db</td><td class="num">50</td></tr>
+          <tr><td>Integration, real Postgres: api</td><td class="num">49</td></tr>
+          <tr><td>Integration, real Postgres: worker</td><td class="num">9</td></tr>
+          <tr><td>Storybook stories with axe</td><td class="num">53</td></tr>
+          <tr><td>Playwright demo path (axe, 1280px and 360px)</td><td class="num">1 full run</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="card">
+      <ul class="plain">
+        <li>A cross-tenant test hits every <code>/v1/orgs/:orgId</code> route as another org's user and expects a refusal.</li>
+        <li>Property-based tests (fast-check) for money and ledger maths.</li>
+        <li>No live network in tests: NBG responses and statements are recorded fixtures.</li>
+        <li>Real bank statements stay in a gitignored folder and are never committed.</li>
+      </ul>
+    </div>
+  </div>
+
+  <h2>Built vs. planned</h2>
+  <div class="two">
+    <div class="card">
+      <b>MVP, working now</b>
+      <ul class="plain">
+        <li>Real sign-up and sign-in, workspaces with roles (owner, accountant, viewer)</li>
+        <li>BoG statement import with preview, dedupe and commit</li>
+        <li>Transactions with NBG rates, details and reversal</li>
+        <li>Monthly declarations and dashboard, computed on request</li>
+        <li>Audit log, idempotent writes, daily NBG rates</li>
+      </ul>
+    </div>
+    <div class="card">
+      <b>Parked for later</b>
+      <ul class="plain">
+        <li>Background imports with file storage and live progress (SSE)</li>
+        <li>Categorisation rules engine, TBC statements</li>
+        <li>Stored and filed declarations, drift detection</li>
+        <li>Manual transactions, invoices, accountant mode, exports</li>
+        <li>CI pipeline and Sentry</li>
+      </ul>
+    </div>
+  </div>
+
+  <p class="muted" style="margin-top:32px;font-size:13px">Design decisions are recorded in <code>docs/adr/</code> (0001–0012). Full spec: <code>docs/SPEC.md</code>, architecture: <code>docs/ARCHITECTURE.md</code>.</p>
+</main>
+</body>
+</html>

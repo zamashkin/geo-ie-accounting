@@ -1,6 +1,6 @@
 # Work plan for parallel agents
 
-> **Current focus: the MVP in [`docs/MVP.md`](../MVP.md).** Everything below stays the full plan; WS-06 to WS-10 resume after the MVP, starting from what it built.
+> **MVP delivered (2026-10-16), see [`docs/MVP.md`](../MVP.md).** It built thin versions of WS-06, WS-07 and WS-08. WS-06 to WS-10 resume from what it built; check the MVP code before following a brief literally.
 
 Each `WS-*.md` file is a self-contained brief for one subagent. A brief lists what the agent owns (directories it may write), what it consumes, what it must deliver, and how "done" is checked.
 
@@ -65,6 +65,12 @@ These don't block Phase 0 or the BoG parsers. Add files to `fixtures/statements/
 - [ ] Accountant check of the *secondary* tax rules (SPEC Q3) before the M3 release.
 
 ## Follow-ups found in review
+
+- MVP: at 360px the import preview table scrolls sideways, so picking an account on a phone is awkward. Use a card per row on narrow screens. Long account names truncate in the 1280px preview select.
+- MVP: commit does not compare the bank's GEL amount with ours (FORMAT.md: warn when they differ by more than 1 tetri).
+- MVP: the 422 unassigned-row commit path, the 409 and the 503 `rate_unavailable` messages are not tested end to end (the fixture has no unassigned row).
+- MVP: `/` always opens the first membership. Remember the last-used workspace.
+- MVP: dashboard and declarations default to the current year; with only older data, default to the latest year that has transactions.
 
 - WS-01: the Order N38 rule set starts 2026-03-01, but the order came into force around 2026-03-07/08 (30 days after publication on 06.02.2026). Confirm the exact date with the accountant (Q3) and adjust `effectiveFrom`. It only matters for SBS applications filed 1–7 March 2026.
 - WS-01: deadlines don't move when the 15th falls on a weekend or public holiday. Ask the accountant whether they should.
