@@ -24,7 +24,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
     // data-theme is set before hydration by the inline script, hence suppressHydrationWarning.
     <html lang="en" suppressHydrationWarning>
       <head>
-        {/* eslint-disable-next-line react/no-danger -- static string, no user input */}
+        {/* Static string from theme-script.ts, no user input. */}
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
       </head>
       <body className="min-h-dvh bg-canvas text-fg antialiased">

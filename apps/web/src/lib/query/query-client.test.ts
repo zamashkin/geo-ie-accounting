@@ -20,7 +20,7 @@ describe('makeQueryClient', () => {
     const onUnauthenticated = vi.fn();
     const client = makeQueryClient({ onUnauthenticated });
     await client
-      .fetchQuery({
+      .query({
         queryKey: ['me'],
         queryFn: () => Promise.reject(toApiError(new Response(null, { status: 401 }), null)),
       })

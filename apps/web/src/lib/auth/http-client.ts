@@ -31,16 +31,15 @@ export class HttpAuthClient implements AuthClient {
   ) {}
 
   private async request(path: string, init: RequestInit = {}): Promise<unknown> {
+    const headers = new Headers(init.headers);
+    headers.set('accept', 'application/json');
+    if (init.body) headers.set('content-type', 'application/json');
     let response: Response;
     try {
       response = await this.fetchImpl(`${this.apiUrl}${path}`, {
         ...init,
         credentials: 'include',
-        headers: {
-          accept: 'application/json',
-          ...(init.body ? { 'content-type': 'application/json' } : {}),
-          ...init.headers,
-        },
+        headers,
       });
     } catch (err) {
       throw networkError(err);

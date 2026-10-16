@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import type { z } from 'zod';
 
 // Table state in the URL (ARCHITECTURE §9: "filters in URL search params"), so a filtered,
 // sorted list can be bookmarked, shared and restored with Back.
@@ -97,7 +97,8 @@ export function serializeTableParams<F extends Record<string, unknown>>(
       value.forEach((v) => {
         out.append(key, String(v));
       });
-    else out.set(key, String(value as string | number | boolean));
+    else if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean')
+      out.set(key, String(value));
   }
   if (state.cursor) out.set('cursor', state.cursor);
   return out.toString();

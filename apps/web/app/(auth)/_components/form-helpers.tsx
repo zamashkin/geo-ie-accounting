@@ -6,7 +6,13 @@ import { type FieldValues, type Path, type UseFormSetError } from 'react-hook-fo
 import { isApiError } from '@/lib/api/errors';
 
 /** Form-level message, announced when it appears. */
-export function FormAlert({ tone = 'error', children }: { tone?: 'error' | 'success'; children: ReactNode }) {
+export function FormAlert({
+  tone = 'error',
+  children,
+}: {
+  tone?: 'error' | 'success';
+  children: ReactNode;
+}) {
   const Icon = tone === 'error' ? AlertCircle : MailCheck;
   return (
     <div
@@ -40,6 +46,7 @@ export function applyApiError<T extends FieldValues>(
     else unmatched = true;
   }
   if (Object.keys(fieldErrors).length > 0 && !unmatched) return null;
-  if (err.kind === 'network') return 'Could not reach the server. Check your connection and try again.';
+  if (err.kind === 'network')
+    return 'Could not reach the server. Check your connection and try again.';
   return err.problem.detail ?? err.problem.title;
 }

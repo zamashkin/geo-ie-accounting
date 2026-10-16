@@ -47,7 +47,10 @@ export function SignUpForm({ next }: { next: string }) {
       <h1 className="mb-1 text-xl font-semibold tracking-tight">Create your account</h1>
       <p className="mb-5 text-sm text-fg-muted">
         Already registered?{' '}
-        <Link href="/sign-in" className="font-medium text-accent underline-offset-4 hover:underline">
+        <Link
+          href="/sign-in"
+          className="font-medium text-accent underline-offset-4 hover:underline"
+        >
           Sign in
         </Link>
       </p>

@@ -2,6 +2,8 @@ import type {
   AcceptInvitationResponse,
   InvitationPreview,
   SessionResponse,
+  SignInBody,
+  SignUpBody,
 } from '@ie-ledger/contracts';
 import { ApiError } from '../api/errors';
 import {
@@ -26,7 +28,7 @@ function nameFromEmail(email: string): string {
   return local
     .split(/[._-]+/)
     .filter(Boolean)
-    .map((w) => w[0]?.toUpperCase() + w.slice(1))
+    .map((w) => (w[0] ?? '').toUpperCase() + w.slice(1))
     .join(' ');
 }
 
@@ -68,7 +70,7 @@ export class MockAuthClient implements AuthClient {
     );
   }
 
-  async signIn({ email, password }: { email: string; password: string }): Promise<void> {
+  async signIn({ email, password }: SignInBody): Promise<void> {
     await this.wait();
     if (password === 'wrong-password') {
       throw problem(
@@ -81,7 +83,7 @@ export class MockAuthClient implements AuthClient {
     this.setUser({ email, name: nameFromEmail(email) });
   }
 
-  async signUp({ email, name }: { email: string; name: string }): Promise<void> {
+  async signUp({ email, name }: SignUpBody): Promise<void> {
     await this.wait();
     if (email === 'taken@example.ge') {
       throw new ApiError(
