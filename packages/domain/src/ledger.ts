@@ -267,6 +267,51 @@ export function fxConversion(input: FxConversionInput): TransactionDraft {
   });
 }
 
+export interface BankStatementLineInput extends Common {
+  /** Bank (asset) account the statement belongs to. */
+  readonly bankAccountId: string;
+  /** The other side: an income, expense, FX Clearing or any other account. */
+  readonly counterAccountId: string;
+  /** Signed, as on the statement: positive = money in (bank debited), negative = money out. */
+  readonly amount: Money;
+  /** NBG rate valid on `occurredOn`; null for GEL. */
+  readonly rate: RateSnapshot | null;
+  /** Return line 18–21. The ledger requires one when the counter account is SBS income. */
+  readonly paymentMethod: PaymentMethod | null;
+}
+
+/**
+ * One bank statement line booked against one other account, in the statement currency:
+ * `Bank +x`, `Counter −x` for money in, the other way round for money out. Both postings carry
+ * the same GEL equivalent at the NBG rate. `source` defaults to `import`.
+ *
+ * A conversion between own accounts books only the leg in the statement's currency, against FX
+ * Clearing (`Bank GBP −690.85 GBP`, `FX Clearing +690.85 GBP`). The other account's statement
+ * books the other leg, so each currency balances on its own.
+ */
+export function bankStatementLine(input: BankStatementLineInput): TransactionDraft {
+  if (input.amount.amountMinor === 0n) {
+    throw new InvalidTransactionError('A statement line needs a non-zero amount');
+  }
+  if (input.bankAccountId === input.counterAccountId) {
+    throw new InvalidTransactionError('A statement line needs two different accounts');
+  }
+  return finish({
+    occurredOn: input.occurredOn,
+    description: input.description,
+    source: input.source ?? 'import',
+    paymentMethod: input.paymentMethod,
+    reversesId: null,
+    postings: leg(
+      input.bankAccountId,
+      input.counterAccountId,
+      input.amount,
+      input.rate,
+      input.roundingMode,
+    ),
+  });
+}
+
 export interface TaxPaymentInput extends Common {
   /** System `tax_payable` account; debited. */
   readonly taxPayableAccountId: string;

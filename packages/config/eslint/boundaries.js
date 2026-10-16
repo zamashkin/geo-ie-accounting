@@ -16,11 +16,12 @@ export const SCOPE = '@ie-ledger';
 /**
  * Which workspace packages each package may depend on.
  * `nbg` and `ui` are not listed in ARCHITECTURE §2; the entries here are recorded in ADR 0001.
+ * `api -> importers` is the MVP's synchronous import (ADR 0012).
  * @type {Record<PackageName, PackageName[]>}
  */
 export const WORKSPACE_DEPS = {
   web: ['contracts', 'ui', 'domain'],
-  api: ['contracts', 'domain', 'db', 'nbg'],
+  api: ['contracts', 'domain', 'db', 'importers', 'nbg'],
   worker: ['contracts', 'domain', 'db', 'importers', 'nbg'],
   db: ['domain', 'contracts'],
   importers: ['contracts', 'domain'],

@@ -38,6 +38,66 @@ export async function getRateFor(
   return row ?? null;
 }
 
+/**
+ * Where `resolveRate` gets a rate the database cannot prove. Structurally the `NbgClient` of
+ * packages/nbg (db may not import nbg, ARCHITECTURE §2): both the API and the worker pass theirs.
+ */
+export interface RateSource {
+  getRates(
+    date: string,
+    currencies: readonly string[],
+  ): Promise<
+    readonly {
+      currency: string;
+      validFrom: string;
+      rate: string;
+      quantity: number;
+      /** UTC instant, ISO string or Date. */
+      setAt: string | Date | null;
+    }[]
+  >;
+}
+
+/**
+ * The rate valid on `date`, fetched from the rate source when the database cannot prove it
+ * (SPEC §2.3).
+ *
+ * `getRateFor` returns the newest row with `valid_from <= date`. When that row starts exactly on
+ * `date` it is certainly right. Otherwise `date` is a weekend or holiday, or the sync missed a
+ * day, and the stored data cannot tell which, so the source is asked for `date` and the answer
+ * stored.
+ *
+ * May do network I/O: call it with the pool, before opening a database transaction, never with
+ * a request transaction (the import commit resolves every booked date first).
+ */
+export async function resolveRate(
+  db: DbOrTx,
+  source: RateSource,
+  currency: string,
+  date: string,
+  now: Date = new Date(),
+): Promise<ExchangeRateRow> {
+  const stored = await getRateFor(db, currency, date);
+  if (stored?.validFrom === date) return stored;
+
+  // NbgClient.getRates throws when NBG has no rate for the currency, so this is never empty.
+  const fetched = await source.getRates(date, [currency]);
+  await upsertRates(
+    db,
+    fetched.map((r) => ({
+      currency: r.currency,
+      validFrom: r.validFrom,
+      rate: r.rate,
+      quantity: r.quantity,
+      setAt: r.setAt === null ? null : new Date(r.setAt),
+    })),
+    now,
+  );
+  const row = await getRateFor(db, currency, date);
+  if (!row) throw new Error(`No ${currency} rate stored for ${date} after fetching it`);
+  return row;
+}
+
 /** Same decimal value? String comparison after normalising: `"2.598900"` equals `"2.5989"`. */
 export function sameDecimal(a: string, b: string): boolean {
   const norm = (s: string) => {

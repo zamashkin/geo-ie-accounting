@@ -5,6 +5,7 @@ import {
   OrganizationWithRole,
   OrgParams,
   PaginationQuery,
+  UpdateOrganizationRequest,
   Uuid,
   type Role,
 } from '@ie-ledger/contracts';
@@ -12,6 +13,7 @@ import {
   createOrganization,
   getOrganizationForUser,
   listOrganizationsForUser,
+  updateOrganization,
   type OrganizationRow,
 } from '@ie-ledger/db';
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod';
@@ -105,6 +107,33 @@ export const orgRoutes: FastifyPluginAsyncZod = async (app) => {
       const org = await getOrganizationForUser(app.db, req.params.orgId, req.user.id);
       if (!org) throw new HttpProblem(404, 'not_found', 'Organization not found.');
       return toOrganizationDto(org, org.role);
+    },
+  );
+
+  app.patch(
+    '/v1/orgs/:orgId',
+    {
+      onRequest: requireRole('owner'),
+      schema: {
+        operationId: 'updateOrganization',
+        tags: ['orgs'],
+        summary: 'Update the organization’s name, tax id or small-business status start date',
+        description:
+          'Changing `sbsEffectiveFrom` changes which income counts in the declarations (they are ' +
+          'computed on request).',
+        headers: MutationHeaders,
+        params: OrgParams,
+        body: UpdateOrganizationRequest,
+        response: { 200: OrganizationWithRole, default: problemResponse },
+      },
+    },
+    async (req) => {
+      const result = await updateOrganization(req.tx, req.params.orgId, req.body);
+      if (!result) throw new HttpProblem(404, 'not_found', 'Organization not found.');
+      const before = toOrganizationDto(result.before, req.membership.role);
+      const after = toOrganizationDto(result.after, req.membership.role);
+      await req.audit('organization', result.after.id, before, after);
+      return after;
     },
   );
 };

@@ -17,7 +17,7 @@ import {
   SystemAccountKey,
   TransactionSource,
 } from './enums';
-import { GenericCsvMapping } from './importers';
+import { GenericCsvMapping, ParseWarning } from './importers';
 import {
   CurrencyCode,
   Iban,
@@ -184,11 +184,17 @@ export const ImportBatch = z
     orgId: Uuid,
     accountId: Uuid,
     bankFormat: ParserId,
-    fileKey: z.string(),
+    /** Object storage key; null when the file was not stored (MVP, ADR 0012). */
+    fileKey: z.string().nullable(),
     fileSha256: z.string().regex(/^[0-9a-f]{64}$/),
     fileName: z.string(),
     status: ImportBatchStatus,
     stats: ImportBatchStats.partial(),
+    /** Parser warnings, e.g. `reconciliation_mismatch`. */
+    warnings: z.array(ParseWarning),
+    /** Statement period from the file header, when it has one. */
+    periodFrom: IsoDate.nullable(),
+    periodTo: IsoDate.nullable(),
     error: JsonObject.nullable(),
     createdBy: Uuid,
     createdAt: Timestamp,
@@ -211,6 +217,8 @@ export const ImportRow = z
     counterpartyAccount: z.string().nullable(),
     description: z.string(),
     bankReference: z.string().nullable(),
+    /** Statement document number (BoG `Doc N`); the cross-format dedupe key. */
+    documentNumber: z.string().nullable(),
     operationType: OperationType,
     bankGelAmountMinor: MinorUnits.nullable(),
     counterAmountMinor: MinorUnits.nullable(),

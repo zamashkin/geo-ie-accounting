@@ -232,6 +232,18 @@ export function annualLimitStatus(
   return 'ok';
 }
 
+/**
+ * Share of the annual limit used, in basis points (10000 = 100%), rounded down. Can be above
+ * 10000. Negative year-to-date income (more reversals than income) counts as 0.
+ */
+export function annualLimitUsageBp(
+  ytdGelMinor: bigint,
+  ruleSet: TaxRuleSet = latestRuleSet(),
+): number {
+  if (ytdGelMinor <= 0n) return 0;
+  return Number((ytdGelMinor * BP_SCALE) / ruleSet.annualLimitGelMinor.value);
+}
+
 /** Monthly return and payment deadline: the 15th of the month after `period` (Art.93(11)). */
 export function deadlineFor(
   period: Period,

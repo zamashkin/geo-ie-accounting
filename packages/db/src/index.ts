@@ -7,9 +7,20 @@ export {
   type AccountTemplate,
 } from './chart-of-accounts';
 export { DbEnv, loadDbEnv } from './env';
-export { DEMO, seedDemo, type SeedResult } from './seed';
+export {
+  DEMO,
+  DEMO_RATE_FIXTURES,
+  readRateFixture,
+  seedDemo,
+  seedDemoRates,
+  type SeedResult,
+} from './seed';
 export * from './repositories/rates';
 export * from './repositories/orgs';
 export * from './repositories/members';
 export * from './repositories/audit';
 export * from './repositories/idempotency';
+export * from './repositories/accounts';
+export * from './repositories/imports';
+export * from './repositories/transactions';
+export * from './repositories/reports';

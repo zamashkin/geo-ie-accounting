@@ -1,4 +1,5 @@
 import { createDb } from '@ie-ledger/db';
+import { createNbgClient } from '@ie-ledger/nbg';
 import { sql } from 'drizzle-orm';
 import { buildApp, LOG_REDACT_PATHS } from './app';
 import { createSmtpMailer } from './auth/mailer';
@@ -48,6 +49,7 @@ const app = await buildApp(
       }
     },
     rates: createRatesRouteDeps({ db, connectionString: env.DATABASE_URL }),
+    ledger: { rates: createNbgClient(), now: () => new Date() },
   },
 );
 

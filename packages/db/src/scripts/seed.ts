@@ -1,6 +1,6 @@
 import { createDb } from '../client';
 import { loadDbEnv } from '../env';
-import { DEMO, seedDemo } from '../seed';
+import { DEMO, seedDemo, seedDemoRates } from '../seed';
 
 const { DATABASE_URL } = loadDbEnv();
 const handle = createDb({
@@ -17,6 +17,10 @@ try {
   );
   console.log(
     `${result.createdLogin ? 'Created' : 'Kept'} demo login ${DEMO.userEmail} / ${DEMO.password} (local only).`,
+  );
+  const rates = await seedDemoRates(handle.db);
+  console.log(
+    `NBG rates for the BoG demo statement: ${rates.inserted} added, ${rates.unchanged} already stored.`,
   );
 } finally {
   await handle.close();

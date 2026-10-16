@@ -63,3 +63,24 @@ export function dedupeHash(input: DedupeInput): string {
   ].join('|');
   return sha256Hex(utf8Encode(canonical));
 }
+
+/**
+ * Second fingerprint, keyed on the statement document number; null when the line has none.
+ *
+ * The same BoG operation hashes differently in the XLSX export (it has an `Operation ID`) and in
+ * the CSV export (it does not), because `dedupeHash` prefers the bank reference. Both exports
+ * print the same document number. Storing this hash next to the primary one lets a CSV
+ * re-import find lines first imported from the XLSX, and the other way round: account + date +
+ * amount + document number.
+ */
+export function documentDedupeHash(input: DedupeInput): string | null {
+  if (normaliseReference(input.documentNumber ?? '') === '') return null;
+  return dedupeHash({ ...input, bankReference: null });
+}
+
+/** Every fingerprint of a line: the primary hash first, then the document-number hash if any. */
+export function dedupeHashes(input: DedupeInput): string[] {
+  const primary = dedupeHash(input);
+  const byDocument = documentDedupeHash(input);
+  return byDocument === null || byDocument === primary ? [primary] : [primary, byDocument];
+}

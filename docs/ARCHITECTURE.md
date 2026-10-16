@@ -51,7 +51,7 @@ ie-ledger/
 
 ```
 web      -> contracts, ui, domain (formatting only)
-api      -> contracts, domain, db, nbg
+api      -> contracts, domain, db, importers, nbg   (importers: MVP synchronous import, ADR 0012)
 worker   -> contracts, domain, db, importers, nbg
 db       -> domain, contracts
 importers-> contracts, domain

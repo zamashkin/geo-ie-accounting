@@ -51,6 +51,11 @@ export const accounts = pgTable(
     uniqueIndex('accounts_org_system_key_uq')
       .on(t.orgId, t.systemKey)
       .where(sql`${t.systemKey} is not null`),
+    // Statement imports match bank accounts on IBAN + currency: BoG uses one IBAN for all of a
+    // client's currency accounts (docs/tasks/README.md, WS-07 follow-up).
+    uniqueIndex('accounts_org_iban_currency_uq')
+      .on(t.orgId, t.iban, t.currency)
+      .where(sql`${t.iban} is not null`),
     // Composite target for postings' (account_id, org_id) FK: a posting cannot point at
     // another org's account.
     unique('accounts_id_org_id_uq').on(t.id, t.orgId),
