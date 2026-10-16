@@ -180,10 +180,11 @@ export function TransactionSheet({
     ...(initial ? { initialData: initial } : {}),
   });
   const tx = q.data;
+  const leg = tx?.postings[0];
 
   return (
     <Sheet
-      title={tx ? tx.description : 'Transaction'}
+      title={leg ? formatMinor(leg.amountMinor, leg.currency) : 'Transaction'}
       description={tx ? formatIsoDate(tx.occurredOn) : undefined}
       isOpen={transactionId !== null}
       onOpenChange={(open) => {
@@ -197,6 +198,7 @@ export function TransactionSheet({
         <SkeletonText lines={6} />
       ) : (
         <div className="flex flex-col gap-5">
+          <p className="text-sm break-words">{tx.description}</p>
           <dl className="grid grid-cols-2 gap-x-4 gap-y-3">
             <Detail label="Source">
               <span className="flex flex-wrap gap-1">

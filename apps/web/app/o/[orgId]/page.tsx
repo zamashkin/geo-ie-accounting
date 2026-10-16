@@ -153,8 +153,8 @@ export default async function DashboardPage({ params, searchParams }: PageProps<
           Income by month
         </h2>
         {hasIncome ? (
-          <Card className="overflow-x-auto">
-            <table className="w-full min-w-[22rem] text-sm">
+          <Card className="overflow-hidden">
+            <table className="w-full text-sm">
               <thead className="border-b border-line bg-surface-muted text-xs text-fg-muted">
                 <tr>
                   <th scope="col" className="px-3 py-2 text-start font-medium">

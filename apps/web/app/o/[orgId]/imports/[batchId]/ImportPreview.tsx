@@ -138,7 +138,7 @@ const COLUMNS = [
   col.accessor('bookedOn', {
     header: 'Date',
     cell: (info) => formatIsoDate(info.getValue()),
-    meta: { width: '7.5rem' },
+    meta: { width: '6.5rem' },
   }),
   col.display({
     id: 'description',
@@ -153,19 +153,19 @@ const COLUMNS = [
         ) : null}
       </span>
     ),
-    meta: { width: 'minmax(14rem, 2fr)' },
+    meta: { width: 'minmax(10rem, 1fr)' },
   }),
   col.accessor('amountMinor', {
     header: 'Amount',
     cell: ({ row }) => (
       <Amount minor={row.original.amountMinor} currency={row.original.currency} tone="signed" />
     ),
-    meta: { width: '9.5rem', align: 'end' },
+    meta: { width: '8rem', align: 'end' },
   }),
   col.accessor('operationType', {
     header: 'Type',
     cell: (info) => OPERATION_TYPE_LABELS[info.getValue()],
-    meta: { width: '9.5rem' },
+    meta: { width: '10rem' },
   }),
   col.accessor('status', {
     header: 'Status',
@@ -176,13 +176,13 @@ const COLUMNS = [
     id: 'account',
     header: 'Book against',
     cell: ({ row }) => <AccountCell row={row.original} />,
-    meta: { width: 'minmax(13rem, 1fr)' },
+    meta: { width: '11.5rem' },
   }),
   col.display({
     id: 'skip',
     header: () => <span className="sr-only">Skip</span>,
     cell: ({ row }) => <SkipCell row={row.original} />,
-    meta: { width: '6rem', align: 'end' },
+    meta: { width: '5.5rem', align: 'end' },
   }),
 ];
 
@@ -208,7 +208,7 @@ function Summary({
   const match = upload ? ACCOUNT_MATCH_LABELS[upload.accountMatch] : null;
   const confidence = upload?.detection.confidence;
   return (
-    <Card className="grid gap-5 p-4 sm:p-5 lg:grid-cols-3">
+    <Card className="grid gap-5 p-4 sm:p-5 lg:grid-cols-2">
       <section aria-labelledby="sum-account" className="flex min-w-0 flex-col gap-1">
         <h2 id="sum-account" className="text-xs font-medium text-fg-muted">
           Bank account
@@ -247,7 +247,10 @@ function Summary({
           </p>
         ) : null}
       </section>
-      <section aria-labelledby="sum-rows" className="flex flex-col gap-1">
+      <section
+        aria-labelledby="sum-rows"
+        className="flex flex-col gap-1 border-t border-line pt-4 lg:col-span-2"
+      >
         <h2 id="sum-rows" className="text-xs font-medium text-fg-muted">
           Rows
         </h2>

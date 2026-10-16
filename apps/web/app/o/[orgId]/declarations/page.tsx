@@ -34,8 +34,8 @@ function ReturnStatus({ month }: { month: Month }) {
   );
 }
 
-const th = 'px-3 py-2 font-medium whitespace-nowrap';
-const td = 'px-3 py-2 whitespace-nowrap tabular-nums';
+const th = 'px-2.5 py-2 font-medium whitespace-nowrap';
+const td = 'px-2.5 py-2 whitespace-nowrap tabular-nums';
 
 export default async function DeclarationsPage({
   params,
@@ -196,7 +196,7 @@ export default async function DeclarationsPage({
                   <td data-col="deadline" className={td}>
                     <time dateTime={m.deadline}>{formatIsoDate(m.deadline)}</time>
                   </td>
-                  <td data-col="return" className="px-3 py-2">
+                  <td data-col="return" className="px-2.5 py-2">
                     <ReturnStatus month={m} />
                   </td>
                   {showExcluded ? (
