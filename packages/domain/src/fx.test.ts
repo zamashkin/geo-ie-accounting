@@ -1,7 +1,7 @@
 import fc from 'fast-check';
 import { describe, expect, it } from 'vitest';
 import { CurrencyMismatchError, InvalidRateError, MissingRateError } from './errors';
-import { formatRate, parseRate, RATE_SCALE, toGel } from './fx';
+import { compareBankGel, formatRate, parseRate, RATE_SCALE, toGel } from './fx';
 import type { FxRate } from './fx';
 import { money, negate, sum } from './money';
 import { ROUNDING_MODES } from './rounding';
@@ -126,5 +126,39 @@ describe('toGel', () => {
         },
       ),
     );
+  });
+});
+
+describe('compareBankGel', () => {
+  const gel = (minor: bigint) => money(minor, 'GEL');
+
+  it('accepts the bank figure when it is within one tetri of ours', () => {
+    expect(compareBankGel(gel(435703n), 435703n)).toBeNull();
+    expect(compareBankGel(gel(435703n), 435704n)).toBeNull();
+    expect(compareBankGel(gel(-255255n), -255254n)).toBeNull();
+  });
+
+  it('reports a difference of more than one tetri, signed bank minus ours', () => {
+    expect(compareBankGel(gel(435703n), 435705n)).toEqual({
+      gelAmountMinor: 435703n,
+      bankGelAmountMinor: 435705n,
+      differenceMinor: 2n,
+    });
+    expect(compareBankGel(gel(-255255n), -255000n)).toMatchObject({ differenceMinor: 255n });
+    // A sign error at the bank is a difference too.
+    expect(compareBankGel(gel(100n), -100n)).toMatchObject({ differenceMinor: -200n });
+  });
+
+  it('has nothing to compare when the statement has no GEL column', () => {
+    expect(compareBankGel(gel(435703n), null)).toBeNull();
+  });
+
+  it('only compares GEL amounts', () => {
+    expect(() => compareBankGel(money(118000n, 'GBP'), 435703n)).toThrow(CurrencyMismatchError);
+  });
+
+  it('agrees with the BoG fixture: GBP 1,180.00 at 3.6924 is the bank’s GEL 4,357.03', () => {
+    const ours = toGel(money(118000n, 'GBP'), { rateScaled: parseRate('3.6924'), quantity: 1 });
+    expect(compareBankGel(ours, 435703n)).toBeNull();
   });
 });

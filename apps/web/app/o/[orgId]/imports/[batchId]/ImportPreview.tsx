@@ -350,6 +350,34 @@ function Warnings({ warnings }: { warnings: readonly Schemas['ParseWarning'][] }
   );
 }
 
+/** Booked rows whose GEL equivalent on the statement is more than 1 tetri off ours. */
+function GelWarnings({ warnings }: { warnings: readonly Schemas['CommitWarning'][] }) {
+  const mismatches = warnings.filter((w) => w.code === 'bank_gel_mismatch');
+  if (mismatches.length === 0) return null;
+  const n = mismatches.length;
+  return (
+    <Notice
+      tone="warning"
+      live
+      title={`${n === 1 ? 'One line differs' : `${n} lines differ`} from the bank's GEL amount`}
+    >
+      <p>
+        {n === 1 ? 'It was' : 'They were'} booked at the NBG rate of the date, as the declaration
+        needs. Check which rate the bank used:
+      </p>
+      <ul className="mt-1 list-disc ps-4">
+        {mismatches.map((w) => (
+          <li key={w.rowId}>
+            {formatIsoDate(w.bookedOn)}, <Amount minor={w.amountMinor} currency={w.currency} />:
+            booked <Amount minor={w.gelAmountMinor} currency="GEL" />, statement says{' '}
+            <Amount minor={w.bankGelAmountMinor} currency="GEL" />
+          </li>
+        ))}
+      </ul>
+    </Notice>
+  );
+}
+
 function CommitError({ error, onRetry }: { error: ApiError | Error; onRetry: () => void }) {
   if (isApiError(error)) {
     const rows = blockedRowIds(error).size;
@@ -596,6 +624,8 @@ export function ImportPreview({
               : `${duplicates} lines are already in the ledger; the rest are skipped.`}
           </Notice>
         ) : null}
+
+        {commit.data ? <GelWarnings warnings={commit.data.warnings} /> : null}
 
         {commit.isError ? (
           <CommitError

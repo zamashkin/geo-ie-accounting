@@ -1,0 +1,16 @@
+,,,"angariSis mflobeli: IE SYNTHETIC TESTER",,,,
+,,,"bankSi angariSis mflobelis kodi: 10000099",,,,
+,,,"angariSis #:GE29BG0000000999999999GBP (999999999)",,,,
+,,,,,,,
+"centraluri filiali",,,"naerTi amonaweri piradi angariSidan",,,,
+"gagarinis q. #29 a, q.Tbilisi, saqarTvelo",,,"periodi: 01.06.25-15.06.25",,,"bolo brunvis TariRi: ",,,,,,
+"TariRi","sabuTis #","mokorespondento angariSi","debeti","krediti","kursi","eqv.lari","operaciis Sinaarsi"
+"01.06.2025","sawyisi naSTi",,"GBP",0.00,3.6900,0.00,
+"04.06.2025","PMI900000001","00000000000000000000000000000099",,250.0,3.6924,923.15,"TESTER SYNTHETIC: Incoming Transfer - Amount: GBP250.00; Sender: SAMPLE CUSTOMER LTD\1 TEST ROAD, LONDON,GB; Account: 00000000000000000000000000000099; Bank: SAMPLE BANK SMPLGB2L; Details: INVOICE 7"
+"brunva",,,0,250,3.6924,,
+"naSTi",,,,250.00,3.6924,923.10,
+"11.06.2025","FEE900000001","GE00BG0000000000000000GEL",2.5,,3.6858,9.21,"Monthly account service fee"
+"brunva",,,2.5,0,3.6858,,
+"naSTi",,,,247.50,3.6858,912.24,
+"sul brunva",,,2.50,250.00,,,
+"15.06.25","saboloo naSTi",,"GBP",247.50,3.6937,914.19,

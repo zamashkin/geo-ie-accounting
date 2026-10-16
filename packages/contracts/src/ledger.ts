@@ -10,7 +10,7 @@ import {
 } from './enums';
 import { StatementDetection } from './parse-warnings';
 import { PaginationQuery, paginated } from './pagination';
-import { IsoDate, MinorUnits, Period, RateDecimal, Uuid } from './primitives';
+import { CurrencyCode, IsoDate, MinorUnits, Period, RateDecimal, Uuid } from './primitives';
 import { OrgParams } from './tenancy';
 
 // Requests and responses of the MVP ledger routes (docs/MVP.md, MVP-A): accounts, statement
@@ -109,11 +109,42 @@ export const UpdateImportRowRequest = z
 export type UpdateImportRowRequest = z.output<typeof UpdateImportRowRequest>;
 
 /** `POST /imports/:batchId/commit`: every `new` row booked as one transaction each. */
+/** Codes of the non-blocking warnings a commit can return. */
+export const COMMIT_WARNING_CODES = ['bank_gel_mismatch'] as const;
+export const CommitWarningCode = z.enum(COMMIT_WARNING_CODES).meta({
+  id: 'CommitWarningCode',
+  description:
+    "`bank_gel_mismatch`: the bank's GEL equivalent of the line differs from ours (NBG rate of " +
+    'the booked date) by more than 1 tetri. Ours is booked; check the rate the bank used.',
+});
+export type CommitWarningCode = z.output<typeof CommitWarningCode>;
+
+/** Something worth checking about a booked row. The row is booked either way. */
+export const CommitWarning = z
+  .object({
+    code: CommitWarningCode,
+    rowId: Uuid,
+    transactionId: Uuid,
+    bookedOn: IsoDate,
+    /** The line amount in the account currency. */
+    amountMinor: MinorUnits,
+    currency: CurrencyCode,
+    /** Our GEL equivalent, as booked. */
+    gelAmountMinor: MinorUnits,
+    /** The bank's GEL equivalent from the statement. */
+    bankGelAmountMinor: MinorUnits,
+    message: z.string(),
+  })
+  .meta({ id: 'CommitWarning' });
+export type CommitWarning = z.output<typeof CommitWarning>;
+
 export const CommitImportResponse = z
   .object({
     batch: ImportBatch,
     /** Ids of the transactions created, in statement order. */
     transactionIds: z.array(Uuid),
+    /** Non-blocking findings about the booked rows, in statement order. Empty when all is well. */
+    warnings: z.array(CommitWarning),
   })
   .meta({ id: 'CommitImportResponse' });
 export type CommitImportResponse = z.output<typeof CommitImportResponse>;

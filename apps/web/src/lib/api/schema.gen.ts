@@ -312,7 +312,7 @@ export interface paths {
         put?: never;
         /**
          * Book every new row of a preview batch, one transaction per row
-         * @description Each row is converted to GEL at the NBG rate of its booked date. Fails with 422 if a `new` row has no account (pick one or skip the row). Rows found in the ledger since the upload are marked `duplicate` instead of being booked.
+         * @description Each row is converted to GEL at the NBG rate of its booked date. Fails with 422 if a `new` row has no account (pick one or skip the row). Rows found in the ledger since the upload are marked `duplicate` instead of being booked. `warnings` lists booked rows whose GEL equivalent on the statement differs from ours by more than 1 tetri.
          */
         post: operations["commitImport"];
         delete?: never;
@@ -1267,9 +1267,50 @@ export interface components {
             accountId?: string | null;
             skip?: boolean;
         };
+        /**
+         * @description `bank_gel_mismatch`: the bank's GEL equivalent of the line differs from ours (NBG rate of the booked date) by more than 1 tetri. Ours is booked; check the rate the bank used.
+         * @enum {string}
+         */
+        CommitWarningCodeInput: "bank_gel_mismatch";
+        CommitWarningInput: {
+            code: components["schemas"]["CommitWarningCodeInput"];
+            /** Format: uuid */
+            rowId: string;
+            /** Format: uuid */
+            transactionId: string;
+            /** Format: date */
+            bookedOn: string;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            amountMinor: string;
+            /**
+             * @example GEL
+             * @example USD
+             * @example EUR
+             * @example GBP
+             */
+            currency: string;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            gelAmountMinor: string;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            bankGelAmountMinor: string;
+            message: string;
+        };
         CommitImportResponseInput: {
             batch: components["schemas"]["ImportBatchInput"];
             transactionIds: string[];
+            warnings: components["schemas"]["CommitWarningInput"][];
         };
         PostingRateInput: {
             /**
@@ -2278,9 +2319,50 @@ export interface components {
             accountId?: string | null;
             skip?: boolean;
         };
+        /**
+         * @description `bank_gel_mismatch`: the bank's GEL equivalent of the line differs from ours (NBG rate of the booked date) by more than 1 tetri. Ours is booked; check the rate the bank used.
+         * @enum {string}
+         */
+        CommitWarningCode: "bank_gel_mismatch";
+        CommitWarning: {
+            code: components["schemas"]["CommitWarningCode"];
+            /** Format: uuid */
+            rowId: string;
+            /** Format: uuid */
+            transactionId: string;
+            /** Format: date */
+            bookedOn: string;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            amountMinor: string;
+            /**
+             * @example GEL
+             * @example USD
+             * @example EUR
+             * @example GBP
+             */
+            currency: string;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            gelAmountMinor: string;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            bankGelAmountMinor: string;
+            message: string;
+        };
         CommitImportResponse: {
             batch: components["schemas"]["ImportBatch"];
             transactionIds: string[];
+            warnings: components["schemas"]["CommitWarning"][];
         };
         PostingRate: {
             /**
