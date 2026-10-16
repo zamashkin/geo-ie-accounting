@@ -48,7 +48,7 @@ function mulberry32(seed: number) {
   };
 }
 
-export function generateRows(count: number, seed = 42): TxRow[] {
+function generateRows(count: number, seed = 42): TxRow[] {
   const rand = mulberry32(seed);
   const pick = <T,>(xs: readonly T[]): T => xs[Math.floor(rand() * xs.length)] as T;
   const start = Date.UTC(2026, 0, 1);
