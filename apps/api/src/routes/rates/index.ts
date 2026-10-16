@@ -130,6 +130,9 @@ export const ratesRoutes: FastifyPluginAsyncZod<{ deps: RatesRouteDeps }> = asyn
         body: BackfillRatesRequest,
         response: { 202: BackfillRatesResponse, default: problemResponse },
       },
+      // Only enqueues through pg-boss's own connection: nothing to write in a request
+      // transaction. Rates are global, so there is no org audit row either.
+      config: { tx: false },
       // Before body validation, so callers without access learn nothing about the schema.
       onRequest: async (req) => {
         requireAdminToken(req, deps.adminToken);
