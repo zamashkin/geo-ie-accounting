@@ -1,3 +1,7 @@
 @import 'tailwindcss';
+/* Design tokens, Tailwind theme mapping and base styles live in the ui kit. */
+@import '@ie-ledger/ui/theme.css';
 
-/* Design tokens and the Tailwind preset move to packages/ui in WS-04. */
+/* App sources (packages/ui registers its own). */
+@source '../app';
+@source '../src';
