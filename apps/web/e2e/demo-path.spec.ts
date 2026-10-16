@@ -165,4 +165,14 @@ test('demo path: sign up to declaration figures', async ({ page }) => {
     await expect(page.getByRole('heading', { level: 1, name: 'Workspace' })).toBeVisible();
     await checkPage(page, 'settings');
   });
+
+  await test.step('sign out, and back in with the password', async () => {
+    await page.getByRole('button', { name: /Account menu/ }).click();
+    await page.getByRole('menuitem', { name: 'Sign out' }).click();
+    await expect(page).toHaveURL(/\/sign-in/);
+    await page.getByLabel('Email').fill(email);
+    await page.getByRole('textbox', { name: 'Password' }).fill(password);
+    await page.getByRole('button', { name: 'Sign in' }).click();
+    await expect(page.getByRole('heading', { level: 1, name: 'Dashboard' })).toBeVisible();
+  });
 });
