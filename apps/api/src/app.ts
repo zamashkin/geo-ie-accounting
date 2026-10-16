@@ -15,7 +15,12 @@ import { DEV_AUTH_SETTINGS, registerPlatform } from './plugins/index';
 import { REPLAYED_HEADER } from './plugins/mutations';
 import { registerProblemHandlers } from './problem';
 import { healthRoutes } from './routes/health';
+import { accountRoutes } from './routes/accounts/index';
+import { importRoutes } from './routes/imports/index';
+import { offlineLedgerDeps, type LedgerDeps } from './routes/ledger-deps';
 import { ratesRoutes, unavailableRatesDeps, type RatesRouteDeps } from './routes/rates/index';
+import { reportRoutes } from './routes/reports/index';
+import { transactionRoutes } from './routes/transactions/index';
 
 export interface AppConfig {
   version: string;
@@ -29,6 +34,8 @@ export interface AppConfig {
 export interface AppDeps {
   checkDatabase: () => Promise<boolean>;
   rates?: RatesRouteDeps;
+  /** NBG source and clock for imports and the dashboard; offline (503 on a missing rate) if omitted. */
+  ledger?: LedgerDeps;
   db?: Db;
   mailer?: Mailer;
 }
@@ -87,6 +94,12 @@ export async function buildApp(config: AppConfig, deps: AppDeps) {
         { name: 'auth', description: 'Session (Better Auth itself is mounted at /v1/auth/*)' },
         { name: 'orgs', description: 'Organizations' },
         { name: 'members', description: 'Members and invitations' },
+        { name: 'rates', description: 'NBG exchange rates' },
+        { name: 'accounts', description: 'Chart of accounts and bank accounts' },
+        { name: 'imports', description: 'Bank statement imports: upload, preview, commit' },
+        { name: 'transactions', description: 'Ledger transactions and reversals' },
+        { name: 'declarations', description: 'Monthly SBS declaration figures' },
+        { name: 'dashboard', description: 'Year-to-date summary' },
       ],
     },
     transform: jsonSchemaTransform,
@@ -105,6 +118,12 @@ export async function buildApp(config: AppConfig, deps: AppDeps) {
     checkDatabase: deps.checkDatabase,
   });
   await app.register(ratesRoutes, { deps: deps.rates ?? unavailableRatesDeps });
+
+  const ledger = deps.ledger ?? offlineLedgerDeps;
+  await app.register(accountRoutes);
+  await app.register(importRoutes, { deps: ledger });
+  await app.register(transactionRoutes);
+  await app.register(reportRoutes, { deps: ledger });
 
   return app;
 }
