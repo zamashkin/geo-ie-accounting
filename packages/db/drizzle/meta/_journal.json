@@ -36,6 +36,13 @@
       "when": 1792186642560,
       "tag": "0004_declarations",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1792187916226,
+      "tag": "0005_rules_accounts",
+      "breakpoints": true
     }
   ]
 }

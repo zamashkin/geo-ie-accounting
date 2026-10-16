@@ -1,9 +1,28 @@
 // Row → wire DTO mappers shared by the ledger routes. Shapes come from packages/contracts.
-import type { Account, ImportBatch, ImportRowView, TransactionView } from '@ie-ledger/contracts';
-import type { AccountRow, ImportBatchRow, ImportRowRow, TransactionDetail } from '@ie-ledger/db';
+import type {
+  Account,
+  CategorizationRule,
+  ImportBatch,
+  ImportRowView,
+  TransactionView,
+} from '@ie-ledger/contracts';
+import type {
+  AccountRow,
+  ImportBatchRow,
+  ImportRowRow,
+  RuleRow,
+  TransactionDetail,
+} from '@ie-ledger/db';
 import { formatRate, parseRate } from '@ie-ledger/domain';
 import type { z } from 'zod';
 import { HttpProblem } from '../problem';
+
+/** A bank (or cash) account: an asset in one currency that is not a system account. */
+export function isBankAccount(
+  a: Pick<AccountRow, 'kind' | 'currency' | 'systemKey'>,
+): a is typeof a & { currency: string } {
+  return a.kind === 'asset' && a.currency !== null && a.systemKey === null;
+}
 
 export function toAccountDto(a: AccountRow): Account {
   return {
@@ -63,9 +82,29 @@ export function toImportRowDto(r: ImportRowRow): ImportRowView {
     dedupeHash: r.dedupeHash,
     status: r.status,
     suggestedAccountId: r.suggestedAccountId,
+    suggestedRuleId: r.suggestedRuleId,
     chosenAccountId: r.chosenAccountId,
     accountId: r.chosenAccountId ?? r.suggestedAccountId,
     transactionId: r.transactionId,
+  };
+}
+
+export function toRuleDto(r: RuleRow): CategorizationRule {
+  return {
+    id: r.id,
+    orgId: r.orgId,
+    name: r.name,
+    priority: r.priority,
+    counterpartyContains: r.counterpartyContains,
+    descriptionContains: r.descriptionContains,
+    direction: r.direction,
+    currency: r.currency,
+    amountMinMinor: r.amountMinMinor,
+    amountMaxMinor: r.amountMaxMinor,
+    targetAccountId: r.targetAccountId,
+    isActive: r.isActive,
+    createdAt: r.createdAt.toISOString(),
+    updatedAt: r.updatedAt.toISOString(),
   };
 }
 

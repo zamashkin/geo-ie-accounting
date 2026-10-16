@@ -342,3 +342,124 @@ export function taxPayment(input: TaxPaymentInput): TransactionDraft {
     ),
   });
 }
+
+function assertDistinct(a: string, b: string): void {
+  if (a === b) throw new InvalidTransactionError('A transaction needs two different accounts');
+}
+
+/** Two-posting event in one currency: `debit +x`, `credit −x`, the same GEL figure on both. */
+function simple(
+  input: Common & { readonly amount: Money; readonly rate: RateSnapshot | null },
+  what: string,
+  debitAccountId: string,
+  creditAccountId: string,
+): TransactionDraft {
+  assertPositive(input.amount, what);
+  assertDistinct(debitAccountId, creditAccountId);
+  return finish({
+    occurredOn: input.occurredOn,
+    description: input.description,
+    source: input.source ?? 'manual',
+    paymentMethod: null,
+    reversesId: null,
+    postings: leg(debitAccountId, creditAccountId, input.amount, input.rate, input.roundingMode),
+  });
+}
+
+export interface ExpenseInput extends Common {
+  /** Bank (asset) account the money left; credited. */
+  readonly bankAccountId: string;
+  /** Expense account; debited. */
+  readonly expenseAccountId: string;
+  readonly amount: Money;
+  /** NBG rate valid on `occurredOn`; null for GEL. */
+  readonly rate: RateSnapshot | null;
+}
+
+/** Pay 50 USD for hosting: `Expenses +50 USD`, `Bank USD −50 USD`. */
+export function expense(input: ExpenseInput): TransactionDraft {
+  return simple(input, 'Expense', input.expenseAccountId, input.bankAccountId);
+}
+
+export interface OwnerTransferInput extends Common {
+  /** Bank (asset) account. */
+  readonly bankAccountId: string;
+  /** Equity account, normally the system `owner_equity`. */
+  readonly equityAccountId: string;
+  readonly amount: Money;
+  /** NBG rate valid on `occurredOn`; null for GEL. */
+  readonly rate: RateSnapshot | null;
+}
+
+/**
+ * The owner takes money out of the business: `Owner Equity +x`, `Bank −x`. Neither an expense
+ * nor income, so the declaration does not change.
+ */
+export function ownerDraw(input: OwnerTransferInput): TransactionDraft {
+  return simple(input, 'Owner draw', input.equityAccountId, input.bankAccountId);
+}
+
+/** The owner puts own money in: `Bank +x`, `Owner Equity −x`. Not income. */
+export function ownerContribution(input: OwnerTransferInput): TransactionDraft {
+  return simple(input, 'Owner contribution', input.bankAccountId, input.equityAccountId);
+}
+
+export interface TransferInput extends Common {
+  /** Account the money leaves; credited. */
+  readonly fromAccountId: string;
+  /** Account the money arrives in; debited. */
+  readonly toAccountId: string;
+  /** Same currency on both sides; use {@link fxConversion} across currencies. */
+  readonly amount: Money;
+  /** NBG rate valid on `occurredOn`; null for GEL. */
+  readonly rate: RateSnapshot | null;
+}
+
+/** Move 200 USD between two own USD accounts: `To +200 USD`, `From −200 USD`. */
+export function transfer(input: TransferInput): TransactionDraft {
+  return simple(input, 'Transfer', input.toAccountId, input.fromAccountId);
+}
+
+export interface RawPostingInput {
+  readonly accountId: string;
+  /** Signed: positive = debit, negative = credit. */
+  readonly amount: Money;
+}
+
+export interface RawTransactionInput extends Common {
+  readonly postings: readonly RawPostingInput[];
+  /** NBG rate per foreign currency of the postings, valid on `occurredOn`. */
+  readonly rates: ReadonlyMap<CurrencyCode, RateSnapshot>;
+  /** Return line 18–21; the ledger requires one when a posting is on an SBS income account. */
+  readonly paymentMethod: PaymentMethod | null;
+}
+
+/**
+ * Advanced mode: postings as entered, each converted to GEL at its currency's NBG rate. They
+ * must balance per currency like any other transaction. Each posting is rounded on its own, so
+ * when one side of a foreign-currency amount is split, the GEL figures may be a tetri apart.
+ */
+export function rawTransaction(input: RawTransactionInput): TransactionDraft {
+  const postings = input.postings.map((p): PostingDraft => {
+    if (p.amount.amountMinor === 0n) {
+      throw new InvalidTransactionError('A posting needs a non-zero amount');
+    }
+    const foreign = p.amount.currency !== BASE_CURRENCY;
+    const rate = foreign ? (input.rates.get(p.amount.currency) ?? null) : null;
+    return {
+      accountId: p.accountId,
+      amountMinor: p.amount.amountMinor,
+      currency: p.amount.currency,
+      gelAmountMinor: toGel(p.amount, rate, input.roundingMode).amountMinor,
+      rateId: rate?.id ?? null,
+    };
+  });
+  return finish({
+    occurredOn: input.occurredOn,
+    description: input.description,
+    source: input.source ?? 'manual',
+    paymentMethod: input.paymentMethod,
+    reversesId: null,
+    postings,
+  });
+}

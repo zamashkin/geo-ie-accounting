@@ -24,4 +24,5 @@ export * from './repositories/accounts';
 export * from './repositories/imports';
 export * from './repositories/transactions';
 export * from './repositories/reports';
+export * from './repositories/rules';
 export * from './repositories/declarations';

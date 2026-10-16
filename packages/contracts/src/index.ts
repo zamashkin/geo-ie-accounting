@@ -13,4 +13,7 @@ export * from './rates';
 export * from './tenancy';
 export * from './auth';
 export * from './ledger';
+export * from './accounts';
+export * from './manual-transactions';
+export * from './rules';
 export * from './declarations';

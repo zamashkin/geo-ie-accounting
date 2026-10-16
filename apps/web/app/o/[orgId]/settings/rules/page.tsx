@@ -1,15 +1,20 @@
+import { PageContainer, PageHeader } from '@ie-ledger/ui';
 import type { Metadata } from 'next';
-import { Placeholder } from '../../_shell/Placeholder';
+import { canWrite, orgRole } from '@/lib/auth/role';
+import { RulesView } from './RulesView';
 
 export const metadata: Metadata = { title: 'Rules' };
 
-// Placeholder from WS-04 so the navigation has targets; WS-07 replaces this page.
-export default function Page() {
+export default async function RulesPage({ params }: PageProps<'/o/[orgId]/settings/rules'>) {
+  const { orgId } = await params;
+  const writable = canWrite(await orgRole(orgId));
   return (
-    <Placeholder
-      title="Rules"
-      description="Categorisation rules applied to imported rows."
-      owner="WS-07"
-    />
+    <PageContainer className="max-w-4xl">
+      <PageHeader
+        title="Rules"
+        description="Categorisation rules for imported statement lines, in the order they are tried."
+      />
+      <RulesView orgId={orgId} canWrite={writable} />
+    </PageContainer>
   );
 }
