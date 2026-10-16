@@ -20,6 +20,7 @@ import { importRoutes } from './routes/imports/index';
 import { offlineLedgerDeps, type LedgerDeps } from './routes/ledger-deps';
 import { ratesRoutes, unavailableRatesDeps, type RatesRouteDeps } from './routes/rates/index';
 import { reportRoutes } from './routes/reports/index';
+import { ruleRoutes } from './routes/rules/index';
 import { transactionRoutes } from './routes/transactions/index';
 
 export interface AppConfig {
@@ -98,6 +99,7 @@ export async function buildApp(config: AppConfig, deps: AppDeps) {
         { name: 'accounts', description: 'Chart of accounts and bank accounts' },
         { name: 'imports', description: 'Bank statement imports: upload, preview, commit' },
         { name: 'transactions', description: 'Ledger transactions and reversals' },
+        { name: 'rules', description: 'Categorisation rules for statement imports' },
         { name: 'declarations', description: 'Monthly SBS declaration figures' },
         { name: 'dashboard', description: 'Year-to-date summary' },
       ],
@@ -120,9 +122,10 @@ export async function buildApp(config: AppConfig, deps: AppDeps) {
   await app.register(ratesRoutes, { deps: deps.rates ?? unavailableRatesDeps });
 
   const ledger = deps.ledger ?? offlineLedgerDeps;
-  await app.register(accountRoutes);
+  await app.register(accountRoutes, { deps: ledger });
   await app.register(importRoutes, { deps: ledger });
-  await app.register(transactionRoutes);
+  await app.register(transactionRoutes, { deps: ledger });
+  await app.register(ruleRoutes);
   await app.register(reportRoutes, { deps: ledger });
 
   return app;

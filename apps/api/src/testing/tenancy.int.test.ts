@@ -37,6 +37,20 @@ describe('cross-tenant harness', () => {
         'POST /v1/orgs/:orgId/transactions/:transactionId/reverse',
         'GET /v1/orgs/:orgId/declarations',
         'GET /v1/orgs/:orgId/dashboard',
+        // Accounts management, manual transactions, rules and preview actions.
+        'GET /v1/orgs/:orgId/accounts/balances',
+        'POST /v1/orgs/:orgId/accounts',
+        'PATCH /v1/orgs/:orgId/accounts/:accountId',
+        'POST /v1/orgs/:orgId/transactions',
+        'POST /v1/orgs/:orgId/transactions/preview',
+        'GET /v1/orgs/:orgId/rules',
+        'GET /v1/orgs/:orgId/rules/:ruleId',
+        'POST /v1/orgs/:orgId/rules',
+        'PATCH /v1/orgs/:orgId/rules/:ruleId',
+        'DELETE /v1/orgs/:orgId/rules/:ruleId',
+        'POST /v1/orgs/:orgId/rules/reorder',
+        'POST /v1/orgs/:orgId/imports/:batchId/rows/bulk',
+        'POST /v1/orgs/:orgId/imports/:batchId/apply-rules',
       ]),
     );
   });

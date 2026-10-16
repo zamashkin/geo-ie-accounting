@@ -41,6 +41,7 @@ const CONSTRAINT_DETAIL: Record<string, string> = {
   users_email_unique: 'An account with this email already exists.',
   idempotency_keys_scope_key_uq: 'This Idempotency-Key is being used by another request.',
   accounts_org_system_key_uq: 'The organization already has this system account.',
+  accounts_org_iban_currency_uq: 'An account with this IBAN and currency already exists.',
 };
 
 export function problemFromDbError(err: unknown): DbProblem | null {

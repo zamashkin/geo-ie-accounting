@@ -1506,6 +1506,18 @@
               }
             ]
           },
+          "suggestedRuleId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid",
+                "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
           "chosenAccountId": {
             "anyOf": [
               {
@@ -1552,6 +1564,7 @@
           "dedupeHash",
           "status",
           "suggestedAccountId",
+          "suggestedRuleId",
           "chosenAccountId",
           "transactionId"
         ]
@@ -1569,30 +1582,100 @@
             "format": "uuid",
             "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
           },
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
           "priority": {
             "type": "integer",
             "minimum": -9007199254740991,
             "maximum": 9007199254740991
           },
-          "field": {
-            "type": "string",
-            "enum": [
-              "counterparty",
-              "description"
+          "counterpartyContains": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 200
+              },
+              {
+                "type": "null"
+              }
             ]
           },
-          "op": {
-            "type": "string",
-            "enum": [
-              "contains",
-              "equals",
-              "regex"
+          "descriptionContains": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 200
+              },
+              {
+                "type": "null"
+              }
             ]
           },
-          "value": {
-            "type": "string",
-            "minLength": 1,
-            "maxLength": 500
+          "direction": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "in",
+                  "out"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "currency": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[A-Z]{3}$",
+                "examples": [
+                  "GEL",
+                  "USD",
+                  "EUR",
+                  "GBP"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "amountMinMinor": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^(0|-?[1-9][0-9]*)$",
+                "description": "Integer amount in minor units (e.g. tetri, cents), as a decimal string.",
+                "examples": [
+                  "125000",
+                  "-69085"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "amountMaxMinor": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^(0|-?[1-9][0-9]*)$",
+                "description": "Integer amount in minor units (e.g. tetri, cents), as a decimal string.",
+                "examples": [
+                  "125000",
+                  "-69085"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "targetAccountId": {
             "type": "string",
@@ -1606,18 +1689,28 @@
             "type": "string",
             "format": "date-time",
             "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$"
           }
         },
         "required": [
           "id",
           "orgId",
+          "name",
           "priority",
-          "field",
-          "op",
-          "value",
+          "counterpartyContains",
+          "descriptionContains",
+          "direction",
+          "currency",
+          "amountMinMinor",
+          "amountMaxMinor",
           "targetAccountId",
           "isActive",
-          "createdAt"
+          "createdAt",
+          "updatedAt"
         ]
       },
       "ColumnMappingInput": {
@@ -3460,6 +3553,18 @@
               }
             ]
           },
+          "suggestedRuleId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid",
+                "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
           "chosenAccountId": {
             "anyOf": [
               {
@@ -3517,6 +3622,7 @@
           "dedupeHash",
           "status",
           "suggestedAccountId",
+          "suggestedRuleId",
           "chosenAccountId",
           "transactionId",
           "accountId"
@@ -4279,6 +4385,1117 @@
           "latestMonth",
           "nextDeadline",
           "months"
+        ]
+      },
+      "CreateAccountRequestInput": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "asset",
+              "liability",
+              "equity",
+              "income",
+              "expense"
+            ]
+          },
+          "currency": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[A-Z]{3}$",
+                "examples": [
+                  "GEL",
+                  "USD",
+                  "EUR",
+                  "GBP"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "incomeClass": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "sbs",
+                  "non_sbs"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "bank": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "tbc",
+                  "bog",
+                  "other"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "iban": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[A-Z]{2}[0-9]{2}[A-Z0-9]{1,30}$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "name",
+          "kind"
+        ]
+      },
+      "UpdateAccountRequestInput": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "archived": {
+            "type": "boolean"
+          }
+        }
+      },
+      "CurrencyBalanceInput": {
+        "type": "object",
+        "properties": {
+          "currency": {
+            "type": "string",
+            "pattern": "^[A-Z]{3}$",
+            "examples": [
+              "GEL",
+              "USD",
+              "EUR",
+              "GBP"
+            ]
+          },
+          "amountMinor": {
+            "type": "string",
+            "pattern": "^(0|-?[1-9][0-9]*)$",
+            "description": "Integer amount in minor units (e.g. tetri, cents), as a decimal string.",
+            "examples": [
+              "125000",
+              "-69085"
+            ]
+          }
+        },
+        "required": [
+          "currency",
+          "amountMinor"
+        ]
+      },
+      "AccountBalanceInput": {
+        "type": "object",
+        "properties": {
+          "accountId": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          },
+          "balances": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CurrencyBalanceInput"
+            }
+          },
+          "gelValue": {
+            "anyOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "amountMinor": {
+                    "type": "string",
+                    "pattern": "^(0|-?[1-9][0-9]*)$",
+                    "description": "Integer amount in minor units (e.g. tetri, cents), as a decimal string.",
+                    "examples": [
+                      "125000",
+                      "-69085"
+                    ]
+                  },
+                  "rate": {
+                    "anyOf": [
+                      {
+                        "$ref": "#/components/schemas/PostingRateInput"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  }
+                },
+                "required": [
+                  "amountMinor",
+                  "rate"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "accountId",
+          "balances",
+          "gelValue"
+        ]
+      },
+      "AccountBalanceListInput": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AccountBalanceInput"
+            }
+          },
+          "asOf": {
+            "type": "string",
+            "format": "date",
+            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+          },
+          "bankTotalGelMinor": {
+            "type": "string",
+            "pattern": "^(0|-?[1-9][0-9]*)$",
+            "description": "Integer amount in minor units (e.g. tetri, cents), as a decimal string.",
+            "examples": [
+              "125000",
+              "-69085"
+            ]
+          },
+          "bankAccountsWithoutRate": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid",
+              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+            }
+          }
+        },
+        "required": [
+          "items",
+          "asOf",
+          "bankTotalGelMinor",
+          "bankAccountsWithoutRate"
+        ]
+      },
+      "ManualTransactionTypeInput": {
+        "type": "string",
+        "enum": [
+          "income",
+          "expense",
+          "owner_draw",
+          "owner_contribution",
+          "transfer",
+          "fx_conversion",
+          "tax_payment",
+          "postings"
+        ]
+      },
+      "IncomeReceiptRequestInput": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "const": "income"
+          },
+          "occurredOn": {
+            "type": "string",
+            "format": "date",
+            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+          },
+          "description": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 500
+          },
+          "bankAccountId": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          },
+          "incomeAccountId": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          },
+          "amountMinor": {
+            "type": "string",
+            "pattern": "^[1-9][0-9]*$",
+            "description": "Positive integer amount in minor units, as a decimal string."
+          },
+          "paymentMethod": {
+            "default": "bank",
+            "type": "string",
+            "enum": [
+              "cash_register",
+              "pos",
+              "bank",
+              "other"
+            ]
+          }
+        },
+        "required": [
+          "type",
+          "occurredOn",
+          "description",
+          "bankAccountId",
+          "incomeAccountId",
+          "amountMinor"
+        ]
+      },
+      "ExpenseRequestInput": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "const": "expense"
+          },
+          "occurredOn": {
+            "type": "string",
+            "format": "date",
+            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+          },
+          "description": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 500
+          },
+          "bankAccountId": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          },
+          "expenseAccountId": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          },
+          "amountMinor": {
+            "type": "string",
+            "pattern": "^[1-9][0-9]*$",
+            "description": "Positive integer amount in minor units, as a decimal string."
+          }
+        },
+        "required": [
+          "type",
+          "occurredOn",
+          "description",
+          "bankAccountId",
+          "expenseAccountId",
+          "amountMinor"
+        ]
+      },
+      "OwnerDrawRequestInput": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "const": "owner_draw"
+          },
+          "occurredOn": {
+            "type": "string",
+            "format": "date",
+            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+          },
+          "description": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 500
+          },
+          "bankAccountId": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          },
+          "amountMinor": {
+            "type": "string",
+            "pattern": "^[1-9][0-9]*$",
+            "description": "Positive integer amount in minor units, as a decimal string."
+          }
+        },
+        "required": [
+          "type",
+          "occurredOn",
+          "description",
+          "bankAccountId",
+          "amountMinor"
+        ]
+      },
+      "OwnerContributionRequestInput": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "const": "owner_contribution"
+          },
+          "occurredOn": {
+            "type": "string",
+            "format": "date",
+            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+          },
+          "description": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 500
+          },
+          "bankAccountId": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          },
+          "amountMinor": {
+            "type": "string",
+            "pattern": "^[1-9][0-9]*$",
+            "description": "Positive integer amount in minor units, as a decimal string."
+          }
+        },
+        "required": [
+          "type",
+          "occurredOn",
+          "description",
+          "bankAccountId",
+          "amountMinor"
+        ]
+      },
+      "TransferRequestInput": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "const": "transfer"
+          },
+          "occurredOn": {
+            "type": "string",
+            "format": "date",
+            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+          },
+          "description": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 500
+          },
+          "fromAccountId": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          },
+          "toAccountId": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          },
+          "amountMinor": {
+            "type": "string",
+            "pattern": "^[1-9][0-9]*$",
+            "description": "Positive integer amount in minor units, as a decimal string."
+          }
+        },
+        "required": [
+          "type",
+          "occurredOn",
+          "description",
+          "fromAccountId",
+          "toAccountId",
+          "amountMinor"
+        ]
+      },
+      "FxConversionRequestInput": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "const": "fx_conversion"
+          },
+          "occurredOn": {
+            "type": "string",
+            "format": "date",
+            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+          },
+          "description": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 500
+          },
+          "fromAccountId": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          },
+          "toAccountId": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          },
+          "soldAmountMinor": {
+            "type": "string",
+            "pattern": "^[1-9][0-9]*$",
+            "description": "Positive integer amount in minor units, as a decimal string."
+          },
+          "boughtAmountMinor": {
+            "type": "string",
+            "pattern": "^[1-9][0-9]*$",
+            "description": "Positive integer amount in minor units, as a decimal string."
+          }
+        },
+        "required": [
+          "type",
+          "occurredOn",
+          "description",
+          "fromAccountId",
+          "toAccountId",
+          "soldAmountMinor",
+          "boughtAmountMinor"
+        ]
+      },
+      "TaxPaymentRequestInput": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "const": "tax_payment"
+          },
+          "occurredOn": {
+            "type": "string",
+            "format": "date",
+            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+          },
+          "description": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 500
+          },
+          "bankAccountId": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          },
+          "amountMinor": {
+            "type": "string",
+            "pattern": "^[1-9][0-9]*$",
+            "description": "Positive integer amount in minor units, as a decimal string."
+          }
+        },
+        "required": [
+          "type",
+          "occurredOn",
+          "description",
+          "bankAccountId",
+          "amountMinor"
+        ]
+      },
+      "RawPostingRequestInput": {
+        "type": "object",
+        "properties": {
+          "accountId": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          },
+          "amountMinor": {
+            "type": "string",
+            "pattern": "^(0|-?[1-9][0-9]*)$",
+            "description": "Integer amount in minor units (e.g. tetri, cents), as a decimal string.",
+            "examples": [
+              "125000",
+              "-69085"
+            ]
+          },
+          "currency": {
+            "type": "string",
+            "pattern": "^[A-Z]{3}$",
+            "examples": [
+              "GEL",
+              "USD",
+              "EUR",
+              "GBP"
+            ]
+          }
+        },
+        "required": [
+          "accountId",
+          "amountMinor",
+          "currency"
+        ]
+      },
+      "RawPostingsRequestInput": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "const": "postings"
+          },
+          "occurredOn": {
+            "type": "string",
+            "format": "date",
+            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+          },
+          "description": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 500
+          },
+          "paymentMethod": {
+            "default": null,
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "cash_register",
+                  "pos",
+                  "bank",
+                  "other"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "postings": {
+            "minItems": 2,
+            "maxItems": 50,
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RawPostingRequestInput"
+            }
+          }
+        },
+        "required": [
+          "type",
+          "occurredOn",
+          "description",
+          "postings"
+        ]
+      },
+      "CreateTransactionRequestInput": {
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/IncomeReceiptRequestInput"
+          },
+          {
+            "$ref": "#/components/schemas/ExpenseRequestInput"
+          },
+          {
+            "$ref": "#/components/schemas/OwnerDrawRequestInput"
+          },
+          {
+            "$ref": "#/components/schemas/OwnerContributionRequestInput"
+          },
+          {
+            "$ref": "#/components/schemas/TransferRequestInput"
+          },
+          {
+            "$ref": "#/components/schemas/FxConversionRequestInput"
+          },
+          {
+            "$ref": "#/components/schemas/TaxPaymentRequestInput"
+          },
+          {
+            "$ref": "#/components/schemas/RawPostingsRequestInput"
+          }
+        ]
+      },
+      "TransactionPreviewInput": {
+        "type": "object",
+        "properties": {
+          "occurredOn": {
+            "type": "string",
+            "format": "date",
+            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+          },
+          "description": {
+            "type": "string"
+          },
+          "paymentMethod": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "cash_register",
+                  "pos",
+                  "bank",
+                  "other"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "postings": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "accountId": {
+                  "type": "string",
+                  "format": "uuid",
+                  "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                },
+                "amountMinor": {
+                  "type": "string",
+                  "pattern": "^(0|-?[1-9][0-9]*)$",
+                  "description": "Integer amount in minor units (e.g. tetri, cents), as a decimal string.",
+                  "examples": [
+                    "125000",
+                    "-69085"
+                  ]
+                },
+                "currency": {
+                  "type": "string",
+                  "pattern": "^[A-Z]{3}$",
+                  "examples": [
+                    "GEL",
+                    "USD",
+                    "EUR",
+                    "GBP"
+                  ]
+                },
+                "gelAmountMinor": {
+                  "type": "string",
+                  "pattern": "^(0|-?[1-9][0-9]*)$",
+                  "description": "Integer amount in minor units (e.g. tetri, cents), as a decimal string.",
+                  "examples": [
+                    "125000",
+                    "-69085"
+                  ]
+                },
+                "rateId": {
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "format": "uuid",
+                      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "account": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string"
+                    },
+                    "kind": {
+                      "type": "string",
+                      "enum": [
+                        "asset",
+                        "liability",
+                        "equity",
+                        "income",
+                        "expense"
+                      ]
+                    },
+                    "systemKey": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "enum": [
+                            "fx_clearing",
+                            "tax_payable",
+                            "owner_equity"
+                          ]
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "incomeClass": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "enum": [
+                            "sbs",
+                            "non_sbs"
+                          ]
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    }
+                  },
+                  "required": [
+                    "name",
+                    "kind",
+                    "systemKey",
+                    "incomeClass"
+                  ]
+                },
+                "rate": {
+                  "anyOf": [
+                    {
+                      "$ref": "#/components/schemas/PostingRateInput"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                }
+              },
+              "required": [
+                "accountId",
+                "amountMinor",
+                "currency",
+                "gelAmountMinor",
+                "rateId",
+                "account",
+                "rate"
+              ]
+            }
+          }
+        },
+        "required": [
+          "occurredOn",
+          "description",
+          "paymentMethod",
+          "postings"
+        ]
+      },
+      "CreateRuleRequestInput": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "counterpartyContains": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 200
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "descriptionContains": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 200
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "direction": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "in",
+                  "out"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "currency": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[A-Z]{3}$",
+                "examples": [
+                  "GEL",
+                  "USD",
+                  "EUR",
+                  "GBP"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "amountMinMinor": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^(0|-?[1-9][0-9]*)$",
+                "description": "Integer amount in minor units (e.g. tetri, cents), as a decimal string.",
+                "examples": [
+                  "125000",
+                  "-69085"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "amountMaxMinor": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^(0|-?[1-9][0-9]*)$",
+                "description": "Integer amount in minor units (e.g. tetri, cents), as a decimal string.",
+                "examples": [
+                  "125000",
+                  "-69085"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "targetAccountId": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          },
+          "isActive": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "name",
+          "targetAccountId"
+        ]
+      },
+      "UpdateRuleRequestInput": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "counterpartyContains": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 200
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "descriptionContains": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 200
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "direction": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "in",
+                  "out"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "currency": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[A-Z]{3}$",
+                "examples": [
+                  "GEL",
+                  "USD",
+                  "EUR",
+                  "GBP"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "amountMinMinor": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^(0|-?[1-9][0-9]*)$",
+                "description": "Integer amount in minor units (e.g. tetri, cents), as a decimal string.",
+                "examples": [
+                  "125000",
+                  "-69085"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "amountMaxMinor": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^(0|-?[1-9][0-9]*)$",
+                "description": "Integer amount in minor units (e.g. tetri, cents), as a decimal string.",
+                "examples": [
+                  "125000",
+                  "-69085"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "targetAccountId": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          },
+          "isActive": {
+            "type": "boolean"
+          }
+        }
+      },
+      "RuleListInput": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CategorizationRuleInput"
+            }
+          }
+        },
+        "required": [
+          "items"
+        ]
+      },
+      "ReorderRulesRequestInput": {
+        "type": "object",
+        "properties": {
+          "ruleIds": {
+            "maxItems": 1000,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid",
+              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+            }
+          }
+        },
+        "required": [
+          "ruleIds"
+        ]
+      },
+      "ApplyRulesResponseInput": {
+        "type": "object",
+        "properties": {
+          "updated": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "rows": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ImportRowViewInput"
+            }
+          }
+        },
+        "required": [
+          "updated",
+          "rows"
+        ]
+      },
+      "BulkUpdateImportRowsRequestInput": {
+        "type": "object",
+        "properties": {
+          "rowIds": {
+            "minItems": 1,
+            "maxItems": 1000,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid",
+              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+            }
+          },
+          "accountId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid",
+                "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "skip": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "rowIds"
+        ]
+      },
+      "BulkUpdateImportRowsResponseInput": {
+        "type": "object",
+        "properties": {
+          "rows": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ImportRowViewInput"
+            }
+          },
+          "ignored": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid",
+              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+            }
+          }
+        },
+        "required": [
+          "rows",
+          "ignored"
         ]
       },
       "Problem": {
@@ -5801,6 +7018,18 @@
               }
             ]
           },
+          "suggestedRuleId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid",
+                "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
           "chosenAccountId": {
             "anyOf": [
               {
@@ -5847,6 +7076,7 @@
           "dedupeHash",
           "status",
           "suggestedAccountId",
+          "suggestedRuleId",
           "chosenAccountId",
           "transactionId"
         ],
@@ -5865,30 +7095,100 @@
             "format": "uuid",
             "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
           },
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
           "priority": {
             "type": "integer",
             "minimum": -9007199254740991,
             "maximum": 9007199254740991
           },
-          "field": {
-            "type": "string",
-            "enum": [
-              "counterparty",
-              "description"
+          "counterpartyContains": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 200
+              },
+              {
+                "type": "null"
+              }
             ]
           },
-          "op": {
-            "type": "string",
-            "enum": [
-              "contains",
-              "equals",
-              "regex"
+          "descriptionContains": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 200
+              },
+              {
+                "type": "null"
+              }
             ]
           },
-          "value": {
-            "type": "string",
-            "minLength": 1,
-            "maxLength": 500
+          "direction": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "in",
+                  "out"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "currency": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[A-Z]{3}$",
+                "examples": [
+                  "GEL",
+                  "USD",
+                  "EUR",
+                  "GBP"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "amountMinMinor": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^(0|-?[1-9][0-9]*)$",
+                "description": "Integer amount in minor units (e.g. tetri, cents), as a decimal string.",
+                "examples": [
+                  "125000",
+                  "-69085"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "amountMaxMinor": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^(0|-?[1-9][0-9]*)$",
+                "description": "Integer amount in minor units (e.g. tetri, cents), as a decimal string.",
+                "examples": [
+                  "125000",
+                  "-69085"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "targetAccountId": {
             "type": "string",
@@ -5902,18 +7202,28 @@
             "type": "string",
             "format": "date-time",
             "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$"
           }
         },
         "required": [
           "id",
           "orgId",
+          "name",
           "priority",
-          "field",
-          "op",
-          "value",
+          "counterpartyContains",
+          "descriptionContains",
+          "direction",
+          "currency",
+          "amountMinMinor",
+          "amountMaxMinor",
           "targetAccountId",
           "isActive",
-          "createdAt"
+          "createdAt",
+          "updatedAt"
         ],
         "additionalProperties": false
       },
@@ -7803,6 +9113,18 @@
               }
             ]
           },
+          "suggestedRuleId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid",
+                "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
           "chosenAccountId": {
             "anyOf": [
               {
@@ -7860,6 +9182,7 @@
           "dedupeHash",
           "status",
           "suggestedAccountId",
+          "suggestedRuleId",
           "chosenAccountId",
           "transactionId",
           "accountId"
@@ -8638,6 +9961,1138 @@
           "months"
         ],
         "additionalProperties": false
+      },
+      "CreateAccountRequest": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "asset",
+              "liability",
+              "equity",
+              "income",
+              "expense"
+            ]
+          },
+          "currency": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[A-Z]{3}$",
+                "examples": [
+                  "GEL",
+                  "USD",
+                  "EUR",
+                  "GBP"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "incomeClass": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "sbs",
+                  "non_sbs"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "bank": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "tbc",
+                  "bog",
+                  "other"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "iban": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[A-Z]{2}[0-9]{2}[A-Z0-9]{1,30}$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "name",
+          "kind"
+        ],
+        "additionalProperties": false
+      },
+      "UpdateAccountRequest": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "archived": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      },
+      "CurrencyBalance": {
+        "type": "object",
+        "properties": {
+          "currency": {
+            "type": "string",
+            "pattern": "^[A-Z]{3}$",
+            "examples": [
+              "GEL",
+              "USD",
+              "EUR",
+              "GBP"
+            ]
+          },
+          "amountMinor": {
+            "type": "string",
+            "pattern": "^(0|-?[1-9][0-9]*)$",
+            "description": "Integer amount in minor units (e.g. tetri, cents), as a decimal string.",
+            "examples": [
+              "125000",
+              "-69085"
+            ]
+          }
+        },
+        "required": [
+          "currency",
+          "amountMinor"
+        ],
+        "additionalProperties": false
+      },
+      "AccountBalance": {
+        "type": "object",
+        "properties": {
+          "accountId": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          },
+          "balances": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CurrencyBalance"
+            }
+          },
+          "gelValue": {
+            "anyOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "amountMinor": {
+                    "type": "string",
+                    "pattern": "^(0|-?[1-9][0-9]*)$",
+                    "description": "Integer amount in minor units (e.g. tetri, cents), as a decimal string.",
+                    "examples": [
+                      "125000",
+                      "-69085"
+                    ]
+                  },
+                  "rate": {
+                    "anyOf": [
+                      {
+                        "$ref": "#/components/schemas/PostingRate"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  }
+                },
+                "required": [
+                  "amountMinor",
+                  "rate"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "accountId",
+          "balances",
+          "gelValue"
+        ],
+        "additionalProperties": false
+      },
+      "AccountBalanceList": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AccountBalance"
+            }
+          },
+          "asOf": {
+            "type": "string",
+            "format": "date",
+            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+          },
+          "bankTotalGelMinor": {
+            "type": "string",
+            "pattern": "^(0|-?[1-9][0-9]*)$",
+            "description": "Integer amount in minor units (e.g. tetri, cents), as a decimal string.",
+            "examples": [
+              "125000",
+              "-69085"
+            ]
+          },
+          "bankAccountsWithoutRate": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid",
+              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+            }
+          }
+        },
+        "required": [
+          "items",
+          "asOf",
+          "bankTotalGelMinor",
+          "bankAccountsWithoutRate"
+        ],
+        "additionalProperties": false
+      },
+      "ManualTransactionType": {
+        "type": "string",
+        "enum": [
+          "income",
+          "expense",
+          "owner_draw",
+          "owner_contribution",
+          "transfer",
+          "fx_conversion",
+          "tax_payment",
+          "postings"
+        ]
+      },
+      "IncomeReceiptRequest": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "const": "income"
+          },
+          "occurredOn": {
+            "type": "string",
+            "format": "date",
+            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+          },
+          "description": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 500
+          },
+          "bankAccountId": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          },
+          "incomeAccountId": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          },
+          "amountMinor": {
+            "type": "string",
+            "pattern": "^(0|-?[1-9][0-9]*)$",
+            "description": "Integer amount in minor units (e.g. tetri, cents), as a decimal string.",
+            "examples": [
+              "125000",
+              "-69085"
+            ]
+          },
+          "paymentMethod": {
+            "default": "bank",
+            "type": "string",
+            "enum": [
+              "cash_register",
+              "pos",
+              "bank",
+              "other"
+            ]
+          }
+        },
+        "required": [
+          "type",
+          "occurredOn",
+          "description",
+          "bankAccountId",
+          "incomeAccountId",
+          "amountMinor",
+          "paymentMethod"
+        ],
+        "additionalProperties": false
+      },
+      "ExpenseRequest": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "const": "expense"
+          },
+          "occurredOn": {
+            "type": "string",
+            "format": "date",
+            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+          },
+          "description": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 500
+          },
+          "bankAccountId": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          },
+          "expenseAccountId": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          },
+          "amountMinor": {
+            "type": "string",
+            "pattern": "^(0|-?[1-9][0-9]*)$",
+            "description": "Integer amount in minor units (e.g. tetri, cents), as a decimal string.",
+            "examples": [
+              "125000",
+              "-69085"
+            ]
+          }
+        },
+        "required": [
+          "type",
+          "occurredOn",
+          "description",
+          "bankAccountId",
+          "expenseAccountId",
+          "amountMinor"
+        ],
+        "additionalProperties": false
+      },
+      "OwnerDrawRequest": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "const": "owner_draw"
+          },
+          "occurredOn": {
+            "type": "string",
+            "format": "date",
+            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+          },
+          "description": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 500
+          },
+          "bankAccountId": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          },
+          "amountMinor": {
+            "type": "string",
+            "pattern": "^(0|-?[1-9][0-9]*)$",
+            "description": "Integer amount in minor units (e.g. tetri, cents), as a decimal string.",
+            "examples": [
+              "125000",
+              "-69085"
+            ]
+          }
+        },
+        "required": [
+          "type",
+          "occurredOn",
+          "description",
+          "bankAccountId",
+          "amountMinor"
+        ],
+        "additionalProperties": false
+      },
+      "OwnerContributionRequest": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "const": "owner_contribution"
+          },
+          "occurredOn": {
+            "type": "string",
+            "format": "date",
+            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+          },
+          "description": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 500
+          },
+          "bankAccountId": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          },
+          "amountMinor": {
+            "type": "string",
+            "pattern": "^(0|-?[1-9][0-9]*)$",
+            "description": "Integer amount in minor units (e.g. tetri, cents), as a decimal string.",
+            "examples": [
+              "125000",
+              "-69085"
+            ]
+          }
+        },
+        "required": [
+          "type",
+          "occurredOn",
+          "description",
+          "bankAccountId",
+          "amountMinor"
+        ],
+        "additionalProperties": false
+      },
+      "TransferRequest": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "const": "transfer"
+          },
+          "occurredOn": {
+            "type": "string",
+            "format": "date",
+            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+          },
+          "description": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 500
+          },
+          "fromAccountId": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          },
+          "toAccountId": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          },
+          "amountMinor": {
+            "type": "string",
+            "pattern": "^(0|-?[1-9][0-9]*)$",
+            "description": "Integer amount in minor units (e.g. tetri, cents), as a decimal string.",
+            "examples": [
+              "125000",
+              "-69085"
+            ]
+          }
+        },
+        "required": [
+          "type",
+          "occurredOn",
+          "description",
+          "fromAccountId",
+          "toAccountId",
+          "amountMinor"
+        ],
+        "additionalProperties": false
+      },
+      "FxConversionRequest": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "const": "fx_conversion"
+          },
+          "occurredOn": {
+            "type": "string",
+            "format": "date",
+            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+          },
+          "description": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 500
+          },
+          "fromAccountId": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          },
+          "toAccountId": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          },
+          "soldAmountMinor": {
+            "type": "string",
+            "pattern": "^(0|-?[1-9][0-9]*)$",
+            "description": "Integer amount in minor units (e.g. tetri, cents), as a decimal string.",
+            "examples": [
+              "125000",
+              "-69085"
+            ]
+          },
+          "boughtAmountMinor": {
+            "type": "string",
+            "pattern": "^(0|-?[1-9][0-9]*)$",
+            "description": "Integer amount in minor units (e.g. tetri, cents), as a decimal string.",
+            "examples": [
+              "125000",
+              "-69085"
+            ]
+          }
+        },
+        "required": [
+          "type",
+          "occurredOn",
+          "description",
+          "fromAccountId",
+          "toAccountId",
+          "soldAmountMinor",
+          "boughtAmountMinor"
+        ],
+        "additionalProperties": false
+      },
+      "TaxPaymentRequest": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "const": "tax_payment"
+          },
+          "occurredOn": {
+            "type": "string",
+            "format": "date",
+            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+          },
+          "description": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 500
+          },
+          "bankAccountId": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          },
+          "amountMinor": {
+            "type": "string",
+            "pattern": "^(0|-?[1-9][0-9]*)$",
+            "description": "Integer amount in minor units (e.g. tetri, cents), as a decimal string.",
+            "examples": [
+              "125000",
+              "-69085"
+            ]
+          }
+        },
+        "required": [
+          "type",
+          "occurredOn",
+          "description",
+          "bankAccountId",
+          "amountMinor"
+        ],
+        "additionalProperties": false
+      },
+      "RawPostingRequest": {
+        "type": "object",
+        "properties": {
+          "accountId": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          },
+          "amountMinor": {
+            "type": "string",
+            "pattern": "^(0|-?[1-9][0-9]*)$",
+            "description": "Integer amount in minor units (e.g. tetri, cents), as a decimal string.",
+            "examples": [
+              "125000",
+              "-69085"
+            ]
+          },
+          "currency": {
+            "type": "string",
+            "pattern": "^[A-Z]{3}$",
+            "examples": [
+              "GEL",
+              "USD",
+              "EUR",
+              "GBP"
+            ]
+          }
+        },
+        "required": [
+          "accountId",
+          "amountMinor",
+          "currency"
+        ],
+        "additionalProperties": false
+      },
+      "RawPostingsRequest": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "const": "postings"
+          },
+          "occurredOn": {
+            "type": "string",
+            "format": "date",
+            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+          },
+          "description": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 500
+          },
+          "paymentMethod": {
+            "default": null,
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "cash_register",
+                  "pos",
+                  "bank",
+                  "other"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "postings": {
+            "minItems": 2,
+            "maxItems": 50,
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RawPostingRequest"
+            }
+          }
+        },
+        "required": [
+          "type",
+          "occurredOn",
+          "description",
+          "paymentMethod",
+          "postings"
+        ],
+        "additionalProperties": false
+      },
+      "CreateTransactionRequest": {
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/IncomeReceiptRequest"
+          },
+          {
+            "$ref": "#/components/schemas/ExpenseRequest"
+          },
+          {
+            "$ref": "#/components/schemas/OwnerDrawRequest"
+          },
+          {
+            "$ref": "#/components/schemas/OwnerContributionRequest"
+          },
+          {
+            "$ref": "#/components/schemas/TransferRequest"
+          },
+          {
+            "$ref": "#/components/schemas/FxConversionRequest"
+          },
+          {
+            "$ref": "#/components/schemas/TaxPaymentRequest"
+          },
+          {
+            "$ref": "#/components/schemas/RawPostingsRequest"
+          }
+        ]
+      },
+      "TransactionPreview": {
+        "type": "object",
+        "properties": {
+          "occurredOn": {
+            "type": "string",
+            "format": "date",
+            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+          },
+          "description": {
+            "type": "string"
+          },
+          "paymentMethod": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "cash_register",
+                  "pos",
+                  "bank",
+                  "other"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "postings": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "accountId": {
+                  "type": "string",
+                  "format": "uuid",
+                  "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                },
+                "amountMinor": {
+                  "type": "string",
+                  "pattern": "^(0|-?[1-9][0-9]*)$",
+                  "description": "Integer amount in minor units (e.g. tetri, cents), as a decimal string.",
+                  "examples": [
+                    "125000",
+                    "-69085"
+                  ]
+                },
+                "currency": {
+                  "type": "string",
+                  "pattern": "^[A-Z]{3}$",
+                  "examples": [
+                    "GEL",
+                    "USD",
+                    "EUR",
+                    "GBP"
+                  ]
+                },
+                "gelAmountMinor": {
+                  "type": "string",
+                  "pattern": "^(0|-?[1-9][0-9]*)$",
+                  "description": "Integer amount in minor units (e.g. tetri, cents), as a decimal string.",
+                  "examples": [
+                    "125000",
+                    "-69085"
+                  ]
+                },
+                "rateId": {
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "format": "uuid",
+                      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "account": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string"
+                    },
+                    "kind": {
+                      "type": "string",
+                      "enum": [
+                        "asset",
+                        "liability",
+                        "equity",
+                        "income",
+                        "expense"
+                      ]
+                    },
+                    "systemKey": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "enum": [
+                            "fx_clearing",
+                            "tax_payable",
+                            "owner_equity"
+                          ]
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "incomeClass": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "enum": [
+                            "sbs",
+                            "non_sbs"
+                          ]
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    }
+                  },
+                  "required": [
+                    "name",
+                    "kind",
+                    "systemKey",
+                    "incomeClass"
+                  ],
+                  "additionalProperties": false
+                },
+                "rate": {
+                  "anyOf": [
+                    {
+                      "$ref": "#/components/schemas/PostingRate"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                }
+              },
+              "required": [
+                "accountId",
+                "amountMinor",
+                "currency",
+                "gelAmountMinor",
+                "rateId",
+                "account",
+                "rate"
+              ],
+              "additionalProperties": false
+            }
+          }
+        },
+        "required": [
+          "occurredOn",
+          "description",
+          "paymentMethod",
+          "postings"
+        ],
+        "additionalProperties": false
+      },
+      "CreateRuleRequest": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "counterpartyContains": {},
+          "descriptionContains": {},
+          "direction": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "in",
+                  "out"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "currency": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[A-Z]{3}$",
+                "examples": [
+                  "GEL",
+                  "USD",
+                  "EUR",
+                  "GBP"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "amountMinMinor": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^(0|-?[1-9][0-9]*)$",
+                "description": "Integer amount in minor units (e.g. tetri, cents), as a decimal string.",
+                "examples": [
+                  "125000",
+                  "-69085"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "amountMaxMinor": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^(0|-?[1-9][0-9]*)$",
+                "description": "Integer amount in minor units (e.g. tetri, cents), as a decimal string.",
+                "examples": [
+                  "125000",
+                  "-69085"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "targetAccountId": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          },
+          "isActive": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "name",
+          "counterpartyContains",
+          "descriptionContains",
+          "targetAccountId"
+        ],
+        "additionalProperties": false
+      },
+      "UpdateRuleRequest": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "counterpartyContains": {},
+          "descriptionContains": {},
+          "direction": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "in",
+                  "out"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "currency": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[A-Z]{3}$",
+                "examples": [
+                  "GEL",
+                  "USD",
+                  "EUR",
+                  "GBP"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "amountMinMinor": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^(0|-?[1-9][0-9]*)$",
+                "description": "Integer amount in minor units (e.g. tetri, cents), as a decimal string.",
+                "examples": [
+                  "125000",
+                  "-69085"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "amountMaxMinor": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^(0|-?[1-9][0-9]*)$",
+                "description": "Integer amount in minor units (e.g. tetri, cents), as a decimal string.",
+                "examples": [
+                  "125000",
+                  "-69085"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "targetAccountId": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          },
+          "isActive": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      },
+      "RuleList": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CategorizationRule"
+            }
+          }
+        },
+        "required": [
+          "items"
+        ],
+        "additionalProperties": false
+      },
+      "ReorderRulesRequest": {
+        "type": "object",
+        "properties": {
+          "ruleIds": {
+            "maxItems": 1000,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid",
+              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+            }
+          }
+        },
+        "required": [
+          "ruleIds"
+        ],
+        "additionalProperties": false
+      },
+      "ApplyRulesResponse": {
+        "type": "object",
+        "properties": {
+          "updated": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "rows": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ImportRowView"
+            }
+          }
+        },
+        "required": [
+          "updated",
+          "rows"
+        ],
+        "additionalProperties": false
+      },
+      "BulkUpdateImportRowsRequest": {
+        "type": "object",
+        "properties": {
+          "rowIds": {
+            "minItems": 1,
+            "maxItems": 1000,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid",
+              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+            }
+          },
+          "accountId": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid",
+                "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "skip": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "rowIds"
+        ],
+        "additionalProperties": false
+      },
+      "BulkUpdateImportRowsResponse": {
+        "type": "object",
+        "properties": {
+          "rows": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ImportRowView"
+            }
+          },
+          "ignored": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid",
+              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+            }
+          }
+        },
+        "required": [
+          "rows",
+          "ignored"
+        ],
+        "additionalProperties": false
       }
     }
   },
@@ -9402,11 +11857,24 @@
     "/v1/orgs/{orgId}/accounts": {
       "get": {
         "operationId": "listAccounts",
-        "summary": "Active accounts of the organization (chart of accounts and bank accounts)",
+        "summary": "Accounts of the organization (chart of accounts and bank accounts)",
         "tags": [
           "accounts"
         ],
+        "description": "Active accounts, oldest first; `includeArchived=true` adds archived ones.",
         "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "true",
+                "false"
+              ]
+            },
+            "in": "query",
+            "name": "includeArchived",
+            "required": false
+          },
           {
             "schema": {
               "type": "string",
@@ -9425,6 +11893,185 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/AccountList"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error (RFC 9457 problem details)",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "operationId": "createAccount",
+        "summary": "Create an account (a bank account needs a currency; the IBAN is optional)",
+        "tags": [
+          "accounts"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateAccountRequestInput"
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+            },
+            "in": "path",
+            "name": "orgId",
+            "required": true
+          },
+          {
+            "schema": {
+              "type": "string",
+              "pattern": "^[\\x21-\\x7e]{1,255}$"
+            },
+            "in": "header",
+            "name": "idempotency-key",
+            "required": false,
+            "description": "Client-chosen key; replays return the stored response for 24 h."
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Account"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error (RFC 9457 problem details)",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/orgs/{orgId}/accounts/balances": {
+      "get": {
+        "operationId": "listAccountBalances",
+        "summary": "Balance of every account per currency, and bank accounts in GEL",
+        "tags": [
+          "accounts"
+        ],
+        "description": "Balances are on the normal side of the account (credit for liability, equity and income). Bank accounts are also valued in GEL at the latest stored NBG rate; no NBG request is made.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+            },
+            "in": "path",
+            "name": "orgId",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccountBalanceList"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error (RFC 9457 problem details)",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/orgs/{orgId}/accounts/{accountId}": {
+      "patch": {
+        "operationId": "updateAccount",
+        "summary": "Rename, archive or restore an account",
+        "tags": [
+          "accounts"
+        ],
+        "description": "Archived accounts are hidden from pickers but keep their history. A bank account can only be archived at a zero balance; system accounts cannot be archived.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateAccountRequestInput"
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+            },
+            "in": "path",
+            "name": "orgId",
+            "required": true
+          },
+          {
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+            },
+            "in": "path",
+            "name": "accountId",
+            "required": true
+          },
+          {
+            "schema": {
+              "type": "string",
+              "pattern": "^[\\x21-\\x7e]{1,255}$"
+            },
+            "in": "header",
+            "name": "idempotency-key",
+            "required": false,
+            "description": "Client-chosen key; replays return the stored response for 24 h."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Account"
                 }
               }
             }
@@ -9789,6 +12436,144 @@
         }
       }
     },
+    "/v1/orgs/{orgId}/imports/{batchId}/rows/bulk": {
+      "post": {
+        "operationId": "bulkUpdateImportRows",
+        "summary": "Set the account of several preview rows, or skip them, at once",
+        "tags": [
+          "imports"
+        ],
+        "description": "Same rules as `PATCH .../rows/:rowId`, all or nothing. Duplicate rows are left as they are and listed in `ignored`.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BulkUpdateImportRowsRequestInput"
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+            },
+            "in": "path",
+            "name": "orgId",
+            "required": true
+          },
+          {
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+            },
+            "in": "path",
+            "name": "batchId",
+            "required": true
+          },
+          {
+            "schema": {
+              "type": "string",
+              "pattern": "^[\\x21-\\x7e]{1,255}$"
+            },
+            "in": "header",
+            "name": "idempotency-key",
+            "required": false,
+            "description": "Client-chosen key; replays return the stored response for 24 h."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BulkUpdateImportRowsResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error (RFC 9457 problem details)",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/orgs/{orgId}/imports/{batchId}/apply-rules": {
+      "post": {
+        "operationId": "applyImportRules",
+        "summary": "Re-apply the categorisation rules to the unedited rows of a preview",
+        "tags": [
+          "imports"
+        ],
+        "description": "Rows with an account the user chose, and duplicates, keep what they have. The others get the first matching rule, else the fixed suggestion. Returns every row.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+            },
+            "in": "path",
+            "name": "orgId",
+            "required": true
+          },
+          {
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+            },
+            "in": "path",
+            "name": "batchId",
+            "required": true
+          },
+          {
+            "schema": {
+              "type": "string",
+              "pattern": "^[\\x21-\\x7e]{1,255}$"
+            },
+            "in": "header",
+            "name": "idempotency-key",
+            "required": false,
+            "description": "Client-chosen key; replays return the stored response for 24 h."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApplyRulesResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error (RFC 9457 problem details)",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/v1/orgs/{orgId}/imports/{batchId}/commit": {
       "post": {
         "operationId": "commitImport",
@@ -9853,7 +12638,123 @@
         }
       }
     },
+    "/v1/orgs/{orgId}/transactions/preview": {
+      "post": {
+        "operationId": "previewTransaction",
+        "summary": "What a manual transaction would book, with GEL equivalents, without booking",
+        "tags": [
+          "transactions"
+        ],
+        "description": "Same body and checks as `POST /transactions`. A missing NBG rate is `503 rate_unavailable`.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateTransactionRequestInput"
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+            },
+            "in": "path",
+            "name": "orgId",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TransactionPreview"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error (RFC 9457 problem details)",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/v1/orgs/{orgId}/transactions": {
+      "post": {
+        "operationId": "createTransaction",
+        "summary": "Book a manual transaction from one of the canonical events",
+        "tags": [
+          "transactions"
+        ],
+        "description": "Income receipt, expense, owner draw or contribution, transfer, currency exchange or tax payment; `postings` (raw, signed, balanced per currency) is for the owner only. Every posting is converted to GEL at the NBG rate of `occurredOn`; a missing rate is `503 rate_unavailable`. Source `manual`.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateTransactionRequestInput"
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+            },
+            "in": "path",
+            "name": "orgId",
+            "required": true
+          },
+          {
+            "schema": {
+              "type": "string",
+              "pattern": "^[\\x21-\\x7e]{1,255}$"
+            },
+            "in": "header",
+            "name": "idempotency-key",
+            "required": false,
+            "description": "Client-chosen key; replays return the stored response for 24 h."
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TransactionView"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error (RFC 9457 problem details)",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      },
       "get": {
         "operationId": "listTransactions",
         "summary": "Transactions with postings, GEL equivalents and NBG rates, newest first",
@@ -9923,6 +12824,28 @@
             },
             "in": "query",
             "name": "source",
+            "required": false
+          },
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 200
+            },
+            "in": "query",
+            "name": "q",
+            "required": false
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "true",
+                "false"
+              ]
+            },
+            "in": "query",
+            "name": "taxable",
             "required": false
           },
           {
@@ -10087,6 +13010,362 @@
         }
       }
     },
+    "/v1/orgs/{orgId}/rules": {
+      "get": {
+        "operationId": "listRules",
+        "summary": "Categorisation rules in the order they are tried",
+        "tags": [
+          "rules"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+            },
+            "in": "path",
+            "name": "orgId",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RuleList"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error (RFC 9457 problem details)",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "operationId": "createRule",
+        "summary": "Create a categorisation rule (tried after the existing ones)",
+        "tags": [
+          "rules"
+        ],
+        "description": "New uploads apply it straight away; open previews pick it up with `POST /imports/:batchId/apply-rules`.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateRuleRequestInput"
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+            },
+            "in": "path",
+            "name": "orgId",
+            "required": true
+          },
+          {
+            "schema": {
+              "type": "string",
+              "pattern": "^[\\x21-\\x7e]{1,255}$"
+            },
+            "in": "header",
+            "name": "idempotency-key",
+            "required": false,
+            "description": "Client-chosen key; replays return the stored response for 24 h."
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CategorizationRule"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error (RFC 9457 problem details)",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/orgs/{orgId}/rules/{ruleId}": {
+      "get": {
+        "operationId": "getRule",
+        "summary": "One categorisation rule",
+        "tags": [
+          "rules"
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+            },
+            "in": "path",
+            "name": "orgId",
+            "required": true
+          },
+          {
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+            },
+            "in": "path",
+            "name": "ruleId",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CategorizationRule"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error (RFC 9457 problem details)",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "operationId": "updateRule",
+        "summary": "Change a categorisation rule",
+        "tags": [
+          "rules"
+        ],
+        "description": "Only the fields sent change; null clears a condition.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateRuleRequestInput"
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+            },
+            "in": "path",
+            "name": "orgId",
+            "required": true
+          },
+          {
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+            },
+            "in": "path",
+            "name": "ruleId",
+            "required": true
+          },
+          {
+            "schema": {
+              "type": "string",
+              "pattern": "^[\\x21-\\x7e]{1,255}$"
+            },
+            "in": "header",
+            "name": "idempotency-key",
+            "required": false,
+            "description": "Client-chosen key; replays return the stored response for 24 h."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CategorizationRule"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error (RFC 9457 problem details)",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "operationId": "deleteRule",
+        "summary": "Delete a categorisation rule",
+        "tags": [
+          "rules"
+        ],
+        "description": "Rows it already suggested keep their account. Returns the deleted rule.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+            },
+            "in": "path",
+            "name": "orgId",
+            "required": true
+          },
+          {
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+            },
+            "in": "path",
+            "name": "ruleId",
+            "required": true
+          },
+          {
+            "schema": {
+              "type": "string",
+              "pattern": "^[\\x21-\\x7e]{1,255}$"
+            },
+            "in": "header",
+            "name": "idempotency-key",
+            "required": false,
+            "description": "Client-chosen key; replays return the stored response for 24 h."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CategorizationRule"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error (RFC 9457 problem details)",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/orgs/{orgId}/rules/reorder": {
+      "post": {
+        "operationId": "reorderRules",
+        "summary": "Set the order the rules are tried in",
+        "tags": [
+          "rules"
+        ],
+        "description": "Send every rule id of the organization, first tried first.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReorderRulesRequestInput"
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+            },
+            "in": "path",
+            "name": "orgId",
+            "required": true
+          },
+          {
+            "schema": {
+              "type": "string",
+              "pattern": "^[\\x21-\\x7e]{1,255}$"
+            },
+            "in": "header",
+            "name": "idempotency-key",
+            "required": false,
+            "description": "Client-chosen key; replays return the stored response for 24 h."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RuleList"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error (RFC 9457 problem details)",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/v1/orgs/{orgId}/declarations": {
       "get": {
         "operationId": "getDeclarationYear",
@@ -10234,6 +13513,10 @@
     {
       "name": "transactions",
       "description": "Ledger transactions and reversals"
+    },
+    {
+      "name": "rules",
+      "description": "Categorisation rules for statement imports"
     },
     {
       "name": "declarations",

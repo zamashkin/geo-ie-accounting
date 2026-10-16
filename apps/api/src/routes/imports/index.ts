@@ -26,17 +26,14 @@ import {
   createImportBatch,
   findFingerprints,
   getAccount,
-  getDefaultSbsIncomeAccount,
   getImportBatch,
   getImportRow,
-  getSystemAccount,
   listImportBatches,
   listImportRows,
   matchOrCreateBankAccount,
   updateImportBatch,
   updateImportRow,
   type AccountRow,
-  type ImportRowRow,
   type NewImportRow,
 } from '@ie-ledger/db';
 import { dedupeHashes } from '@ie-ledger/domain';
@@ -49,6 +46,13 @@ import { HttpProblem, problemResponse } from '../../problem';
 import { decodeCursor, encodeCursor, toAccountDto, toImportBatchDto, toImportRowDto } from '../dto';
 import type { LedgerDeps } from '../ledger-deps';
 import { commitRoutes } from './commit';
+import {
+  assertBookable,
+  lockPreviewBatch,
+  previewActionRoutes,
+  statsAfter,
+} from './preview-actions';
+import { loadSuggester } from './suggest';
 
 interface Upload {
   bytes: Uint8Array;
@@ -215,16 +219,8 @@ export const importRoutes: FastifyPluginAsyncZod<{ deps: LedgerDeps }> = async (
         }
       }
 
-      // Fixed suggestions (docs/MVP.md): incoming payment → SBS income, conversion → FX Clearing.
-      const [sbsIncome, fxClearing] = await Promise.all([
-        getDefaultSbsIncomeAccount(req.tx, orgId),
-        getSystemAccount(req.tx, orgId, 'fx_clearing'),
-      ]);
-      const suggest = (r: ParseResult['rows'][number]) => {
-        if (r.operationType === 'incoming_payment' && r.amountMinor > 0n) return sbsIncome?.id;
-        if (r.operationType === 'fx_conversion') return fxClearing?.id;
-        return undefined;
-      };
+      // Categorisation rules first, then the fixed suggestions (docs/MVP.md).
+      const suggest = await loadSuggester(req.tx, orgId, account.id);
 
       const hashes = result.rows.map((r) => dedupeHashes({ ...r, accountId: account.id }));
       const stored = await findFingerprints(req.tx, orgId, account.id, hashes.flat());
@@ -234,6 +230,7 @@ export const importRoutes: FastifyPluginAsyncZod<{ deps: LedgerDeps }> = async (
         const existing = own.map((h) => stored.get(h)).find((t) => t !== undefined);
         const duplicate = existing !== undefined || own.some((h) => seen.has(h));
         for (const h of own) seen.add(h);
+        const suggestion = suggest(r);
         return {
           rowIndex: r.rowIndex,
           raw: r.raw,
@@ -251,7 +248,8 @@ export const importRoutes: FastifyPluginAsyncZod<{ deps: LedgerDeps }> = async (
           counterCurrency: r.counterCurrency,
           dedupeHash: own[0] ?? '',
           status: duplicate ? 'duplicate' : 'new',
-          suggestedAccountId: suggest(r) ?? null,
+          suggestedAccountId: suggestion.accountId,
+          suggestedRuleId: suggestion.ruleId,
           transactionId: existing ?? null,
         };
       });
@@ -405,11 +403,7 @@ export const importRoutes: FastifyPluginAsyncZod<{ deps: LedgerDeps }> = async (
     },
     async (req) => {
       const { orgId, batchId, rowId } = req.params;
-      const batch = await getImportBatch(req.tx, orgId, batchId, { forUpdate: true });
-      if (!batch) throw new HttpProblem(404, 'not_found', 'Import not found.');
-      if (batch.status !== 'preview') {
-        throw new HttpProblem(409, 'conflict', 'This import is already committed.');
-      }
+      const batch = await lockPreviewBatch(req.tx, orgId, batchId);
       const row = await getImportRow(req.tx, orgId, batchId, rowId);
       if (!row) throw new HttpProblem(404, 'not_found', 'Import row not found.');
       if (row.status === 'duplicate') {
@@ -419,21 +413,17 @@ export const importRoutes: FastifyPluginAsyncZod<{ deps: LedgerDeps }> = async (
       const patch: Parameters<typeof updateImportRow>[3] = {};
       const { accountId, skip } = req.body;
       if (accountId !== undefined) {
-        if (accountId !== null) await assertBookable(req, row, batch.accountId, accountId);
+        if (accountId !== null) {
+          const account = await getAccount(req.tx, orgId, accountId);
+          assertBookable(account, batch.accountId, row.currency);
+        }
         patch.chosenAccountId = accountId;
       }
       if (skip !== undefined) patch.status = skip ? 'skipped' : 'new';
 
       const updated = await updateImportRow(req.tx, orgId, row.id, patch);
-      if (updated.status !== row.status) {
-        const delta = updated.status === 'skipped' ? 1 : -1;
-        const stats = {
-          ...batch.stats,
-          new: (batch.stats.new ?? 0) - delta,
-          skipped: (batch.stats.skipped ?? 0) + delta,
-        };
-        await updateImportBatch(req.tx, orgId, batchId, { stats });
-      }
+      const stats = statsAfter(batch.stats, [{ from: row.status, to: updated.status }]);
+      if (stats !== batch.stats) await updateImportBatch(req.tx, orgId, batchId, { stats });
       await req.audit(
         'import_row',
         row.id,
@@ -444,31 +434,6 @@ export const importRoutes: FastifyPluginAsyncZod<{ deps: LedgerDeps }> = async (
     },
   );
 
-  async function assertBookable(
-    req: FastifyRequest,
-    row: ImportRowRow,
-    bankAccountId: string,
-    accountId: string,
-  ) {
-    const account = await getAccount(req.tx, row.orgId, accountId);
-    if (!account || account.archivedAt) {
-      throw new HttpProblem(422, 'validation_failed', 'Account not found.');
-    }
-    if (account.id === bankAccountId) {
-      throw new HttpProblem(
-        422,
-        'validation_failed',
-        'Pick an account other than the bank account itself.',
-      );
-    }
-    if (account.currency !== null && account.currency !== row.currency) {
-      throw new HttpProblem(
-        422,
-        'validation_failed',
-        `The account is in ${account.currency}, the row in ${row.currency}.`,
-      );
-    }
-  }
-
+  await app.register(previewActionRoutes);
   await app.register(commitRoutes, { deps: opts.deps });
 };
