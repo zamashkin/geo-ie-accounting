@@ -11,7 +11,7 @@ ARCHITECTURE §6 sends an upload to S3 and parses and commits it in worker jobs,
 - Rates: a `preHandler` resolves every (currency, booked date) the batch needs with `resolveRate` before the request transaction opens, because `resolveRate` may call NBG. The handler inside the transaction only reads the resolved rows. `resolveRate` moved from the worker into `packages/db` with the rate source injected (`RateSource`, which `NbgClient` satisfies), so the API and the worker share one implementation without db importing nbg.
 - `api -> importers` is added to the dependency rules (`packages/config/eslint/boundaries.js`, ARCHITECTURE §2). Importers stay pure, so this adds no I/O to the API.
 - Dedupe: every committed line stores its primary `dedupeHash` and, when it has a document number, a second hash on account + date + amount + document number (`documentDedupeHash`). BoG's CSV export has no operation id, so its primary hash differs from the XLSX one; the second hash makes a CSV re-import of an XLSX statement (or the reverse) find the lines it already has.
-- A statement is matched to a bank account on IBAN **and** currency. Without a match, an unused default bank account of that currency (no IBAN, no postings) is claimed; otherwise a new one is created.
+- A statement is matched to a bank account on IBAN and currency, because BoG uses one IBAN for all of a client's currency accounts. Without a match, an unused default bank account of that currency (no IBAN, no postings) is claimed; otherwise a new one is created.
 
 ## Alternatives
 - **Worker jobs now**: the full plan. More moving parts (S3, pg-boss jobs, SSE) before anyone can try the app.
