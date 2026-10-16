@@ -5,6 +5,7 @@ Real bank exports with personal data replaced. Used by `packages/importers` test
 | Bank | Files | Notes |
 |---|---|---|
 | Bank of Georgia | `bog/` | GBP account, CSV + XLSX of the same period. See `bog/FORMAT.md` |
+| Bank of Georgia (synthetic) | `bog/synthetic-gbp-2025-06-unassigned.csv` | Written by hand, no real data. One income line whose printed GEL is 5 tetri off the NBG conversion, and one bank fee the parser can't classify. Used by the commit tests (422 unassigned row, bank GEL warning) |
 | TBC | missing | needed for WS-03 |
 
 ## Adding a statement

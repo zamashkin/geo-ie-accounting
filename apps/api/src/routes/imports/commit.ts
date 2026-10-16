@@ -4,7 +4,12 @@
 // request transaction. So a preHandler, which runs before the transaction wrapper, resolves the
 // rate of every (currency, booked date) the batch needs with the pool; the handler then only reads
 // that map inside `req.tx`.
-import { CommitImportResponse, ImportBatchParams, MutationHeaders } from '@ie-ledger/contracts';
+import {
+  type CommitWarning,
+  CommitImportResponse,
+  ImportBatchParams,
+  MutationHeaders,
+} from '@ie-ledger/contracts';
 import {
   findFingerprints,
   getImportBatch,
@@ -20,6 +25,7 @@ import {
 import {
   BASE_CURRENCY,
   bankStatementLine,
+  compareBankGel,
   dedupeHashes,
   money,
   parseRate,
@@ -81,7 +87,8 @@ export const commitRoutes: FastifyPluginAsyncZod<{ deps: LedgerDeps }> = async (
         description:
           'Each row is converted to GEL at the NBG rate of its booked date. Fails with 422 if a ' +
           '`new` row has no account (pick one or skip the row). Rows found in the ledger since ' +
-          'the upload are marked `duplicate` instead of being booked.',
+          'the upload are marked `duplicate` instead of being booked. `warnings` lists booked ' +
+          'rows whose GEL equivalent on the statement differs from ours by more than 1 tetri.',
         headers: MutationHeaders,
         params: ImportBatchParams,
         response: { 200: CommitImportResponse, default: problemResponse },
@@ -123,6 +130,7 @@ export const commitRoutes: FastifyPluginAsyncZod<{ deps: LedgerDeps }> = async (
       );
 
       const transactionIds: string[] = [];
+      const warnings: CommitWarning[] = [];
       let lateDuplicates = 0;
       for (const row of rows) {
         const hashes = hashesByRow.get(row.id) ?? [];
@@ -169,6 +177,30 @@ export const commitRoutes: FastifyPluginAsyncZod<{ deps: LedgerDeps }> = async (
           postings: draft.postings,
         });
         transactionIds.push(created.id);
+
+        // The bank's own GEL figure is a cross-check only; ours (NBG) is what gets booked.
+        const bankLeg = draft.postings.find((p) => p.accountId === batch.accountId);
+        const difference = bankLeg
+          ? compareBankGel(money(bankLeg.gelAmountMinor, BASE_CURRENCY), row.bankGelAmountMinor)
+          : null;
+        if (difference) {
+          warnings.push({
+            code: 'bank_gel_mismatch',
+            rowId: row.id,
+            transactionId: created.id,
+            bookedOn: row.bookedOn,
+            amountMinor: row.amountMinor,
+            currency: row.currency,
+            gelAmountMinor: difference.gelAmountMinor,
+            bankGelAmountMinor: difference.bankGelAmountMinor,
+            message:
+              "The bank's GEL equivalent differs from the NBG rate conversion by more than " +
+              '1 tetri. The NBG figure was booked.',
+          });
+        }
+      }
+      if (warnings.length > 0) {
+        req.log.warn({ batchId, count: warnings.length }, 'bank GEL equivalents differ from ours');
       }
 
       const updated = await updateImportBatch(req.tx, orgId, batchId, {
@@ -187,7 +219,7 @@ export const commitRoutes: FastifyPluginAsyncZod<{ deps: LedgerDeps }> = async (
         { status: updated.status, stats: updated.stats },
         { action: 'commit' },
       );
-      return { batch: toImportBatchDto(updated), transactionIds };
+      return { batch: toImportBatchDto(updated), transactionIds, warnings };
     },
   );
 };

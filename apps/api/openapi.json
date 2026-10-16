@@ -3563,6 +3563,87 @@
           }
         }
       },
+      "CommitWarningCodeInput": {
+        "type": "string",
+        "enum": [
+          "bank_gel_mismatch"
+        ],
+        "description": "`bank_gel_mismatch`: the bank's GEL equivalent of the line differs from ours (NBG rate of the booked date) by more than 1 tetri. Ours is booked; check the rate the bank used."
+      },
+      "CommitWarningInput": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "$ref": "#/components/schemas/CommitWarningCodeInput"
+          },
+          "rowId": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          },
+          "transactionId": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          },
+          "bookedOn": {
+            "type": "string",
+            "format": "date",
+            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+          },
+          "amountMinor": {
+            "type": "string",
+            "pattern": "^(0|-?[1-9][0-9]*)$",
+            "description": "Integer amount in minor units (e.g. tetri, cents), as a decimal string.",
+            "examples": [
+              "125000",
+              "-69085"
+            ]
+          },
+          "currency": {
+            "type": "string",
+            "pattern": "^[A-Z]{3}$",
+            "examples": [
+              "GEL",
+              "USD",
+              "EUR",
+              "GBP"
+            ]
+          },
+          "gelAmountMinor": {
+            "type": "string",
+            "pattern": "^(0|-?[1-9][0-9]*)$",
+            "description": "Integer amount in minor units (e.g. tetri, cents), as a decimal string.",
+            "examples": [
+              "125000",
+              "-69085"
+            ]
+          },
+          "bankGelAmountMinor": {
+            "type": "string",
+            "pattern": "^(0|-?[1-9][0-9]*)$",
+            "description": "Integer amount in minor units (e.g. tetri, cents), as a decimal string.",
+            "examples": [
+              "125000",
+              "-69085"
+            ]
+          },
+          "message": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "code",
+          "rowId",
+          "transactionId",
+          "bookedOn",
+          "amountMinor",
+          "currency",
+          "gelAmountMinor",
+          "bankGelAmountMinor",
+          "message"
+        ]
+      },
       "CommitImportResponseInput": {
         "type": "object",
         "properties": {
@@ -3576,11 +3657,18 @@
               "format": "uuid",
               "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
             }
+          },
+          "warnings": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CommitWarningInput"
+            }
           }
         },
         "required": [
           "batch",
-          "transactionIds"
+          "transactionIds",
+          "warnings"
         ]
       },
       "PostingRateInput": {
@@ -3989,6 +4077,18 @@
             "minimum": 0,
             "maximum": 9007199254740991
           },
+          "latestYearWithData": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": -9007199254740991,
+                "maximum": 9007199254740991
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
           "previousYearLimitExceeded": {
             "type": "boolean"
           }
@@ -4004,6 +4104,7 @@
           "sbsEffectiveFrom",
           "annualLimitGelMinor",
           "annualLimitUsedBp",
+          "latestYearWithData",
           "previousYearLimitExceeded"
         ]
       },
@@ -4081,6 +4182,18 @@
             "type": "integer",
             "minimum": 0,
             "maximum": 9007199254740991
+          },
+          "latestYearWithData": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": -9007199254740991,
+                "maximum": 9007199254740991
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "ytdIncomeGelMinor": {
             "type": "string",
@@ -4160,6 +4273,7 @@
           "sbsEffectiveFrom",
           "annualLimitGelMinor",
           "annualLimitUsedBp",
+          "latestYearWithData",
           "ytdIncomeGelMinor",
           "limitStatus",
           "latestMonth",
@@ -7795,6 +7909,88 @@
         },
         "additionalProperties": false
       },
+      "CommitWarningCode": {
+        "type": "string",
+        "enum": [
+          "bank_gel_mismatch"
+        ],
+        "description": "`bank_gel_mismatch`: the bank's GEL equivalent of the line differs from ours (NBG rate of the booked date) by more than 1 tetri. Ours is booked; check the rate the bank used."
+      },
+      "CommitWarning": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "$ref": "#/components/schemas/CommitWarningCode"
+          },
+          "rowId": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          },
+          "transactionId": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          },
+          "bookedOn": {
+            "type": "string",
+            "format": "date",
+            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+          },
+          "amountMinor": {
+            "type": "string",
+            "pattern": "^(0|-?[1-9][0-9]*)$",
+            "description": "Integer amount in minor units (e.g. tetri, cents), as a decimal string.",
+            "examples": [
+              "125000",
+              "-69085"
+            ]
+          },
+          "currency": {
+            "type": "string",
+            "pattern": "^[A-Z]{3}$",
+            "examples": [
+              "GEL",
+              "USD",
+              "EUR",
+              "GBP"
+            ]
+          },
+          "gelAmountMinor": {
+            "type": "string",
+            "pattern": "^(0|-?[1-9][0-9]*)$",
+            "description": "Integer amount in minor units (e.g. tetri, cents), as a decimal string.",
+            "examples": [
+              "125000",
+              "-69085"
+            ]
+          },
+          "bankGelAmountMinor": {
+            "type": "string",
+            "pattern": "^(0|-?[1-9][0-9]*)$",
+            "description": "Integer amount in minor units (e.g. tetri, cents), as a decimal string.",
+            "examples": [
+              "125000",
+              "-69085"
+            ]
+          },
+          "message": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "code",
+          "rowId",
+          "transactionId",
+          "bookedOn",
+          "amountMinor",
+          "currency",
+          "gelAmountMinor",
+          "bankGelAmountMinor",
+          "message"
+        ],
+        "additionalProperties": false
+      },
       "CommitImportResponse": {
         "type": "object",
         "properties": {
@@ -7808,11 +8004,18 @@
               "format": "uuid",
               "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
             }
+          },
+          "warnings": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CommitWarning"
+            }
           }
         },
         "required": [
           "batch",
-          "transactionIds"
+          "transactionIds",
+          "warnings"
         ],
         "additionalProperties": false
       },
@@ -8228,6 +8431,18 @@
             "minimum": 0,
             "maximum": 9007199254740991
           },
+          "latestYearWithData": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": -9007199254740991,
+                "maximum": 9007199254740991
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
           "previousYearLimitExceeded": {
             "type": "boolean"
           }
@@ -8243,6 +8458,7 @@
           "sbsEffectiveFrom",
           "annualLimitGelMinor",
           "annualLimitUsedBp",
+          "latestYearWithData",
           "previousYearLimitExceeded"
         ],
         "additionalProperties": false
@@ -8323,6 +8539,18 @@
             "minimum": 0,
             "maximum": 9007199254740991
           },
+          "latestYearWithData": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": -9007199254740991,
+                "maximum": 9007199254740991
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
           "ytdIncomeGelMinor": {
             "type": "string",
             "pattern": "^(0|-?[1-9][0-9]*)$",
@@ -8402,6 +8630,7 @@
           "sbsEffectiveFrom",
           "annualLimitGelMinor",
           "annualLimitUsedBp",
+          "latestYearWithData",
           "ytdIncomeGelMinor",
           "limitStatus",
           "latestMonth",
@@ -9567,7 +9796,7 @@
         "tags": [
           "imports"
         ],
-        "description": "Each row is converted to GEL at the NBG rate of its booked date. Fails with 422 if a `new` row has no account (pick one or skip the row). Rows found in the ledger since the upload are marked `duplicate` instead of being booked.",
+        "description": "Each row is converted to GEL at the NBG rate of its booked date. Fails with 422 if a `new` row has no account (pick one or skip the row). Rows found in the ledger since the upload are marked `duplicate` instead of being booked. `warnings` lists booked rows whose GEL equivalent on the statement differs from ours by more than 1 tetri.",
         "parameters": [
           {
             "schema": {
@@ -9865,7 +10094,7 @@
         "tags": [
           "declarations"
         ],
-        "description": "Per month: line 15 (`ytdGelMinor`), lines 18–21 (`byPaymentMethod`), rate, tax and deadline. Computed from posted transactions on every request; nothing is filed.",
+        "description": "Per month: line 15 (`ytdGelMinor`), lines 18–21 (`byPaymentMethod`), rate, tax and deadline. Computed from posted transactions on every request; nothing is filed. Without `year`: the latest year with posted transactions, else the current year.",
         "parameters": [
           {
             "schema": {
@@ -9875,7 +10104,7 @@
             },
             "in": "query",
             "name": "year",
-            "required": true
+            "required": false
           },
           {
             "schema": {
@@ -9919,6 +10148,7 @@
         "tags": [
           "dashboard"
         ],
+        "description": "Without `year`: the latest year with posted transactions, else the current year in Tbilisi.",
         "parameters": [
           {
             "schema": {

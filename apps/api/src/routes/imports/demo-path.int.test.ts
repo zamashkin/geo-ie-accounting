@@ -13,35 +13,11 @@ import {
   type ApiTestEnv,
   type TestUser,
 } from '../../testing/env';
+import { multipart } from '../../testing/multipart';
 
 const FIXTURES = new URL('../../../../../fixtures/statements/bog/', import.meta.url);
 const XLSX = readFileSync(new URL('bog-gbp-2025-06.xlsx', FIXTURES));
 const CSV = readFileSync(new URL('bog-gbp-2025-06.csv', FIXTURES));
-
-/** A multipart/form-data body with one `file` part and optional text fields. */
-function multipart(file: Buffer, fileName: string, fields: Record<string, string> = {}) {
-  const boundary = `----ie-ledger-${randomUUID()}`;
-  const chunks: Buffer[] = [];
-  for (const [name, value] of Object.entries(fields)) {
-    chunks.push(
-      Buffer.from(
-        `--${boundary}\r\nContent-Disposition: form-data; name="${name}"\r\n\r\n${value}\r\n`,
-      ),
-    );
-  }
-  chunks.push(
-    Buffer.from(
-      `--${boundary}\r\nContent-Disposition: form-data; name="file"; filename="${fileName}"\r\n` +
-        'Content-Type: application/octet-stream\r\n\r\n',
-    ),
-    file,
-    Buffer.from(`\r\n--${boundary}--\r\n`),
-  );
-  return {
-    payload: Buffer.concat(chunks),
-    headers: { 'content-type': `multipart/form-data; boundary=${boundary}` },
-  };
-}
 
 interface Upload {
   batch: { id: string; status: string; stats: Record<string, number>; accountId: string };
@@ -177,6 +153,8 @@ describe('BoG GBP statement, June 2025', () => {
     const body = res.json<{ batch: { status: string; stats: object }; transactionIds: string[] }>();
     expect(body.batch).toMatchObject({ status: 'committed', stats: { committed: 4 } });
     expect(body.transactionIds).toHaveLength(4);
+    // The bank's GEL equivalents agree with ours (FORMAT.md: the bank uses the NBG rate).
+    expect(res.json<{ warnings: unknown[] }>().warnings).toEqual([]);
     expect(env.nbgCalls.map((u) => u.searchParams.get('date')).sort()).toEqual([
       '2025-06-04',
       '2025-06-05',
@@ -300,12 +278,30 @@ describe('BoG GBP statement, June 2025', () => {
       // Every 2025 deadline is before "today" (2026-10-16).
       nextDeadline: null,
     });
-    const current = await as(env, owner, { method: 'GET', url: `/v1/orgs/${orgId}/dashboard` });
+    const current = await as(env, owner, {
+      method: 'GET',
+      url: `/v1/orgs/${orgId}/dashboard?year=2026`,
+    });
     expect(current.json()).toMatchObject({
       year: 2026,
+      latestYearWithData: 2025,
       latestMonth: null,
       nextDeadline: { period: '2026-10', deadline: '2026-11-15', zeroReturn: true },
     });
+  });
+
+  it('opens the dashboard and declarations on the latest year with data by default', async () => {
+    for (const path of ['dashboard', 'declarations']) {
+      const res = await as(env, owner, { method: 'GET', url: `/v1/orgs/${orgId}/${path}` });
+      expect(res.statusCode).toBe(200);
+      expect(res.json()).toMatchObject({ year: 2025, latestYearWithData: 2025 });
+    }
+    // No transactions yet: the current year in Tbilisi (the clock says 2026-10-16).
+    const empty = await createOrg(env, owner, 'Empty IE');
+    for (const path of ['dashboard', 'declarations']) {
+      const res = await as(env, owner, { method: 'GET', url: `/v1/orgs/${empty}/${path}` });
+      expect(res.json()).toMatchObject({ year: 2026, latestYearWithData: null });
+    }
   });
 
   it('a reversal takes the income back out, and only once', async () => {

@@ -6,6 +6,7 @@ import {
   ButtonLink,
   Card,
   createDataTableColumns,
+  cx,
   DataTable,
   EmptyState,
   PageHeader,
@@ -42,6 +43,7 @@ import {
   ROW_STATUS,
 } from '@/lib/labels';
 import { orgHref } from '@/lib/nav';
+import { NARROW_SCREEN, useMediaQuery } from '@/lib/use-media-query';
 import { applyRowPatch, blockedRowIds, bookableRows, rowAccountOptions } from './preview-model';
 
 // ── Row cells read the page state through context, so the columns stay at module scope ──
@@ -153,7 +155,7 @@ const COLUMNS = [
         ) : null}
       </span>
     ),
-    meta: { width: 'minmax(10rem, 1fr)' },
+    meta: { width: 'minmax(8.5rem, 1fr)' },
   }),
   col.accessor('amountMinor', {
     header: 'Amount',
@@ -170,13 +172,14 @@ const COLUMNS = [
   col.accessor('status', {
     header: 'Status',
     cell: ({ row }) => <StatusCell row={row.original} />,
-    meta: { width: '9.5rem' },
+    meta: { width: '9rem' },
   }),
   col.display({
     id: 'account',
     header: 'Book against',
     cell: ({ row }) => <AccountCell row={row.original} />,
-    meta: { width: '11.5rem' },
+    // Wide enough for the default chart of accounts; longer names show in full on hover.
+    meta: { width: '13rem' },
   }),
   col.display({
     id: 'skip',
@@ -185,6 +188,64 @@ const COLUMNS = [
     meta: { width: '5.5rem', align: 'end' },
   }),
 ];
+
+// ── Narrow screens: one card per row instead of a sideways-scrolling table ────────────
+
+function RowCard({ row }: { row: ImportRowView }) {
+  const { blocked } = useRowCtx();
+  return (
+    <li
+      aria-label={rowName(row)}
+      className={cx(
+        'flex flex-col gap-3 rounded-lg border bg-surface p-3 shadow-sm',
+        blocked.has(row.id) ? 'border-negative' : 'border-line',
+      )}
+    >
+      <div className="flex items-start justify-between gap-3">
+        <div className="flex min-w-0 flex-col">
+          <span className="font-medium break-words">{row.counterparty ?? row.description}</span>
+          {row.counterparty ? (
+            <span
+              className="line-clamp-3 text-xs break-words text-fg-muted"
+              title={row.description}
+            >
+              {row.description}
+            </span>
+          ) : null}
+        </div>
+        <Amount
+          minor={row.amountMinor}
+          currency={row.currency}
+          tone="signed"
+          className="font-medium"
+        />
+      </div>
+      <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-fg-muted">
+        <time dateTime={row.bookedOn}>{formatIsoDate(row.bookedOn)}</time>
+        <span aria-hidden>·</span>
+        <span>{OPERATION_TYPE_LABELS[row.operationType]}</span>
+        <StatusCell row={row} />
+      </div>
+      <div className="flex items-center gap-2">
+        <div className="min-w-0 flex-1">
+          <AccountCell row={row} />
+        </div>
+        <SkipCell row={row} />
+      </div>
+    </li>
+  );
+}
+
+function RowCards({ rows, isLoading }: { rows: readonly ImportRowView[]; isLoading: boolean }) {
+  if (isLoading) return <SkeletonText lines={4} />;
+  return (
+    <ul aria-label="Statement rows" className="flex flex-col gap-2">
+      {rows.map((row) => (
+        <RowCard key={row.id} row={row} />
+      ))}
+    </ul>
+  );
+}
 
 // ── Summary ────────────────────────────────────────────────────────────────────────────
 
@@ -289,6 +350,35 @@ function Warnings({ warnings }: { warnings: readonly Schemas['ParseWarning'][] }
   );
 }
 
+/** Booked rows whose GEL equivalent on the statement is more than 1 tetri off ours. */
+function GelWarnings({ warnings }: { warnings: readonly Schemas['CommitWarning'][] }) {
+  // `bank_gel_mismatch` is the only commit warning so far.
+  const mismatches = warnings;
+  if (mismatches.length === 0) return null;
+  const n = mismatches.length;
+  return (
+    <Notice
+      tone="warning"
+      live
+      title={`${n === 1 ? 'One line differs' : `${n} lines differ`} from the bank's GEL amount`}
+    >
+      <p>
+        {n === 1 ? 'It was' : 'They were'} booked at the NBG rate of the date, as the declaration
+        needs. Check which rate the bank used:
+      </p>
+      <ul className="mt-1 list-disc ps-4">
+        {mismatches.map((w) => (
+          <li key={w.rowId}>
+            {formatIsoDate(w.bookedOn)}, <Amount minor={w.amountMinor} currency={w.currency} />:
+            booked <Amount minor={w.gelAmountMinor} currency="GEL" />, statement says{' '}
+            <Amount minor={w.bankGelAmountMinor} currency="GEL" />
+          </li>
+        ))}
+      </ul>
+    </Notice>
+  );
+}
+
 function CommitError({ error, onRetry }: { error: ApiError | Error; onRetry: () => void }) {
   if (isApiError(error)) {
     const rows = blockedRowIds(error).size;
@@ -352,6 +442,7 @@ export function ImportPreview({
     queryClient.getQueryData<UploadStatementResponse>(ledgerKeys.importUpload(orgId, batchId)),
   );
   const [blocked, setBlocked] = useState<ReadonlySet<string>>(new Set());
+  const narrow = useMediaQuery(NARROW_SCREEN);
 
   const rowsKey = ledgerKeys.importRows(orgId, batchId);
   const batchKey = ledgerKeys.importBatch(orgId, batchId);
@@ -535,6 +626,8 @@ export function ImportPreview({
           </Notice>
         ) : null}
 
+        {commit.data ? <GelWarnings warnings={commit.data.warnings} /> : null}
+
         {commit.isError ? (
           <CommitError
             error={commit.error}
@@ -571,15 +664,19 @@ export function ImportPreview({
           </Notice>
         ) : (
           <RowCtx.Provider value={ctx}>
-            <DataTable
-              label="Statement rows"
-              columns={COLUMNS}
-              data={rows ?? []}
-              getRowId={(r) => r.id}
-              isLoading={rowsQ.isPending}
-              rowHeight={56}
-              height={`${Math.min(rows?.length ?? 8, 10) * 56 + 42}px`}
-            />
+            {narrow ? (
+              <RowCards rows={rows ?? []} isLoading={rowsQ.isPending} />
+            ) : (
+              <DataTable
+                label="Statement rows"
+                columns={COLUMNS}
+                data={rows ?? []}
+                getRowId={(r) => r.id}
+                isLoading={rowsQ.isPending}
+                rowHeight={56}
+                height={`${Math.min(rows?.length ?? 8, 10) * 56 + 42}px`}
+              />
+            )}
           </RowCtx.Provider>
         )}
       </div>

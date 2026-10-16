@@ -83,6 +83,18 @@ test('demo path: sign up to declaration figures', async ({ page }) => {
       'FX Clearing',
     );
     await checkPage(page, 'import-preview');
+
+    // On a phone each row is a card with the same controls, not a sideways-scrolling table.
+    await page.setViewportSize({ width: 360, height: 780 });
+    const cards = page.getByRole('list', { name: 'Statement rows' }).getByRole('listitem');
+    await expect(cards).toHaveCount(4);
+    const card = cards.filter({ hasText: 'GBP 1,180.00' });
+    await expect(card).toContainText('Incoming payment');
+    await expect(card.getByRole('button', { name: /Account for/ })).toContainText(
+      'Income: Services',
+    );
+    await expect(card.getByRole('button', { name: /^Skip / })).toBeVisible();
+    await page.setViewportSize({ width: 1280, height: 900 });
   });
 
   await test.step('skip and restore a row, then commit', async () => {
@@ -119,12 +131,17 @@ test('demo path: sign up to declaration figures', async ({ page }) => {
     await expectJune(page, '5,698.66', '56.99');
     await checkPage(page, 'declarations');
 
+    // All the data is from 2025, so the dashboard opens on 2025 without `?year=`.
     await page.getByRole('link', { name: 'Dashboard', exact: true }).click();
-    await page.getByRole('button', { name: /Year/ }).click();
-    await page.getByRole('option', { name: '2025' }).click();
-    await expect(page).toHaveURL(/year=2025/);
+    await expect(page).not.toHaveURL(/year=/);
+    await expect(page.getByText('Small-business figures for 2025.')).toBeVisible();
     await expect(page.getByText('GEL 5,698.66').first()).toBeVisible();
     await checkPage(page, 'dashboard');
+
+    await page.getByRole('button', { name: /Year/ }).click();
+    await page.getByRole('option', { name: '2026' }).click();
+    await expect(page).toHaveURL(/year=2026/);
+    await expect(page.getByText('Small-business figures for 2026.')).toBeVisible();
   });
 
   await test.step('re-uploading the same statement books nothing new', async () => {
@@ -155,8 +172,7 @@ test('demo path: sign up to declaration figures', async ({ page }) => {
     await expect(table.getByRole('row')).toHaveCount(6);
 
     await page.getByRole('link', { name: 'Declarations', exact: true }).click();
-    await page.getByRole('button', { name: /Year/ }).click();
-    await page.getByRole('option', { name: '2025' }).click();
+    await expect(page).not.toHaveURL(/year=/);
     await expectJune(page, '4,357.03', '43.57');
   });
 

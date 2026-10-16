@@ -63,10 +63,11 @@ export function Select<K extends Key = string>({
     >
       {label ? <Label>{label}</Label> : null}
       <AriaButton className={cx(fieldBox, focusRing, 'justify-between gap-2 px-3 py-2 text-start')}>
-        {/* The trigger shows the option label only; descriptions belong in the list. */}
+        {/* The trigger shows the option label only; descriptions belong in the list. A narrow
+            trigger truncates the label, so the full text is in a tooltip. */}
         <SelectValue<SelectOption<K>> className="truncate data-[placeholder]:text-fg-subtle">
           {({ selectedText, defaultChildren, isPlaceholder }) =>
-            isPlaceholder ? defaultChildren : selectedText
+            isPlaceholder ? defaultChildren : <span title={selectedText}>{selectedText}</span>
           }
         </SelectValue>
         <ChevronsUpDown aria-hidden className="size-4 shrink-0 text-fg-muted" />

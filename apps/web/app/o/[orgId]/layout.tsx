@@ -1,5 +1,6 @@
 import { Uuid } from '@ie-ledger/contracts';
 import { notFound, redirect } from 'next/navigation';
+import { RememberWorkspace } from '@/components/workspace/RememberWorkspace';
 import { getSession } from '@/lib/auth/server';
 import { OrgShell } from './_shell/OrgShell';
 
@@ -17,6 +18,7 @@ export default async function OrgLayout({ params, children }: LayoutProps<'/o/[o
 
   return (
     <OrgShell orgId={orgId} session={session}>
+      <RememberWorkspace orgId={orgId} />
       {children}
     </OrgShell>
   );

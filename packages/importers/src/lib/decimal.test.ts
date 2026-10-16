@@ -1,13 +1,13 @@
 import { describe, expect, it } from 'vitest';
 import type { DecimalSeparator } from './decimal';
-import { parseDecimal, parsePlainNumber, toMinor } from './decimal';
+import { parseAmountText, parsePlainNumber, toMinor } from './decimal';
 
 const minor = (s: string, sep: DecimalSeparator = '.', exp = 2) => {
-  const p = parseDecimal(s, sep);
+  const p = parseAmountText(s, sep);
   return p === null ? null : toMinor(p, exp).minor;
 };
 
-describe('parseDecimal + toMinor', () => {
+describe('parseAmountText + toMinor', () => {
   it.each([
     ['1180.0', 118000n],
     ['690.85', 69085n],
@@ -53,7 +53,7 @@ describe('parseDecimal + toMinor', () => {
     '--1',
     '.',
   ])('rejects %j', (input) => {
-    expect(parseDecimal(input, '.')).toBeNull();
+    expect(parseAmountText(input, '.')).toBeNull();
   });
 
   it('handles the currency exponent', () => {
@@ -63,11 +63,11 @@ describe('parseDecimal + toMinor', () => {
   });
 
   it('rounds extra digits half away from zero and flags it', () => {
-    const r = toMinor(parseDecimal('1.005')!, 2);
+    const r = toMinor(parseAmountText('1.005')!, 2);
     expect(r).toEqual({ minor: 101n, rounded: true, floatNoise: false });
-    expect(toMinor(parseDecimal('-1.005')!, 2).minor).toBe(-101n);
-    expect(toMinor(parseDecimal('1.004')!, 2).minor).toBe(100n);
-    expect(toMinor(parseDecimal('1.000')!, 2)).toEqual({
+    expect(toMinor(parseAmountText('-1.005')!, 2).minor).toBe(-101n);
+    expect(toMinor(parseAmountText('1.004')!, 2).minor).toBe(100n);
+    expect(toMinor(parseAmountText('1.000')!, 2)).toEqual({
       minor: 100n,
       rounded: false,
       floatNoise: false,
@@ -92,8 +92,8 @@ describe('parseDecimal + toMinor', () => {
   });
 
   it('rejects amounts beyond 15 integer digits (keeps minor units inside int64)', () => {
-    expect(parseDecimal('1,000,000,000,000,000.00')).toBeNull();
-    expect(parseDecimal('0000000000000000001.00')).not.toBeNull();
+    expect(parseAmountText('1,000,000,000,000,000.00')).toBeNull();
+    expect(parseAmountText('0000000000000000001.00')).not.toBeNull();
     expect(parsePlainNumber('1e400')).toBeNull();
     expect(parsePlainNumber('1E15')).toBeNull();
     expect(parsePlainNumber('1E14')).not.toBeNull();

@@ -1,22 +1,25 @@
 import { ButtonLink } from '@ie-ledger/ui';
 import type { Route } from 'next';
+import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { connection } from 'next/server';
 import { getHealth } from '@/lib/api/server';
 import { getSession } from '@/lib/auth/server';
 import { describeHealth } from '@/lib/health';
 import { NEW_ORG_PATH, orgHref } from '@/lib/nav';
+import { LAST_ORG_COOKIE, pickWorkspace } from '@/lib/workspace';
 
 /**
- * Signed in: straight to the first workspace, or to workspace creation when there is none.
+ * Signed in: straight to the last-used workspace (else the first one), or to workspace creation
+ * when there is none.
  * Signed out: a short landing page with the API status.
  */
 export default async function HomePage() {
   await connection();
   const session = await getSession().catch(() => null);
   if (session) {
-    const first = session.memberships[0];
-    redirect((first ? orgHref(first.orgId) : NEW_ORG_PATH) as Route);
+    const orgId = pickWorkspace(session.memberships, (await cookies()).get(LAST_ORG_COOKIE)?.value);
+    redirect((orgId ? orgHref(orgId) : NEW_ORG_PATH) as Route);
   }
   const health = describeHealth(await getHealth());
 

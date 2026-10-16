@@ -1,32 +1,16 @@
 // Money formatting and parsing for display components.
 //
-// TODO(WS-01): switch to the formatting helpers in `packages/domain` (`domain/format.ts` and
-// the minor-unit table in `domain/currency.ts`) once WS-01 lands, and delete this file's
-// local table. ui -> domain is an allowed dependency (ARCHITECTURE §2).
+// Exponents and the exact decimal string come from packages/domain (`iso4217Exponent`,
+// `formatDecimal`); ui -> domain is allowed for formatting (ARCHITECTURE §2). What stays here is
+// UI-specific: Intl parts for styled amounts, a `none` display for inputs, the en-GB default
+// locale, and parsing what a person types. Domain `formatMoney` takes a `Money` of a supported
+// currency in en/ka/ru only, so the components cannot use it directly.
 //
 // Everything here works on bigint minor units and decimal strings. No JS numbers touch an
 // amount: Intl.NumberFormat formats an exact decimal string (ECMA-402 "Intl.NumberFormat v3").
-
-/** Minor-unit exponents (ISO 4217). Anything not listed uses 2. */
-const MINOR_UNIT_EXPONENTS: Readonly<Record<string, number>> = {
-  GEL: 2,
-  USD: 2,
-  EUR: 2,
-  GBP: 2,
-  CHF: 2,
-  TRY: 2,
-  RUB: 2,
-  JPY: 0,
-  KRW: 0,
-  KWD: 3,
-  BHD: 3,
-};
+import { formatDecimal, iso4217Exponent } from '@ie-ledger/domain';
 
 export const DEFAULT_LOCALE = 'en-GB';
-
-export function minorUnitExponent(currency: string): number {
-  return MINOR_UNIT_EXPONENTS[currency] ?? 2;
-}
 
 /** Accepts the wire form (`"125000"`) or a bigint. Throws on anything that is not an integer. */
 export function toMinor(amount: bigint | string): bigint {
@@ -34,15 +18,6 @@ export function toMinor(amount: bigint | string): bigint {
   if (!/^-?[0-9]+$/.test(amount))
     throw new TypeError(`Not an integer minor-unit amount: ${amount}`);
   return BigInt(amount);
-}
-
-/** `125000n`, 2 → `"1250.00"`. Exact; the sign is kept. */
-export function minorToDecimalString(amountMinor: bigint, exponent: number): string {
-  const negative = amountMinor < 0n;
-  const digits = (negative ? -amountMinor : amountMinor).toString().padStart(exponent + 1, '0');
-  const whole = exponent === 0 ? digits : digits.slice(0, -exponent);
-  const fraction = exponent === 0 ? '' : `.${digits.slice(-exponent)}`;
-  return `${negative ? '-' : ''}${whole}${fraction}`;
 }
 
 type DecimalString = `${number}`;
@@ -102,8 +77,8 @@ export function formatMoneyToParts(
   currency: string,
   opts: FormatMoneyOptions = {},
 ): Intl.NumberFormatPart[] {
-  const exponent = minorUnitExponent(currency);
-  const decimal = minorToDecimalString(toMinor(amountMinor), exponent) as DecimalString;
+  const exponent = iso4217Exponent(currency);
+  const decimal = formatDecimal(toMinor(amountMinor), exponent) as DecimalString;
   return formatter(currency, exponent, opts).formatToParts(decimal);
 }
 
@@ -125,7 +100,7 @@ export function parseMoneyInput(
   currency: string,
   opts: ParseMoneyOptions = {},
 ): ParseMoneyResult {
-  const exponent = minorUnitExponent(currency);
+  const exponent = iso4217Exponent(currency);
   const cleaned = text.trim().replace(/[\s\u00a0\u202f,']/g, '');
   if (cleaned === '' || cleaned === '-') return { ok: false, reason: 'empty' };
   const match = /^(-)?([0-9]*)(?:\.([0-9]*))?$/.exec(cleaned);
@@ -141,5 +116,5 @@ export function parseMoneyInput(
 
 /** Plain editable text for a minor amount: `125050n` → `"1250.50"` (no grouping). */
 export function minorToInputText(amountMinor: bigint, currency: string): string {
-  return minorToDecimalString(amountMinor, minorUnitExponent(currency));
+  return formatDecimal(amountMinor, iso4217Exponent(currency));
 }

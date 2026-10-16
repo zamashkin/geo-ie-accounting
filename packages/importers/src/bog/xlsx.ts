@@ -1,10 +1,10 @@
 // Bank of Georgia XLSX statement (`Statement of Account` sheet). See bog/FORMAT.md.
 
 import type { ParsedRow, ParseOptions, StatementMeta } from '@ie-ledger/contracts';
-import { currencyExponent, isCurrencyCode } from '../lib/currency';
+import { isCurrencyCode, iso4217Exponent } from '@ie-ledger/domain';
 import { excelSerialToIso, parseDate } from '../lib/dates';
 import type { DecimalParts } from '../lib/decimal';
-import { isZero, parseDecimal, parsePlainNumber, toMinor } from '../lib/decimal';
+import { isZero, parseAmountText, parsePlainNumber, toMinor } from '../lib/decimal';
 import { blankToNull, collapseLines, normaliseLabel, swiftName } from '../lib/text';
 import type { Cell, Sheet, Workbook } from '../lib/xlsx';
 import { isZip, readWorkbook, XlsxError } from '../lib/xlsx';
@@ -110,7 +110,8 @@ function locate(workbook: Workbook): Located | null {
 function cellNumber(cell: Cell | undefined): DecimalParts | null {
   if (cell === undefined) return null;
   if (cell.type === 'number') return parsePlainNumber(cell.text);
-  if (cell.type === 'string') return cell.text.trim() === '' ? null : parseDecimal(cell.text, '.');
+  if (cell.type === 'string')
+    return cell.text.trim() === '' ? null : parseAmountText(cell.text, '.');
   return null;
 }
 
@@ -338,7 +339,7 @@ function parseImpl(
     if (running !== null) running += amountMinor;
     const balance = cellNumber(get('balance'));
     if (runningChecked && running !== null && balance !== null) {
-      const { minor } = toMinor(balance, currencyExponent(currency));
+      const { minor } = toMinor(balance, iso4217Exponent(currency));
       if (minor !== running) {
         warnings.add(
           'running_balance_mismatch',

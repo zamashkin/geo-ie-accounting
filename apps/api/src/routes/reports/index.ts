@@ -7,7 +7,12 @@ import {
   OrgParams,
   YearQuery,
 } from '@ie-ledger/contracts';
-import { getOrganizationForUser, listSbsIncomeEntries, type Db } from '@ie-ledger/db';
+import {
+  getOrganizationForUser,
+  latestTransactionYear,
+  listSbsIncomeEntries,
+  type Db,
+} from '@ie-ledger/db';
 import {
   annualLimitStatus,
   annualLimitUsageBp,
@@ -20,10 +25,21 @@ import { requireRole } from '../../plugins/authz';
 import { HttpProblem, problemResponse } from '../../problem';
 import type { LedgerDeps } from '../ledger-deps';
 
-/** The year's figures plus the limit status, which needs to know about the previous year. */
-async function declarationYear(db: Db, orgId: string, userId: string, year: number) {
+/**
+ * The year's figures plus the limit status, which needs to know about the previous year.
+ * Without `requested`, the year is the latest one with posted transactions, else `today`'s.
+ */
+async function declarationYear(
+  db: Db,
+  orgId: string,
+  userId: string,
+  requested: number | undefined,
+  today: string,
+) {
   const org = await getOrganizationForUser(db, orgId, userId);
   if (!org) throw new HttpProblem(404, 'not_found', 'Organization not found.');
+  const latestYearWithData = await latestTransactionYear(db, orgId);
+  const year = requested ?? latestYearWithData ?? Number(today.slice(0, 4));
   const sbsEffectiveFrom = org.sbsEffectiveFrom;
   const [entries, previousEntries] = await Promise.all([
     listSbsIncomeEntries(db, orgId, year),
@@ -37,6 +53,8 @@ async function declarationYear(db: Db, orgId: string, userId: string, year: numb
   });
   const rules = ruleSetFor(`${String(year).padStart(4, '0')}-12-01`);
   return {
+    year,
+    latestYearWithData,
     figures,
     sbsEffectiveFrom,
     previousYearLimitExceeded: previous.limitExceeded,
@@ -57,14 +75,16 @@ export const reportRoutes: FastifyPluginAsyncZod<{ deps: LedgerDeps }> = async (
         summary: 'Monthly SBS declaration figures for a year, laid out like the return',
         description:
           'Per month: line 15 (`ytdGelMinor`), lines 18–21 (`byPaymentMethod`), rate, tax and ' +
-          'deadline. Computed from posted transactions on every request; nothing is filed.',
+          'deadline. Computed from posted transactions on every request; nothing is filed. ' +
+          'Without `year`: the latest year with posted transactions, else the current year.',
         params: OrgParams,
         querystring: YearQuery,
         response: { 200: DeclarationYearResponse, default: problemResponse },
       },
     },
     async (req) => {
-      const y = await declarationYear(app.db, req.params.orgId, req.user.id, req.query.year);
+      const today = tbilisiDate(opts.deps.now());
+      const y = await declarationYear(app.db, req.params.orgId, req.user.id, req.query.year, today);
       return {
         ...y.figures,
         months: [...y.figures.months],
@@ -73,6 +93,7 @@ export const reportRoutes: FastifyPluginAsyncZod<{ deps: LedgerDeps }> = async (
         annualLimitGelMinor: y.annualLimitGelMinor,
         annualLimitUsedBp: y.annualLimitUsedBp,
         previousYearLimitExceeded: y.previousYearLimitExceeded,
+        latestYearWithData: y.latestYearWithData,
       };
     },
   );
@@ -85,6 +106,9 @@ export const reportRoutes: FastifyPluginAsyncZod<{ deps: LedgerDeps }> = async (
         operationId: 'getDashboard',
         tags: ['dashboard'],
         summary: 'Year-to-date SBS income, latest month, next deadline and limit progress',
+        description:
+          'Without `year`: the latest year with posted transactions, else the current year in ' +
+          'Tbilisi.',
         params: OrgParams,
         querystring: DashboardQuery,
         response: { 200: DashboardResponse, default: problemResponse },
@@ -92,13 +116,13 @@ export const reportRoutes: FastifyPluginAsyncZod<{ deps: LedgerDeps }> = async (
     },
     async (req) => {
       const today = tbilisiDate(opts.deps.now());
-      const year = req.query.year ?? Number(today.slice(0, 4));
-      const y = await declarationYear(app.db, req.params.orgId, req.user.id, year);
+      const y = await declarationYear(app.db, req.params.orgId, req.user.id, req.query.year, today);
       const months = y.figures.months;
       const latest = months.findLast((m) => m.incomeGelMinor !== 0n) ?? null;
       const next = months.find((m) => m.filingRequired && m.deadline >= today) ?? null;
       return {
-        year,
+        year: y.year,
+        latestYearWithData: y.latestYearWithData,
         sbsEffectiveFrom: y.sbsEffectiveFrom,
         annualLimitGelMinor: y.annualLimitGelMinor,
         annualLimitUsedBp: y.annualLimitUsedBp,

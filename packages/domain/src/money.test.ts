@@ -4,7 +4,9 @@ import {
   assertSupportedCurrency,
   BASE_CURRENCY,
   CURRENCIES,
+  isCurrencyCode,
   isSupportedCurrency,
+  iso4217Exponent,
   minorUnitExponent,
   SUPPORTED_CURRENCIES,
 } from './currency';
@@ -60,6 +62,28 @@ describe('currency', () => {
 
   it('lists every currency in the table', () => {
     expect(SUPPORTED_CURRENCIES).toEqual(Object.keys(CURRENCIES));
+  });
+});
+
+describe('ISO 4217 codes outside the ledger', () => {
+  it('checks the shape of a code only', () => {
+    expect(isCurrencyCode('XYZ')).toBe(true);
+    expect(isCurrencyCode('usd')).toBe(false);
+    expect(isCurrencyCode('GBPX')).toBe(false);
+  });
+
+  it('agrees with minorUnitExponent on every supported currency', () => {
+    for (const code of SUPPORTED_CURRENCIES) {
+      expect(iso4217Exponent(code)).toBe(minorUnitExponent(code));
+    }
+  });
+
+  it('knows 0- and 3-decimal currencies the ledger does not hold, else 2, and never throws', () => {
+    expect(iso4217Exponent('KRW')).toBe(0);
+    expect(iso4217Exponent('BHD')).toBe(3);
+    expect(iso4217Exponent('RUB')).toBe(2);
+    expect(iso4217Exponent('XYZ')).toBe(2);
+    expect(iso4217Exponent('toString')).toBe(2);
   });
 });
 

@@ -1,5 +1,6 @@
 // Test support for API integration tests (`*.int.test.ts`): a real Postgres (see
 // packages/db/src/testing), the full app, an in-memory mail outbox and session helpers.
+import type { RateSource } from '@ie-ledger/db';
 import { startTestDatabase, type TestDatabase } from '@ie-ledger/db/testing';
 import { createNbgClient } from '@ie-ledger/nbg';
 import { createFixtureFetch } from '@ie-ledger/nbg/testing';
@@ -36,7 +37,13 @@ export interface ApiTestEnv {
   close: () => Promise<void>;
 }
 
-export async function startApiTestEnv(opts: { now?: () => Date } = {}): Promise<ApiTestEnv> {
+export interface ApiTestEnvOptions {
+  now?: () => Date;
+  /** Replaces the fixture-backed NBG client, e.g. with one that always fails. */
+  rates?: RateSource;
+}
+
+export async function startApiTestEnv(opts: ApiTestEnvOptions = {}): Promise<ApiTestEnv> {
   const tdb = await startTestDatabase();
   const mailer = new MemoryMailer();
   // NBG is answered from fixtures/nbg/; a request without a recorded fixture fails the test.
@@ -53,7 +60,7 @@ export async function startApiTestEnv(opts: { now?: () => Date } = {}): Promise<
       db: tdb.db,
       mailer,
       ledger: {
-        rates: createNbgClient({ fetch: nbgFetch.fetch, retries: 0 }),
+        rates: opts.rates ?? createNbgClient({ fetch: nbgFetch.fetch, retries: 0 }),
         now: opts.now ?? (() => new Date()),
       },
     },

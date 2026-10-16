@@ -96,3 +96,32 @@ describe('BoG CSV and XLSX of the same period', () => {
     expect(csv.rows.every((r) => r.bankReference === null)).toBe(true);
   });
 });
+
+// Hand-made, no real data: one incoming payment whose printed GEL equivalent is 5 tetri off the
+// NBG conversion, and one bank fee the parser cannot classify (no suggestion in the preview).
+describe('bog/synthetic-gbp-2025-06-unassigned.csv', () => {
+  const result = bogCsv.parse(load('bog/synthetic-gbp-2025-06-unassigned.csv'), {
+    accountCurrency: 'GBP',
+  });
+
+  it('parses both lines and reconciles', () => {
+    expect(result.meta).toMatchObject({
+      accountIban: 'GE29BG0000000999999999',
+      currency: 'GBP',
+      openingBalanceMinor: 0n,
+      closingBalanceMinor: 24750n,
+    });
+    expect(
+      result.rows.map((r) => [r.bookedOn, r.amountMinor, r.operationType, r.bankGelAmountMinor]),
+    ).toEqual([
+      ['2025-06-04', 25000n, 'incoming_payment', 92315n],
+      ['2025-06-11', -250n, 'other', -921n],
+    ]);
+  });
+
+  it('warns only that the fee has no known operation type', () => {
+    expect(result.warnings.map((w) => [w.code, w.rowIndex])).toEqual([
+      ['unknown_operation_type', 1],
+    ]);
+  });
+});

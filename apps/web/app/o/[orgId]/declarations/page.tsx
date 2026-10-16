@@ -42,11 +42,14 @@ export default async function DeclarationsPage({
   searchParams,
 }: PageProps<'/o/[orgId]/declarations'>) {
   const { orgId } = await params;
-  const year = parseYearParam((await searchParams).year) ?? new Date().getFullYear();
+  // No `?year=`: the API picks the latest year with transactions (else the current year).
+  const year = parseYearParam((await searchParams).year);
   const api = await serverApi();
   const decl = await serverRead(
-    api.GET('/v1/orgs/{orgId}/declarations', { params: { path: { orgId }, query: { year } } }),
-    orgHref(orgId, `/declarations?year=${year}`),
+    api.GET('/v1/orgs/{orgId}/declarations', {
+      params: { path: { orgId }, query: year ? { year } : {} },
+    }),
+    orgHref(orgId, year ? `/declarations?year=${year}` : '/declarations'),
   );
 
   const excludedTotal = decl.months.reduce((sum, m) => sum + parseMinor(m.excludedGelMinor), 0n);
