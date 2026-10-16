@@ -5,6 +5,10 @@ import { fileURLToPath } from 'node:url';
 export const FIXTURE = fileURLToPath(
   new URL('../../../fixtures/statements/bog/bog-gbp-2025-06.xlsx', import.meta.url),
 );
+/** Hand-made BoG CSV: an income line whose GEL is 5 tetri off NBG, and an unclassified fee. */
+export const UNASSIGNED_FIXTURE = fileURLToPath(
+  new URL('../../../fixtures/statements/bog/synthetic-gbp-2025-06-unassigned.csv', import.meta.url),
+);
 const SCREENSHOT_DIR = fileURLToPath(new URL('../../../docs/screenshots/', import.meta.url));
 const MAILPIT = process.env.E2E_MAILPIT_URL ?? 'http://localhost:8025';
 const SCREENSHOTS = process.env.E2E_SCREENSHOTS === '1';
@@ -88,4 +92,28 @@ export async function fillDate(page: Page, label: string, iso: string) {
   const group = page.getByRole('group', { name: label });
   await group.getByRole('spinbutton').first().click();
   await page.keyboard.type(`${d}${m}${y}`);
+}
+
+/**
+ * Signs up through the UI, follows the emailed link, creates a workspace and sets the SBS start
+ * date. Ends on the dashboard.
+ */
+export async function signUpWithWorkspace(
+  page: Page,
+  { email, password, workspace }: { email: string; password: string; workspace: string },
+) {
+  await page.goto('/sign-up');
+  await page.getByLabel('Your name').fill('E2E Entrepreneur');
+  await page.getByLabel('Email').fill(email);
+  await page.getByLabel('Password').fill(password);
+  await page.getByRole('button', { name: 'Create account' }).click();
+  await expect(page.getByRole('heading', { name: 'Check your email' })).toBeVisible();
+  await page.goto(await verificationLink(email));
+  await expect(page).toHaveURL(/\/orgs\/new$/);
+  await page.getByLabel('Workspace name').fill(workspace);
+  await page.getByRole('button', { name: 'Create workspace' }).click();
+  await expect(page.getByText('One more detail for the declarations')).toBeVisible();
+  await fillDate(page, 'Small-business status start date', '2025-01-01');
+  await page.getByRole('button', { name: 'Save and continue' }).click();
+  await expect(page.getByRole('heading', { level: 1, name: 'Dashboard' })).toBeVisible();
 }

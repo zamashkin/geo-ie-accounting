@@ -352,7 +352,8 @@ function Warnings({ warnings }: { warnings: readonly Schemas['ParseWarning'][] }
 
 /** Booked rows whose GEL equivalent on the statement is more than 1 tetri off ours. */
 function GelWarnings({ warnings }: { warnings: readonly Schemas['CommitWarning'][] }) {
-  const mismatches = warnings.filter((w) => w.code === 'bank_gel_mismatch');
+  // `bank_gel_mismatch` is the only commit warning so far.
+  const mismatches = warnings;
   if (mismatches.length === 0) return null;
   const n = mismatches.length;
   return (
