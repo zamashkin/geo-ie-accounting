@@ -45,7 +45,7 @@ Phase 1 and later briefs are written against the contracts produced in WS-00. Co
 | 02 | NBG rates | merged | ws/02-nbg-rates |
 | 03 | Statement parsers | merged for BoG + generic CSV; TBC waits for fixtures | ws/03-importers |
 | 04 | Web shell + UI kit | in progress | ws/04-web-shell |
-| 05 | Auth + tenancy | in progress | ws/05-auth-tenancy |
+| 05 | Auth + tenancy | merged | ws/05-auth-tenancy |
 | 06 | Ledger API + UI | todo | |
 | 07 | Import pipeline | todo | |
 | 08 | Declarations + dashboard | todo | |
@@ -75,3 +75,5 @@ These don't block Phase 0 or the BoG parsers. Add files to `fixtures/statements/
 - WS-02: worker `JobContext` has no db handle; the rates jobs open their own pool, which is never closed on shutdown. Add `db` to `JobContext` (WS-07 needs it too).
 - WS-02: WS-07 must call `resolveRate` before each chunk's DB transaction (it may call NBG) and store the row id as `postings.rate_id`.
 - CI: `@ie-ledger/worker#test` failed once under a full parallel turbo run, then passed alone and on re-run. Watch for flakiness.
+- WS-05: add `users.is_admin` + `requireAdmin()` and replace WS-02's `x-admin-token` stub on `POST /v1/rates/backfill` (now `config: { tx: false }`, so it skips the request transaction and idempotency). Decide how global admin actions get audited (audit_log.org_id is NOT NULL).
+- WS-05: worker job to call `deleteExpiredIdempotencyKeys`; move Better Auth's in-memory rate limiter to the DB before running more than one API instance; member role change/removal with a last-owner guard; consider default-deny guards on every `/v1` route.
