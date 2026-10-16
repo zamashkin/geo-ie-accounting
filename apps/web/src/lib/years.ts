@@ -15,7 +15,10 @@ export function yearOptions(
   return years;
 }
 
-/** `?year=` as a year the API accepts, or undefined (the API then uses the current year). */
+/**
+ * `?year=` as a year the API accepts, or undefined: the API then picks the latest year with
+ * transactions, or the current year when there are none.
+ */
 export function parseYearParam(value: string | string[] | undefined): number | undefined {
   if (typeof value !== 'string' || !/^[0-9]{4}$/.test(value)) return undefined;
   const year = Number(value);

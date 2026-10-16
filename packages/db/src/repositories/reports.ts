@@ -1,7 +1,7 @@
 // Read models for declarations and the dashboard. The figures themselves are computed by
 // packages/domain (computeDeclarationYear); this only loads its input.
 import type { SbsIncomeEntry } from '@ie-ledger/domain';
-import { and, eq, gte, lte } from 'drizzle-orm';
+import { and, eq, gte, lte, max } from 'drizzle-orm';
 import type { DbOrTx } from '../client';
 import { accounts, postings, transactions } from '../schema/index';
 
@@ -36,4 +36,17 @@ export async function listSbsIncomeEntries(
         lte(transactions.occurredOn, `${y}-12-31`),
       ),
     );
+}
+
+/**
+ * The year of the org's latest posted transaction (any source, reversals included), or null
+ * when it has none. The declarations and dashboard open on this year by default.
+ */
+export async function latestTransactionYear(db: DbOrTx, orgId: string): Promise<number | null> {
+  const [row] = await db
+    .select({ latest: max(transactions.occurredOn) })
+    .from(transactions)
+    .where(eq(transactions.orgId, orgId));
+  const latest = row?.latest ?? null;
+  return latest === null ? null : Number(latest.slice(0, 4));
 }

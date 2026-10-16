@@ -4077,6 +4077,18 @@
             "minimum": 0,
             "maximum": 9007199254740991
           },
+          "latestYearWithData": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": -9007199254740991,
+                "maximum": 9007199254740991
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
           "previousYearLimitExceeded": {
             "type": "boolean"
           }
@@ -4092,6 +4104,7 @@
           "sbsEffectiveFrom",
           "annualLimitGelMinor",
           "annualLimitUsedBp",
+          "latestYearWithData",
           "previousYearLimitExceeded"
         ]
       },
@@ -4169,6 +4182,18 @@
             "type": "integer",
             "minimum": 0,
             "maximum": 9007199254740991
+          },
+          "latestYearWithData": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": -9007199254740991,
+                "maximum": 9007199254740991
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "ytdIncomeGelMinor": {
             "type": "string",
@@ -4248,6 +4273,7 @@
           "sbsEffectiveFrom",
           "annualLimitGelMinor",
           "annualLimitUsedBp",
+          "latestYearWithData",
           "ytdIncomeGelMinor",
           "limitStatus",
           "latestMonth",
@@ -8405,6 +8431,18 @@
             "minimum": 0,
             "maximum": 9007199254740991
           },
+          "latestYearWithData": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": -9007199254740991,
+                "maximum": 9007199254740991
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
           "previousYearLimitExceeded": {
             "type": "boolean"
           }
@@ -8420,6 +8458,7 @@
           "sbsEffectiveFrom",
           "annualLimitGelMinor",
           "annualLimitUsedBp",
+          "latestYearWithData",
           "previousYearLimitExceeded"
         ],
         "additionalProperties": false
@@ -8500,6 +8539,18 @@
             "minimum": 0,
             "maximum": 9007199254740991
           },
+          "latestYearWithData": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": -9007199254740991,
+                "maximum": 9007199254740991
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
           "ytdIncomeGelMinor": {
             "type": "string",
             "pattern": "^(0|-?[1-9][0-9]*)$",
@@ -8579,6 +8630,7 @@
           "sbsEffectiveFrom",
           "annualLimitGelMinor",
           "annualLimitUsedBp",
+          "latestYearWithData",
           "ytdIncomeGelMinor",
           "limitStatus",
           "latestMonth",
@@ -10042,7 +10094,7 @@
         "tags": [
           "declarations"
         ],
-        "description": "Per month: line 15 (`ytdGelMinor`), lines 18–21 (`byPaymentMethod`), rate, tax and deadline. Computed from posted transactions on every request; nothing is filed.",
+        "description": "Per month: line 15 (`ytdGelMinor`), lines 18–21 (`byPaymentMethod`), rate, tax and deadline. Computed from posted transactions on every request; nothing is filed. Without `year`: the latest year with posted transactions, else the current year.",
         "parameters": [
           {
             "schema": {
@@ -10052,7 +10104,7 @@
             },
             "in": "query",
             "name": "year",
-            "required": true
+            "required": false
           },
           {
             "schema": {
@@ -10096,6 +10148,7 @@
         "tags": [
           "dashboard"
         ],
+        "description": "Without `year`: the latest year with posted transactions, else the current year in Tbilisi.",
         "parameters": [
           {
             "schema": {

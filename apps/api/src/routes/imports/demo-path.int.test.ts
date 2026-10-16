@@ -278,12 +278,30 @@ describe('BoG GBP statement, June 2025', () => {
       // Every 2025 deadline is before "today" (2026-10-16).
       nextDeadline: null,
     });
-    const current = await as(env, owner, { method: 'GET', url: `/v1/orgs/${orgId}/dashboard` });
+    const current = await as(env, owner, {
+      method: 'GET',
+      url: `/v1/orgs/${orgId}/dashboard?year=2026`,
+    });
     expect(current.json()).toMatchObject({
       year: 2026,
+      latestYearWithData: 2025,
       latestMonth: null,
       nextDeadline: { period: '2026-10', deadline: '2026-11-15', zeroReturn: true },
     });
+  });
+
+  it('opens the dashboard and declarations on the latest year with data by default', async () => {
+    for (const path of ['dashboard', 'declarations']) {
+      const res = await as(env, owner, { method: 'GET', url: `/v1/orgs/${orgId}/${path}` });
+      expect(res.statusCode).toBe(200);
+      expect(res.json()).toMatchObject({ year: 2025, latestYearWithData: 2025 });
+    }
+    // No transactions yet: the current year in Tbilisi (the clock says 2026-10-16).
+    const empty = await createOrg(env, owner, 'Empty IE');
+    for (const path of ['dashboard', 'declarations']) {
+      const res = await as(env, owner, { method: 'GET', url: `/v1/orgs/${empty}/${path}` });
+      expect(res.json()).toMatchObject({ year: 2026, latestYearWithData: null });
+    }
   });
 
   it('a reversal takes the income back out, and only once', async () => {

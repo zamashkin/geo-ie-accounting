@@ -219,14 +219,17 @@ export type ReverseTransactionRequest = z.output<typeof ReverseTransactionReques
 
 // ── Declarations and dashboard ──────────────────────────────────────────────────────────
 
-export const YearQuery = z.object({ year: z.coerce.number().int().min(2000).max(9999) });
-export type YearQuery = z.output<typeof YearQuery>;
-
-/** `?year=` optional: the current year in Tbilisi by default. */
-export const DashboardQuery = z.object({
+/**
+ * `?year=` of the declarations and dashboard. Optional: by default the latest year with posted
+ * transactions (`latestYearWithData`), or the current year in Tbilisi when there are none.
+ */
+export const YearQuery = z.object({
   year: z.coerce.number().int().min(2000).max(9999).optional(),
 });
-export type DashboardQuery = z.output<typeof DashboardQuery>;
+export type YearQuery = z.output<typeof YearQuery>;
+
+export const DashboardQuery = YearQuery;
+export type DashboardQuery = YearQuery;
 
 /** Limit figures shared by the declarations and dashboard responses. */
 const LimitFigures = {
@@ -236,6 +239,8 @@ const LimitFigures = {
   annualLimitGelMinor: MinorUnits,
   /** Year-to-date SBS income as a share of the limit: 10000 = 100%. */
   annualLimitUsedBp: z.int().nonnegative(),
+  /** The latest year with a posted transaction in the org (the default `year`); null: none. */
+  latestYearWithData: z.int().nullable(),
 };
 
 /**

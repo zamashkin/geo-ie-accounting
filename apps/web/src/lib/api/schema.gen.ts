@@ -384,7 +384,7 @@ export interface paths {
         };
         /**
          * Monthly SBS declaration figures for a year, laid out like the return
-         * @description Per month: line 15 (`ytdGelMinor`), lines 18–21 (`byPaymentMethod`), rate, tax and deadline. Computed from posted transactions on every request; nothing is filed.
+         * @description Per month: line 15 (`ytdGelMinor`), lines 18–21 (`byPaymentMethod`), rate, tax and deadline. Computed from posted transactions on every request; nothing is filed. Without `year`: the latest year with posted transactions, else the current year.
          */
         get: operations["getDeclarationYear"];
         put?: never;
@@ -402,7 +402,10 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Year-to-date SBS income, latest month, next deadline and limit progress */
+        /**
+         * Year-to-date SBS income, latest month, next deadline and limit progress
+         * @description Without `year`: the latest year with posted transactions, else the current year in Tbilisi.
+         */
         get: operations["getDashboard"];
         put?: never;
         post?: never;
@@ -1416,6 +1419,7 @@ export interface components {
              */
             annualLimitGelMinor: string;
             annualLimitUsedBp: number;
+            latestYearWithData: number | null;
             previousYearLimitExceeded: boolean;
         };
         DashboardMonthInput: {
@@ -1445,6 +1449,7 @@ export interface components {
              */
             annualLimitGelMinor: string;
             annualLimitUsedBp: number;
+            latestYearWithData: number | null;
             /**
              * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
              * @example 125000
@@ -2468,6 +2473,7 @@ export interface components {
              */
             annualLimitGelMinor: string;
             annualLimitUsedBp: number;
+            latestYearWithData: number | null;
             previousYearLimitExceeded: boolean;
         };
         DashboardMonth: {
@@ -2497,6 +2503,7 @@ export interface components {
              */
             annualLimitGelMinor: string;
             annualLimitUsedBp: number;
+            latestYearWithData: number | null;
             /**
              * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
              * @example 125000
@@ -3367,8 +3374,8 @@ export interface operations {
     };
     getDeclarationYear: {
         parameters: {
-            query: {
-                year: number;
+            query?: {
+                year?: number;
             };
             header?: never;
             path: {
