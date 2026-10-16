@@ -40,6 +40,13 @@ export function formatBp(bp: number): string {
   return formatRateBp(bp, 'en');
 }
 
+const percentFormat = new Intl.NumberFormat('en', { style: 'percent', maximumFractionDigits: 0 });
+
+/** A 0..1 score (not money), e.g. format detection confidence: `0.95` → `"95%"`. */
+export function formatScore(score: number): string {
+  return percentFormat.format(score);
+}
+
 /** `"2025-06"` → `"June 2025"`. */
 export function formatPeriod(period: string): string {
   return formatPeriodLabel(period, 'en');

@@ -32,11 +32,7 @@ export function SbsDateForm({
     setError(null);
     setPending(true);
     try {
-      const org = await updateOrganization(
-        orgId,
-        { sbsEffectiveFrom: value },
-        newIdempotencyKey(),
-      );
+      const org = await updateOrganization(orgId, { sbsEffectiveFrom: value }, newIdempotencyKey());
       onSaved(org.sbsEffectiveFrom);
     } catch (err) {
       setError(errorMessage(err));

@@ -1,15 +1,20 @@
+import { PageContainer, PageHeader } from '@ie-ledger/ui';
 import type { Metadata } from 'next';
-import { Placeholder } from '../_shell/Placeholder';
+import { canWrite, orgRole } from '@/lib/auth/role';
+import { ImportsView } from './ImportsView';
 
 export const metadata: Metadata = { title: 'Imports' };
 
-// Placeholder from WS-04 so the navigation has targets; WS-07 replaces this page.
-export default function Page() {
+export default async function ImportsPage({ params }: PageProps<'/o/[orgId]/imports'>) {
+  const { orgId } = await params;
+  const writable = canWrite(await orgRole(orgId));
   return (
-    <Placeholder
-      title="Imports"
-      description="Bank statements you have uploaded and their status."
-      owner="WS-07"
-    />
+    <PageContainer>
+      <PageHeader
+        title="Imports"
+        description="Upload a bank statement, check the preview, then book it. Lines already in the ledger are never booked twice."
+      />
+      <ImportsView orgId={orgId} canWrite={writable} />
+    </PageContainer>
   );
 }

@@ -57,7 +57,9 @@ export default async function DeclarationsPage({
       <PageHeader
         title="Declarations"
         description={`Monthly small-business return figures for ${decl.year}, computed from the ledger. Copy them into rs.ge; nothing is filed from here.`}
-        actions={<YearPicker year={decl.year} years={yearOptions(decl.year, decl.sbsEffectiveFrom)} />}
+        actions={
+          <YearPicker year={decl.year} years={yearOptions(decl.year, decl.sbsEffectiveFrom)} />
+        }
       />
 
       <div className="mb-6 flex flex-col gap-3">
@@ -85,8 +87,8 @@ export default async function DeclarationsPage({
         {decl.limitExceeded ? (
           <Notice tone="error" title="Annual limit exceeded">
             Cumulative income went over the limit
-            {decl.crossingPeriod ? ` in ${formatPeriod(decl.crossingPeriod)}` : ''}. The higher
-            rate applies from then on, as shown below.
+            {decl.crossingPeriod ? ` in ${formatPeriod(decl.crossingPeriod)}` : ''}. The higher rate
+            applies from then on, as shown below.
             {decl.previousYearLimitExceeded ? ' The previous year was over the limit too.' : ''}
           </Notice>
         ) : null}
@@ -207,7 +209,10 @@ export default async function DeclarationsPage({
             </tbody>
             <tfoot className="border-t-2 border-line bg-surface-muted font-medium">
               <tr data-period="total">
-                <th scope="row" className={cx(th, 'sticky start-0 z-10 bg-surface-muted text-start')}>
+                <th
+                  scope="row"
+                  className={cx(th, 'sticky start-0 z-10 bg-surface-muted text-start')}
+                >
                   {decl.year} total
                 </th>
                 <td data-col="income" className={cx(td, 'text-end')}>
@@ -224,8 +229,7 @@ export default async function DeclarationsPage({
         </div>
       </Card>
       <p className="mt-3 text-xs text-fg-muted">
-        Cash method: income counts when it is received. Lines 22–24 (accrual method) do not
-        apply.
+        Cash method: income counts when it is received. Lines 22–24 (accrual method) do not apply.
       </p>
     </PageContainer>
   );

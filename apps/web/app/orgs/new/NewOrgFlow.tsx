@@ -14,7 +14,7 @@ import { NEW_ORG_PATH, orgHref } from '@/lib/nav';
 
 const STEPS = [
   { id: 'workspace', label: 'Workspace', description: 'Name it' },
-  { id: 'sbs', label: 'Small-business status', description: 'When the 1% regime began' },
+  { id: 'sbs', label: 'Small-business status', description: 'When your status began' },
 ] as const;
 
 function CreateStep({ firstRun }: { firstRun: boolean }) {
@@ -71,7 +71,12 @@ function CreateStep({ firstRun }: { firstRun: boolean }) {
           Create workspace
         </Button>
         {firstRun ? null : (
-          <Button variant="ghost" onPress={() => { router.back(); }}>
+          <Button
+            variant="ghost"
+            onPress={() => {
+              router.back();
+            }}
+          >
             Cancel
           </Button>
         )}

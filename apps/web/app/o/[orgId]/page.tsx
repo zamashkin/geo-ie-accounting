@@ -203,9 +203,7 @@ export default async function DashboardPage({ params, searchParams }: PageProps<
             icon={<Upload />}
             title={`No small-business income in ${dash.year} yet`}
             description="Import a bank statement and its incoming payments show up here."
-            actions={
-              <ButtonLink href={orgHref(orgId, '/imports')}>Import a statement</ButtonLink>
-            }
+            actions={<ButtonLink href={orgHref(orgId, '/imports')}>Import a statement</ButtonLink>}
           />
         )}
       </section>
