@@ -19,7 +19,8 @@
     "db:generate": "pnpm --filter @ie-ledger/db db:generate",
     "db:migrate": "pnpm --filter @ie-ledger/db db:migrate",
     "db:seed": "pnpm --filter @ie-ledger/db db:seed",
-    "gen:api": "pnpm --filter @ie-ledger/api openapi && pnpm --filter @ie-ledger/web gen:api"
+    "gen:api": "pnpm --filter @ie-ledger/api openapi && pnpm --filter @ie-ledger/web gen:api",
+    "e2e": "pnpm --filter @ie-ledger/web e2e"
   },
   "prettier": "@ie-ledger/config/prettier",
   "devDependencies": {

@@ -16,3 +16,6 @@ fixtures/statements/raw/
 
 # Agent worktrees
 .claude/worktrees/
+# Playwright output (apps/web e2e)
+apps/web/e2e/.results/
+playwright-report/

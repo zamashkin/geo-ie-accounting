@@ -7,7 +7,7 @@ import Link from 'next/link';
 import { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { authClient } from '@/lib/auth/client';
-import { applyApiError, FormAlert } from '../_components/form-helpers';
+import { applyApiError, FormAlert } from '@/components/form-helpers';
 
 const FIELDS = [
   { name: 'name', label: 'Your name', type: 'text', autoComplete: 'name', description: null },

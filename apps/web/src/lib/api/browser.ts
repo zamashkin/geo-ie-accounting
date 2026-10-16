@@ -43,3 +43,12 @@ export const idempotencyMiddleware: Middleware = {
 export function idempotencyHeaders(key: string): { 'Idempotency-Key': string } {
   return { 'Idempotency-Key': key };
 }
+
+/**
+ * A key for one user action (a click on Commit, Reverse, Save). Make it when the action starts
+ * and pass it along with the mutation variables, so a retry of the same action replays instead
+ * of booking twice.
+ */
+export function newIdempotencyKey(): string {
+  return crypto.randomUUID();
+}

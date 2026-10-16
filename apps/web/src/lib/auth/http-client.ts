@@ -25,6 +25,20 @@ export const AUTH_PATHS = {
   acceptInvitation: '/v1/invitations/accept',
 } as const;
 
+/**
+ * Better Auth resolves a relative `callbackURL` against the API origin, so the link in the
+ * email would land on the API. Make it absolute on the web origin (checked by the API against
+ * `WEB_ORIGIN`).
+ */
+export function withAbsoluteCallback<T extends { callbackURL?: string | undefined }>(
+  body: T,
+  origin: string | undefined = typeof window === 'undefined' ? undefined : window.location.origin,
+): T {
+  const { callbackURL } = body;
+  if (!callbackURL || !origin || !callbackURL.startsWith('/')) return body;
+  return { ...body, callbackURL: new URL(callbackURL, origin).toString() };
+}
+
 export class HttpAuthClient implements AuthClient {
   constructor(
     private readonly apiUrl: string,
@@ -71,11 +85,11 @@ export class HttpAuthClient implements AuthClient {
   }
 
   async signUp(body: SignUpBody): Promise<void> {
-    await this.post(AUTH_PATHS.signUp, body);
+    await this.post(AUTH_PATHS.signUp, withAbsoluteCallback(body));
   }
 
   async requestMagicLink(body: MagicLinkBody): Promise<void> {
-    await this.post(AUTH_PATHS.magicLink, body);
+    await this.post(AUTH_PATHS.magicLink, withAbsoluteCallback(body));
   }
 
   async signOut(): Promise<void> {

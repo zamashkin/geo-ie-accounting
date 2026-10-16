@@ -1,15 +1,24 @@
+import { PageContainer, PageHeader, SkeletonText } from '@ie-ledger/ui';
 import type { Metadata } from 'next';
-import { Placeholder } from '../_shell/Placeholder';
+import { Suspense } from 'react';
+import { canWrite, orgRole } from '@/lib/auth/role';
+import { TransactionsView } from './TransactionsView';
 
 export const metadata: Metadata = { title: 'Transactions' };
 
-// Placeholder from WS-04 so the navigation has targets; WS-06 replaces this page.
-export default function Page() {
+export default async function TransactionsPage({ params }: PageProps<'/o/[orgId]/transactions'>) {
+  const { orgId } = await params;
+  const writable = canWrite(await orgRole(orgId));
   return (
-    <Placeholder
-      title="Transactions"
-      description="Every posting with its GEL equivalent at the NBG rate."
-      owner="WS-06"
-    />
+    <PageContainer>
+      <PageHeader
+        title="Transactions"
+        description="Everything booked in the ledger, newest first. Amounts in the original currency and in GEL at the NBG rate of the day."
+      />
+      {/* Filters live in the URL (useSearchParams), which needs a Suspense boundary. */}
+      <Suspense fallback={<SkeletonText lines={6} />}>
+        <TransactionsView orgId={orgId} canWrite={writable} />
+      </Suspense>
+    </PageContainer>
   );
 }

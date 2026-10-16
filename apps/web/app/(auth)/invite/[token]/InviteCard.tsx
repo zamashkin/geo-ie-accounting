@@ -8,7 +8,7 @@ import { useRouter } from 'next/navigation';
 import { errorMessage } from '@/lib/api/api-error';
 import { authClient } from '@/lib/auth/client';
 import { orgHref } from '@/lib/nav';
-import { FormAlert } from '../../_components/form-helpers';
+import { FormAlert } from '@/components/form-helpers';
 
 const STATUS_TEXT: Record<Exclude<InvitationPreview['status'], 'pending'>, string> = {
   accepted: 'This invitation has already been accepted.',

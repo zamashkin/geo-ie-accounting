@@ -7,10 +7,15 @@
       "dependsOn": ["^build"],
       "outputs": ["dist/**", ".next/**", "!.next/cache/**"]
     },
+    "typegen": {
+      "outputs": [".next/types/**", "next-env.d.ts"]
+    },
     "typecheck": {
+      "dependsOn": ["typegen"],
       "outputs": []
     },
     "lint": {
+      "dependsOn": ["typegen"],
       "outputs": []
     },
     "test": {
