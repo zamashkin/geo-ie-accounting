@@ -11,3 +11,4 @@ packages/db/drizzle
 fixtures
 docs
 tools
+storybook-static

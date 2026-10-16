@@ -908,6 +908,27 @@ export interface components {
             /** @enum {string} */
             role: "owner" | "accountant" | "viewer";
         };
+        SignInBodyInput: {
+            /** Format: email */
+            email: string;
+            password: string;
+            rememberMe?: boolean;
+        };
+        SignUpBodyInput: {
+            name: string;
+            /** Format: email */
+            email: string;
+            password: string;
+            /** Format: starts_with */
+            callbackURL?: string;
+        };
+        MagicLinkBodyInput: {
+            /** Format: email */
+            email: string;
+            name?: string;
+            /** Format: starts_with */
+            callbackURL?: string;
+        };
         Problem: {
             /** @description URI reference identifying the problem type. */
             type: string;
@@ -1603,6 +1624,27 @@ export interface components {
             orgName: string;
             /** @enum {string} */
             role: "owner" | "accountant" | "viewer";
+        };
+        SignInBody: {
+            /** Format: email */
+            email: string;
+            password: string;
+            rememberMe?: boolean;
+        };
+        SignUpBody: {
+            name: string;
+            /** Format: email */
+            email: string;
+            password: string;
+            /** Format: starts_with */
+            callbackURL?: string;
+        };
+        MagicLinkBody: {
+            /** Format: email */
+            email: string;
+            name?: string;
+            /** Format: starts_with */
+            callbackURL?: string;
         };
     };
     responses: never;
