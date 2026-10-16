@@ -54,6 +54,20 @@ export const CreateOrganizationRequest = z
   .meta({ id: 'CreateOrganizationRequest' });
 export type CreateOrganizationRequest = z.output<typeof CreateOrganizationRequest>;
 
+/** `PATCH /v1/orgs/:orgId` (owner). Only the fields sent change; `null` clears a field. */
+export const UpdateOrganizationRequest = z
+  .object({
+    name: z.string().trim().min(1).max(200).optional(),
+    taxId: z.string().trim().min(1).max(50).nullable().optional(),
+    /** Small-business status start (may be mid-month). null: no status. */
+    sbsEffectiveFrom: IsoDate.nullable().optional(),
+  })
+  .refine((b) => Object.values(b).some((v) => v !== undefined), {
+    message: 'Send at least one field',
+  })
+  .meta({ id: 'UpdateOrganizationRequest' });
+export type UpdateOrganizationRequest = z.output<typeof UpdateOrganizationRequest>;
+
 export const OrganizationWithRole = Organization.extend({ role: Role }).meta({
   id: 'OrganizationWithRole',
 });
