@@ -83,6 +83,18 @@ test('demo path: sign up to declaration figures', async ({ page }) => {
       'FX Clearing',
     );
     await checkPage(page, 'import-preview');
+
+    // On a phone each row is a card with the same controls, not a sideways-scrolling table.
+    await page.setViewportSize({ width: 360, height: 780 });
+    const cards = page.getByRole('list', { name: 'Statement rows' }).getByRole('listitem');
+    await expect(cards).toHaveCount(4);
+    const card = cards.filter({ hasText: 'GBP 1,180.00' });
+    await expect(card).toContainText('Incoming payment');
+    await expect(card.getByRole('button', { name: /Account for/ })).toContainText(
+      'Income: Services',
+    );
+    await expect(card.getByRole('button', { name: /^Skip / })).toBeVisible();
+    await page.setViewportSize({ width: 1280, height: 900 });
   });
 
   await test.step('skip and restore a row, then commit', async () => {
