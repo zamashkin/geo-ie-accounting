@@ -71,7 +71,7 @@ function CreateStep({ firstRun }: { firstRun: boolean }) {
           Create workspace
         </Button>
         {firstRun ? null : (
-          <Button variant="ghost" onPress={() => router.back()}>
+          <Button variant="ghost" onPress={() => { router.back(); }}>
             Cancel
           </Button>
         )}

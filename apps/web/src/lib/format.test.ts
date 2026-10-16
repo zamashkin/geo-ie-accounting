@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { formatBp, formatIsoDate, formatMinor, formatPeriod, parseMinor } from './format';
 
 // Intl puts a no-break space between the code and the amount.
-const plain = (s: string) => s.replace(/ /g, ' ');
+const plain = (s: string) => s.replaceAll(String.fromCharCode(0xa0), ' ');
 
 describe('formatMinor', () => {
   it('formats minor units exactly', () => {
@@ -18,9 +18,7 @@ describe('formatMinor', () => {
   });
 
   it('adds a plus sign on request', () => {
-    expect(formatMinor('100', 'GEL', { display: 'none', signDisplay: 'exceptZero' })).toBe(
-      '+1.00',
-    );
+    expect(formatMinor('100', 'GEL', { display: 'none', signDisplay: 'exceptZero' })).toBe('+1.00');
     expect(formatMinor('0', 'GEL', { display: 'none', signDisplay: 'exceptZero' })).toBe('0.00');
   });
 
