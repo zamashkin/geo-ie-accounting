@@ -106,9 +106,15 @@ export function InvoiceEditor({
   const [issueDate, setIssueDate] = useState<string | null>(invoice?.issueDate ?? null);
   const [dueDate, setDueDate] = useState<string | null>(invoice?.dueDate ?? null);
   const bankAccounts = accounts.filter((a) => isBankAccount(a) && a.archivedAt === null);
+  /** The account a new invoice prints: one in its currency with an IBAN, else any with an IBAN. */
+  const pickBank = (cur: string) =>
+    bankAccounts.find((a) => a.currency === cur && a.iban)?.id ??
+    bankAccounts.find((a) => a.iban)?.id ??
+    null;
   const [bankAccountId, setBankAccountId] = useState<string | null>(
-    invoice ? invoice.bankAccountId : null,
+    invoice ? invoice.bankAccountId : pickBank(currency),
   );
+  const [bankTouched, setBankTouched] = useState(invoice !== null);
   const [notes, setNotes] = useState(invoice?.notes ?? '');
   const [lines, setLines] = useState<LineState[]>(() =>
     invoice && invoice.lines.length > 0
@@ -247,7 +253,10 @@ export function InvoiceEditor({
           onChange={(id) => {
             setClientId(id);
             const c = active.find((x) => x.id === id);
-            if (c && !currencyTouched) setCurrency(c.defaultCurrency);
+            if (c && !currencyTouched) {
+              setCurrency(c.defaultCurrency);
+              if (!bankTouched) setBankAccountId(pickBank(c.defaultCurrency));
+            }
           }}
         />
         <Select
@@ -258,6 +267,7 @@ export function InvoiceEditor({
             if (v) {
               setCurrency(v);
               setCurrencyTouched(true);
+              if (!bankTouched) setBankAccountId(pickBank(v));
             }
           }}
         />
@@ -275,6 +285,7 @@ export function InvoiceEditor({
           value={bankAccountId ?? 'none'}
           onChange={(v) => {
             setBankAccountId(v === 'none' || v === null ? null : v);
+            setBankTouched(true);
           }}
         />
         <DatePicker
@@ -303,6 +314,15 @@ export function InvoiceEditor({
         <h2 id="lines-heading" className="text-base font-semibold">
           Lines
         </h2>
+        <div
+          aria-hidden
+          className="hidden gap-2 px-3 text-xs font-medium text-fg-muted sm:grid sm:grid-cols-[minmax(0,1fr)_6rem_10rem_8rem_2.5rem]"
+        >
+          <span>Description</span>
+          <span className="text-end">Qty</span>
+          <span className="text-end">Unit price</span>
+          <span className="text-end">Amount</span>
+        </div>
         <ol className="flex flex-col gap-3">
           {lines.map((line, i) => {
             const t = totals[i] ?? null;
@@ -310,7 +330,7 @@ export function InvoiceEditor({
             return (
               <li
                 key={line.key}
-                className="grid items-start gap-2 rounded-lg border border-line bg-surface p-3 sm:grid-cols-[minmax(0,1fr)_6rem_10rem_8rem_auto]"
+                className="grid items-start gap-2 rounded-lg border border-line bg-surface p-3 sm:grid-cols-[minmax(0,1fr)_6rem_10rem_8rem_2.5rem]"
               >
                 <TextField
                   aria-label={`Description, line ${n}`}
