@@ -49,7 +49,7 @@ async function fetchDay(date: string): Promise<Entry[]> {
       const body = (await res.json()) as { currencies: Entry[] }[];
       return body.flatMap((g) => g.currencies);
     } catch (err) {
-      if (attempt >= 3) throw new Error(`${url.href}: ${String(err)}`);
+      if (attempt >= 3) throw new Error(`${url.href}: ${String(err)}`, { cause: err });
       await new Promise((r) => setTimeout(r, 1000 * 2 ** attempt));
     }
   }

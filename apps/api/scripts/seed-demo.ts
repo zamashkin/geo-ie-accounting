@@ -13,6 +13,7 @@ import { DEMO_LOGIN } from '../src/demo/profile';
 import { DemoRates } from '../src/demo/rates';
 import { seedDemoWorkspaces } from '../src/demo/seed';
 
+const say = (line: string) => process.stdout.write(`${line}\n`);
 const asOf = IsoDate.parse(process.env.DEMO_TODAY ?? tbilisiDate(new Date()));
 const { DATABASE_URL } = loadDbEnv();
 const handle = createDb({
@@ -25,7 +26,7 @@ try {
   // Recorded NBG rates; NBG itself only for days after the recording.
   const rates = DemoRates.load(createNbgClient());
   if (asOf > rates.coveredTo) {
-    console.log(`Rates after ${rates.coveredTo} come from NBG (network).`);
+    say(`Rates after ${rates.coveredTo} come from NBG (network).`);
   }
   const result = await seedDemoWorkspaces({
     db: handle.db,
@@ -33,16 +34,16 @@ try {
     rates,
     force: process.argv.includes('--force'),
     log: (m) => {
-      console.log(m);
+      say(m);
     },
   });
   if (result.unchanged) {
-    console.log(`Demo workspaces for ${asOf} already built; nothing to do (--force rebuilds).`);
+    say(`Demo workspaces for ${asOf} already built; nothing to do (--force rebuilds).`);
   } else if (result.retired > 0) {
-    console.log(`Retired ${result.retired} older demo workspace(s).`);
+    say(`Retired ${result.retired} older demo workspace(s).`);
   }
-  for (const w of result.workspaces) console.log(`  ${w.name}: /o/${w.orgId}`);
-  console.log(
+  for (const w of result.workspaces) say(`  ${w.name}: /o/${w.orgId}`);
+  say(
     `Demo login (read-only): ${DEMO_LOGIN.email} / ${DEMO_LOGIN.password}. ` +
       'Start the API with DEMO_MODE=true to offer it on the sign-in page.',
   );
