@@ -72,3 +72,12 @@ export function dayOf(period: Period, day: number): IsoDate {
 export function periodsOfYear(year: number): Period[] {
   return Array.from({ length: 12 }, (_, i) => formatPeriod(year, i + 1));
 }
+
+const DAY_MS = 86_400_000;
+
+/** `addDays('2026-01-30', 3)` → `'2026-02-02'`. Negative `days` go back. UTC: no time zone. */
+export function addDays(date: IsoDate, days: number): IsoDate {
+  assertIsoDate(date);
+  if (!Number.isInteger(days)) throw new InvalidDateError(`${date} + ${days} days`);
+  return new Date(Date.parse(`${date}T00:00:00Z`) + days * DAY_MS).toISOString().slice(0, 10);
+}
