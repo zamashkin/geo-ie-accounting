@@ -43,6 +43,13 @@
       "when": 1792187916226,
       "tag": "0005_rules_accounts",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1792231568811,
+      "tag": "0006_invoices",
+      "breakpoints": true
     }
   ]
 }

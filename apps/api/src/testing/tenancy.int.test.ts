@@ -54,6 +54,26 @@ describe('cross-tenant harness', () => {
         // WS-08 declarations.
         'GET /v1/orgs/:orgId/declarations/:period',
         'POST /v1/orgs/:orgId/declarations/:period/file',
+        // WS-09 clients and invoices.
+        'GET /v1/orgs/:orgId/clients',
+        'POST /v1/orgs/:orgId/clients',
+        'GET /v1/orgs/:orgId/clients/:clientId',
+        'PATCH /v1/orgs/:orgId/clients/:clientId',
+        'GET /v1/orgs/:orgId/invoices',
+        'POST /v1/orgs/:orgId/invoices',
+        'GET /v1/orgs/:orgId/invoices/summary',
+        'GET /v1/orgs/:orgId/invoices/:invoiceId',
+        'PATCH /v1/orgs/:orgId/invoices/:invoiceId',
+        'DELETE /v1/orgs/:orgId/invoices/:invoiceId',
+        'POST /v1/orgs/:orgId/invoices/:invoiceId/issue',
+        'POST /v1/orgs/:orgId/invoices/:invoiceId/void',
+        'POST /v1/orgs/:orgId/invoices/:invoiceId/duplicate',
+        'GET /v1/orgs/:orgId/invoices/:invoiceId/pdf',
+        'GET /v1/orgs/:orgId/invoices/:invoiceId/payment-suggestions',
+        'POST /v1/orgs/:orgId/invoices/:invoiceId/match-payment',
+        'DELETE /v1/orgs/:orgId/invoices/:invoiceId/payments/:transactionId',
+        'GET /v1/orgs/:orgId/transactions/:transactionId/invoice-hints',
+        'GET /v1/orgs/:orgId/imports/:batchId/invoice-hints',
       ]),
     );
   });

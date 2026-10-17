@@ -40,6 +40,12 @@ export interface OrganizationPatch {
   name?: string | undefined;
   taxId?: string | null | undefined;
   sbsEffectiveFrom?: string | null | undefined;
+  address?: string | null | undefined;
+  email?: string | null | undefined;
+  phone?: string | null | undefined;
+  invoicePrefix?: string | null | undefined;
+  invoiceDueDays?: number | undefined;
+  invoiceNote?: string | null | undefined;
 }
 
 /** Updates the given fields and returns the row before and after, or null if there is no org. */
@@ -98,4 +104,10 @@ export async function getOrganizationForUser(
     .innerJoin(organizations, eq(organizations.id, memberships.orgId))
     .where(and(eq(memberships.orgId, orgId), eq(memberships.userId, userId)));
   return row ? { ...row.org, role: row.role } : null;
+}
+
+/** The organisation row, for org-scoped routes whose caller is already authorised. */
+export async function getOrganization(db: DbOrTx, orgId: string): Promise<OrganizationRow | null> {
+  const [row] = await db.select().from(organizations).where(eq(organizations.id, orgId));
+  return row ?? null;
 }

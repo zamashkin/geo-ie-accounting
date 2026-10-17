@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import {
+  addDays,
   assertIsoDate,
   dayOf,
   firstDayOf,
@@ -11,6 +12,19 @@ import {
   periodsOfYear,
 } from './date';
 import { InvalidDateError, InvalidPeriodError } from './errors';
+
+describe('addDays', () => {
+  it('crosses month and year ends in UTC', () => {
+    expect(addDays('2026-01-30', 3)).toBe('2026-02-02');
+    expect(addDays('2026-12-25', 14)).toBe('2027-01-08');
+    expect(addDays('2028-03-01', -1)).toBe('2028-02-29');
+  });
+
+  it('rejects bad input', () => {
+    expect(() => addDays('2026-02-30', 1)).toThrow(InvalidDateError);
+    expect(() => addDays('2026-02-01', 1.5)).toThrow(InvalidDateError);
+  });
+});
 
 describe('dates and periods', () => {
   it.each(['2026-01-31', '2024-02-29', '2026-12-31', '0001-01-01'])('accepts %s', (date) => {

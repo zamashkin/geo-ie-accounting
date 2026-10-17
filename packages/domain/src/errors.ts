@@ -14,7 +14,8 @@ export type DomainErrorCode =
   | 'invalid_date'
   | 'invalid_period'
   | 'no_rule_set'
-  | 'invalid_tax_input';
+  | 'invalid_tax_input'
+  | 'invalid_invoice';
 
 export class DomainError extends Error {
   readonly code: DomainErrorCode;
@@ -108,5 +109,11 @@ export class NoRuleSetError extends DomainError {
 export class InvalidTaxInputError extends DomainError {
   constructor(message: string) {
     super('invalid_tax_input', message);
+  }
+}
+
+export class InvalidInvoiceError extends DomainError {
+  constructor(message: string) {
+    super('invalid_invoice', message);
   }
 }

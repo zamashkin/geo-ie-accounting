@@ -29,6 +29,12 @@ export function toOrganizationDto(org: OrganizationRow, role: Role): Organizatio
     baseCurrency: 'GEL',
     sbsEffectiveFrom: org.sbsEffectiveFrom,
     accountingMethod: org.accountingMethod,
+    address: org.address,
+    email: org.email,
+    phone: org.phone,
+    invoicePrefix: org.invoicePrefix,
+    invoiceDueDays: org.invoiceDueDays,
+    invoiceNote: org.invoiceNote,
     createdAt: org.createdAt.toISOString(),
     role,
   };
@@ -117,10 +123,12 @@ export const orgRoutes: FastifyPluginAsyncZod = async (app) => {
       schema: {
         operationId: 'updateOrganization',
         tags: ['orgs'],
-        summary: 'Update the organization’s name, tax id or small-business status start date',
+        summary:
+          'Update the organization’s details, small-business status start or invoice profile',
         description:
           'Changing `sbsEffectiveFrom` changes which income counts in the declarations (they are ' +
-          'computed on request).',
+          'computed on request). The invoice profile (address, email, phone, number prefix, ' +
+          'due days, note) applies to invoices issued from now on; issued ones keep theirs.',
         headers: MutationHeaders,
         params: OrgParams,
         body: UpdateOrganizationRequest,

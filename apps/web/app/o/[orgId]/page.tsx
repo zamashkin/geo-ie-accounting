@@ -26,6 +26,7 @@ export const metadata: Metadata = { title: 'Dashboard' };
 
 type Dashboard = Schemas['DashboardView'];
 type DashboardPromise = Promise<Dashboard>;
+type InvoiceTotalsPromise = Promise<Schemas['InvoiceSummaryTotals']>;
 
 // Every widget awaits the same request inside its own Suspense boundary: the page shell
 // streams at once and each widget fills in as the data arrives. The figures come from one
@@ -300,6 +301,47 @@ async function CurrencyWidget({ data }: { data: DashboardPromise }) {
   );
 }
 
+async function InvoicesWidget({ data, orgId }: { data: InvoiceTotalsPromise; orgId: string }) {
+  const totals = await data;
+  const owed = totals.byCurrency;
+  return (
+    <Widget
+      title="Outstanding invoices"
+      footer={
+        <Link
+          href={
+            orgHref(
+              orgId,
+              totals.overdueCount > 0 ? '/invoices?status=overdue' : '/invoices',
+            ) as Route
+          }
+          className={link}
+        >
+          {totals.overdueCount > 0 ? 'See the overdue invoices' : 'Open invoices'}
+        </Link>
+      }
+    >
+      {owed.length === 0 ? (
+        <p className="text-sm text-fg-muted">No unpaid invoices.</p>
+      ) : (
+        owed.map((c) => (
+          <Figure key={c.currency}>{formatMinor(c.outstandingMinor, c.currency)}</Figure>
+        ))
+      )}
+      {owed.length > 0 ? (
+        <p className="text-sm text-fg-muted">
+          {totals.outstandingCount} unpaid
+          {totals.overdueCount > 0 ? (
+            <>
+              , <span className="font-medium text-negative-fg">{totals.overdueCount} overdue</span>
+            </>
+          ) : null}
+        </p>
+      ) : null}
+    </Widget>
+  );
+}
+
 export default async function DashboardPage({ params, searchParams }: PageProps<'/o/[orgId]'>) {
   const { orgId } = await params;
   const year = parseYearParam((await searchParams).year);
@@ -309,6 +351,11 @@ export default async function DashboardPage({ params, searchParams }: PageProps<
     api.GET('/v1/orgs/{orgId}/dashboard', {
       params: { path: { orgId }, query: year ? { year } : {} },
     }),
+    orgHref(orgId),
+  );
+  // Separate request: invoices are per currency and never part of the tax figures.
+  const invoiceTotals = serverRead(
+    api.GET('/v1/orgs/{orgId}/invoices/summary', { params: { path: { orgId } } }),
     orgHref(orgId),
   );
 
@@ -356,12 +403,15 @@ export default async function DashboardPage({ params, searchParams }: PageProps<
         </Suspense>
       </section>
 
-      <div className="mt-8 grid gap-4 lg:grid-cols-2">
+      <div className="mt-8 grid gap-4 lg:grid-cols-3">
         <Suspense fallback={<WidgetSkeleton title="Income by counterparty" />}>
           <CounterpartyWidget data={data} />
         </Suspense>
         <Suspense fallback={<WidgetSkeleton title="Currency mix" />}>
           <CurrencyWidget data={data} />
+        </Suspense>
+        <Suspense fallback={<WidgetSkeleton title="Outstanding invoices" />}>
+          <InvoicesWidget data={invoiceTotals} orgId={orgId} />
         </Suspense>
       </div>
     </PageContainer>

@@ -13,5 +13,7 @@ export * from './tax/declaration';
 export * from './tax/filing';
 export * from './dedupe';
 export * from './categorisation';
+export * from './invoice';
+export * from './invoice-matching';
 export * from './format';
 export { sha256Hex, utf8Encode } from './sha256';

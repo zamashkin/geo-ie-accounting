@@ -46,6 +46,14 @@ const CONSTRAINT_DETAIL: Record<string, string> = {
   declaration_filings_org_period_version_uq:
     'This return was filed again in the meantime. Reload to see the latest filing.',
   declaration_filings_supersedes_uq: 'That filing has already been corrected. Reload first.',
+  // Invoices (packages/db/drizzle/0006_invoices.sql)
+  invoice_immutable: 'An issued invoice cannot be edited; only its status changes.',
+  invoices_org_year_seq_uq: 'That invoice number is taken. Retry.',
+  invoices_org_number_uq: 'That invoice number is taken. Retry.',
+  invoices_client_fk: 'The client does not exist.',
+  invoices_bank_account_fk: 'The bank account does not exist.',
+  invoice_payments_pkey: 'This payment is already matched to the invoice.',
+  invoice_payments_invoice_id_transaction_id_pk: 'This payment is already matched to the invoice.',
 };
 
 export function problemFromDbError(err: unknown): DbProblem | null {
