@@ -57,8 +57,8 @@ export interface paths {
         options?: never;
         head?: never;
         /**
-         * Update the organization’s name, tax id or small-business status start date
-         * @description Changing `sbsEffectiveFrom` changes which income counts in the declarations (they are computed on request).
+         * Update the organization’s details, small-business status start or invoice profile
+         * @description Changing `sbsEffectiveFrom` changes which income counts in the declarations (they are computed on request). The invoice profile (address, email, phone, number prefix, due days, note) applies to invoices issued from now on; issued ones keep theirs.
          */
         patch: operations["updateOrganization"];
         trace?: never;
@@ -626,6 +626,294 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/orgs/{orgId}/clients": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Clients by name, with what their issued invoices still owe
+         * @description Active clients; `includeArchived=true` adds archived ones.
+         */
+        get: operations["listClients"];
+        put?: never;
+        /** Create a client */
+        post: operations["createClient"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/orgs/{orgId}/clients/{clientId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * One client with what its issued invoices still owe
+         * @description Its invoices are `GET /invoices?clientId=`.
+         */
+        get: operations["getClient"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /**
+         * Edit, archive or restore a client
+         * @description Issued invoices keep the client details they were issued with. Archived clients keep their invoices but are hidden from the pickers.
+         */
+        patch: operations["updateClient"];
+        trace?: never;
+    };
+    "/v1/orgs/{orgId}/invoices": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Invoices, newest first, with what each still owes
+         * @description `status=overdue`: issued and past the due date (Tbilisi today).
+         */
+        get: operations["listInvoices"];
+        put?: never;
+        /**
+         * Create a draft invoice
+         * @description Currency defaults to the client’s; the bank account to one in that currency with an IBAN. Dates are optional until the invoice is issued. No VAT.
+         */
+        post: operations["createInvoice"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/orgs/{orgId}/invoices/summary": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** What issued invoices still owe and how much is overdue, per currency */
+        get: operations["getInvoiceSummary"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/orgs/{orgId}/invoices/{invoiceId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** One invoice with its lines, payments and printed details */
+        get: operations["getInvoice"];
+        put?: never;
+        post?: never;
+        /**
+         * Delete a draft invoice
+         * @description Issued invoices are never deleted: void them. Returns the deleted draft.
+         */
+        delete: operations["deleteInvoice"];
+        options?: never;
+        head?: never;
+        /**
+         * Edit a draft invoice
+         * @description `lines` replaces every line. Issued invoices cannot change (409).
+         */
+        patch: operations["updateInvoice"];
+        trace?: never;
+    };
+    "/v1/orgs/{orgId}/invoices/{invoiceId}/issue": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Issue a draft: assign the next number and freeze it
+         * @description The number is the next of the issue year for the organization (`2026-001`, with the org prefix), gapless: it is taken in the same transaction, so a failed issue gives it back. Issue date defaults to today (Tbilisi), due date to issue date + the org’s `invoiceDueDays`. The seller, client and bank details are frozen with it.
+         */
+        post: operations["issueInvoice"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/orgs/{orgId}/invoices/{invoiceId}/void": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Void an issued invoice; it keeps its number
+         * @description Unmatch its payments first. A draft is deleted instead.
+         */
+        post: operations["voidInvoice"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/orgs/{orgId}/invoices/{invoiceId}/duplicate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Copy an invoice into a new draft
+         * @description Same client, currency, bank account, notes and lines; no dates or number.
+         */
+        post: operations["duplicateInvoice"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/orgs/{orgId}/invoices/{invoiceId}/pdf": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * The invoice as a PDF, rendered on request
+         * @description Rendered synchronously on every request (ADR 0015); nothing is stored. A draft prints a DRAFT mark and a void invoice a VOID mark. `inline=true` opens it in the browser instead of downloading it.
+         */
+        get: operations["getInvoicePdf"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/orgs/{orgId}/invoices/{invoiceId}/payment-suggestions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Incoming imported bank lines that could pay this invoice, best first
+         * @description Only for an issued invoice. A line qualifies in the invoice currency, on or after the issue date, for the amount owed or part of it (or more, for several invoices), from a counterparty like the client name; an exact amount needs no counterparty. Lines already fully allocated or reversed are left out.
+         */
+        get: operations["listPaymentSuggestions"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/orgs/{orgId}/invoices/{invoiceId}/match-payment": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Allocate an incoming imported bank line to an issued invoice
+         * @description Default amount: the smaller of what is unallocated on the line and what the invoice still owes. The invoice becomes `paid` once its payments cover the total. Nothing is booked: the receipt is already in the ledger.
+         */
+        post: operations["matchInvoicePayment"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/orgs/{orgId}/invoices/{invoiceId}/payments/{transactionId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /**
+         * Undo a payment match
+         * @description A paid invoice goes back to `issued` when the rest no longer covers it.
+         */
+        delete: operations["unmatchInvoicePayment"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/orgs/{orgId}/transactions/{transactionId}/invoice-hints": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Invoices a transaction pays, and open invoices it could pay */
+        get: operations["getTransactionInvoiceHints"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/orgs/{orgId}/imports/{batchId}/invoice-hints": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Incoming rows of an import that look like payments of open invoices
+         * @description For each incoming row that is not a duplicate, up to three open invoices it could pay. Match them from the invoice once the statement is committed.
+         */
+        get: operations["getImportInvoiceHints"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -741,6 +1029,12 @@ export interface components {
             sbsEffectiveFrom: string | null;
             /** @enum {string} */
             accountingMethod: "cash";
+            address: string | null;
+            email: string | null;
+            phone: string | null;
+            invoicePrefix: string | null;
+            invoiceDueDays: number;
+            invoiceNote: string | null;
             /** Format: date-time */
             createdAt: string;
         };
@@ -998,8 +1292,10 @@ export interface components {
             /** Format: uuid */
             orgId: string;
             name: string;
-            country: string;
+            taxId: string | null;
+            address: string | null;
             email: string | null;
+            country: string;
             /**
              * @example GEL
              * @example USD
@@ -1007,9 +1303,12 @@ export interface components {
              * @example GBP
              */
             defaultCurrency: string;
+            notes: string | null;
             archivedAt: string | null;
             /** Format: date-time */
             createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
         };
         InvoiceLineInput: {
             /** Format: uuid */
@@ -1035,7 +1334,9 @@ export interface components {
             orgId: string;
             /** Format: uuid */
             clientId: string;
-            number: number | null;
+            number: string | null;
+            numberYear: number | null;
+            numberSeq: number | null;
             issueDate: string | null;
             dueDate: string | null;
             /**
@@ -1047,10 +1348,20 @@ export interface components {
             currency: string;
             /** @enum {string} */
             status: "draft" | "issued" | "paid" | "void";
-            pdfKey: string | null;
+            bankAccountId: string | null;
             notes: string | null;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            totalMinor: string;
+            issuedAt: string | null;
+            voidedAt: string | null;
             /** Format: date-time */
             createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
         };
         InvoicePaymentInput: {
             /** Format: uuid */
@@ -1277,6 +1588,12 @@ export interface components {
             name?: string;
             taxId?: string | null;
             sbsEffectiveFrom?: string | null;
+            address?: string | null;
+            email?: string | null;
+            phone?: string | null;
+            invoicePrefix?: string | null;
+            invoiceDueDays?: number;
+            invoiceNote?: string | null;
         };
         OrganizationWithRoleInput: {
             /** Format: uuid */
@@ -1288,6 +1605,12 @@ export interface components {
             sbsEffectiveFrom: string | null;
             /** @enum {string} */
             accountingMethod: "cash";
+            address: string | null;
+            email: string | null;
+            phone: string | null;
+            invoicePrefix: string | null;
+            invoiceDueDays: number;
+            invoiceNote: string | null;
             /** Format: date-time */
             createdAt: string;
             /** @enum {string} */
@@ -2228,6 +2551,441 @@ export interface components {
             /** Format: date */
             today: string;
         };
+        CreateClientRequestInput: {
+            name: string;
+            taxId?: string | null;
+            address?: string | null;
+            email?: (string | "") | null;
+            country: string;
+            /**
+             * @example GEL
+             * @example USD
+             * @example EUR
+             * @example GBP
+             */
+            defaultCurrency: string;
+            notes?: string | null;
+        };
+        UpdateClientRequestInput: {
+            name?: string;
+            taxId?: string | null;
+            address?: string | null;
+            email?: (string | "") | null;
+            country?: string;
+            /**
+             * @example GEL
+             * @example USD
+             * @example EUR
+             * @example GBP
+             */
+            defaultCurrency?: string;
+            notes?: string | null;
+            archived?: boolean;
+        };
+        CurrencyAmountInput: {
+            /**
+             * @example GEL
+             * @example USD
+             * @example EUR
+             * @example GBP
+             */
+            currency: string;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            amountMinor: string;
+        };
+        ClientViewInput: {
+            /** Format: uuid */
+            id: string;
+            /** Format: uuid */
+            orgId: string;
+            name: string;
+            taxId: string | null;
+            address: string | null;
+            email: string | null;
+            country: string;
+            /**
+             * @example GEL
+             * @example USD
+             * @example EUR
+             * @example GBP
+             */
+            defaultCurrency: string;
+            notes: string | null;
+            archivedAt: string | null;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+            invoiceCount: number;
+            outstanding: components["schemas"]["CurrencyAmountInput"][];
+            overdueCount: number;
+        };
+        ClientListInput: {
+            items: components["schemas"]["ClientViewInput"][];
+        };
+        InvoiceLineRequestInput: {
+            description: string;
+            quantity: string;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            unitPriceMinor: string;
+        };
+        CreateInvoiceRequestInput: {
+            /** Format: uuid */
+            clientId: string;
+            /**
+             * @example GEL
+             * @example USD
+             * @example EUR
+             * @example GBP
+             */
+            currency?: string;
+            issueDate?: string | null;
+            dueDate?: string | null;
+            bankAccountId?: string | null;
+            notes?: string | null;
+            lines?: components["schemas"]["InvoiceLineRequestInput"][];
+        };
+        UpdateInvoiceRequestInput: {
+            /** Format: uuid */
+            clientId?: string;
+            /**
+             * @example GEL
+             * @example USD
+             * @example EUR
+             * @example GBP
+             */
+            currency?: string;
+            issueDate?: string | null;
+            dueDate?: string | null;
+            bankAccountId?: string | null;
+            notes?: string | null;
+            lines?: components["schemas"]["InvoiceLineRequestInput"][];
+        };
+        IssueInvoiceRequestInput: {
+            /** Format: date */
+            issueDate?: string;
+            /** Format: date */
+            dueDate?: string;
+        };
+        VoidInvoiceRequestInput: {
+            reason?: string;
+        };
+        InvoicePartyInput: {
+            name: string;
+            taxId: string | null;
+            address: string | null;
+            email: string | null;
+            phone: string | null;
+            country: string | null;
+        };
+        InvoiceBankDetailsInput: {
+            accountName: string;
+            bank: string | null;
+            iban: string | null;
+            currency: string | null;
+        };
+        InvoiceSnapshotInput: {
+            seller: components["schemas"]["InvoicePartyInput"];
+            client: components["schemas"]["InvoicePartyInput"];
+            bank: components["schemas"]["InvoiceBankDetailsInput"] | null;
+            note: string | null;
+        };
+        InvoiceSummaryInput: {
+            /** Format: uuid */
+            id: string;
+            /** Format: uuid */
+            orgId: string;
+            /** Format: uuid */
+            clientId: string;
+            number: string | null;
+            numberYear: number | null;
+            numberSeq: number | null;
+            issueDate: string | null;
+            dueDate: string | null;
+            /**
+             * @example GEL
+             * @example USD
+             * @example EUR
+             * @example GBP
+             */
+            currency: string;
+            /** @enum {string} */
+            status: "draft" | "issued" | "paid" | "void";
+            bankAccountId: string | null;
+            notes: string | null;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            totalMinor: string;
+            issuedAt: string | null;
+            voidedAt: string | null;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+            clientName: string;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            paidMinor: string;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            outstandingMinor: string;
+            overdue: boolean;
+        };
+        InvoiceListInput: {
+            items: components["schemas"]["InvoiceSummaryInput"][];
+            nextCursor: string | null;
+        };
+        InvoiceLineViewInput: {
+            /** Format: uuid */
+            id: string;
+            /** Format: uuid */
+            invoiceId: string;
+            /** Format: uuid */
+            orgId: string;
+            position: number;
+            description: string;
+            quantity: string;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            unitPriceMinor: string;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            lineTotalMinor: string;
+        };
+        InvoicePaymentViewInput: {
+            /** Format: uuid */
+            transactionId: string;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            amountMinor: string;
+            /** Format: date */
+            occurredOn: string;
+            description: string;
+            counterparty: string | null;
+            /** Format: date-time */
+            createdAt: string;
+        };
+        InvoiceViewInput: {
+            /** Format: uuid */
+            id: string;
+            /** Format: uuid */
+            orgId: string;
+            /** Format: uuid */
+            clientId: string;
+            number: string | null;
+            numberYear: number | null;
+            numberSeq: number | null;
+            issueDate: string | null;
+            dueDate: string | null;
+            /**
+             * @example GEL
+             * @example USD
+             * @example EUR
+             * @example GBP
+             */
+            currency: string;
+            /** @enum {string} */
+            status: "draft" | "issued" | "paid" | "void";
+            bankAccountId: string | null;
+            notes: string | null;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            totalMinor: string;
+            issuedAt: string | null;
+            voidedAt: string | null;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+            clientName: string;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            paidMinor: string;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            outstandingMinor: string;
+            overdue: boolean;
+            client: components["schemas"]["ClientInput"];
+            lines: components["schemas"]["InvoiceLineViewInput"][];
+            payments: components["schemas"]["InvoicePaymentViewInput"][];
+            parties: components["schemas"]["InvoiceSnapshotInput"];
+        };
+        InvoiceCurrencyTotalsInput: {
+            /**
+             * @example GEL
+             * @example USD
+             * @example EUR
+             * @example GBP
+             */
+            currency: string;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            outstandingMinor: string;
+            outstandingCount: number;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            overdueMinor: string;
+            overdueCount: number;
+        };
+        InvoiceSummaryTotalsInput: {
+            /** Format: date */
+            today: string;
+            byCurrency: components["schemas"]["InvoiceCurrencyTotalsInput"][];
+            outstandingCount: number;
+            overdueCount: number;
+            draftCount: number;
+        };
+        /**
+         * @description `exact`: the payment equals what is owed. `partial`: less. `over`: more (one transfer for several invoices); only what is owed is allocated.
+         * @enum {string}
+         */
+        AmountMatchInput: "exact" | "partial" | "over";
+        PaymentSuggestionInput: {
+            /** Format: uuid */
+            transactionId: string;
+            /** Format: date */
+            occurredOn: string;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            amountMinor: string;
+            /**
+             * @example GEL
+             * @example USD
+             * @example EUR
+             * @example GBP
+             */
+            currency: string;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            unallocatedMinor: string;
+            counterparty: string | null;
+            description: string;
+            score: number;
+            amountMatch: components["schemas"]["AmountMatchInput"];
+            nameScore: number | null;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            allocateMinor: string;
+        };
+        PaymentSuggestionListInput: {
+            items: components["schemas"]["PaymentSuggestionInput"][];
+        };
+        MatchPaymentRequestInput: {
+            /** Format: uuid */
+            transactionId: string;
+            /** @description Positive integer amount in minor units, as a decimal string. */
+            amountMinor?: string;
+        };
+        InvoiceHintInput: {
+            /** Format: uuid */
+            invoiceId: string;
+            number: string;
+            clientName: string;
+            /**
+             * @example GEL
+             * @example USD
+             * @example EUR
+             * @example GBP
+             */
+            currency: string;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            outstandingMinor: string;
+            dueDate: string | null;
+            score: number;
+            amountMatch: components["schemas"]["AmountMatchInput"];
+            nameScore: number | null;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            allocateMinor: string;
+        };
+        TransactionInvoiceHintsInput: {
+            allocations: {
+                /** Format: uuid */
+                invoiceId: string;
+                number: string | null;
+                clientName: string;
+                /** @enum {string} */
+                status: "draft" | "issued" | "paid" | "void";
+                /**
+                 * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+                 * @example 125000
+                 * @example -69085
+                 */
+                amountMinor: string;
+                /**
+                 * @example GEL
+                 * @example USD
+                 * @example EUR
+                 * @example GBP
+                 */
+                currency: string;
+            }[];
+            suggestions: components["schemas"]["InvoiceHintInput"][];
+        };
+        ImportInvoiceHintsInput: {
+            items: {
+                /** Format: uuid */
+                rowId: string;
+                invoices: components["schemas"]["InvoiceHintInput"][];
+            }[];
+        };
         Problem: {
             /** @description URI reference identifying the problem type. */
             type: string;
@@ -2339,6 +3097,12 @@ export interface components {
             sbsEffectiveFrom: string | null;
             /** @enum {string} */
             accountingMethod: "cash";
+            address: string | null;
+            email: string | null;
+            phone: string | null;
+            invoicePrefix: string | null;
+            invoiceDueDays: number;
+            invoiceNote: string | null;
             /** Format: date-time */
             createdAt: string;
         };
@@ -2596,8 +3360,10 @@ export interface components {
             /** Format: uuid */
             orgId: string;
             name: string;
-            country: string;
+            taxId: string | null;
+            address: string | null;
             email: string | null;
+            country: string;
             /**
              * @example GEL
              * @example USD
@@ -2605,9 +3371,12 @@ export interface components {
              * @example GBP
              */
             defaultCurrency: string;
+            notes: string | null;
             archivedAt: string | null;
             /** Format: date-time */
             createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
         };
         InvoiceLine: {
             /** Format: uuid */
@@ -2633,7 +3402,9 @@ export interface components {
             orgId: string;
             /** Format: uuid */
             clientId: string;
-            number: number | null;
+            number: string | null;
+            numberYear: number | null;
+            numberSeq: number | null;
             issueDate: string | null;
             dueDate: string | null;
             /**
@@ -2645,10 +3416,20 @@ export interface components {
             currency: string;
             /** @enum {string} */
             status: "draft" | "issued" | "paid" | "void";
-            pdfKey: string | null;
+            bankAccountId: string | null;
             notes: string | null;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            totalMinor: string;
+            issuedAt: string | null;
+            voidedAt: string | null;
             /** Format: date-time */
             createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
         };
         InvoicePayment: {
             /** Format: uuid */
@@ -2875,6 +3656,12 @@ export interface components {
             name?: string;
             taxId?: string | null;
             sbsEffectiveFrom?: string | null;
+            address: unknown;
+            email?: string | null;
+            phone: unknown;
+            invoicePrefix?: string | null;
+            invoiceDueDays?: number;
+            invoiceNote: unknown;
         };
         OrganizationWithRole: {
             /** Format: uuid */
@@ -2886,6 +3673,12 @@ export interface components {
             sbsEffectiveFrom: string | null;
             /** @enum {string} */
             accountingMethod: "cash";
+            address: string | null;
+            email: string | null;
+            phone: string | null;
+            invoicePrefix: string | null;
+            invoiceDueDays: number;
+            invoiceNote: string | null;
             /** Format: date-time */
             createdAt: string;
             /** @enum {string} */
@@ -3857,6 +4650,446 @@ export interface components {
             };
             /** Format: date */
             today: string;
+        };
+        CreateClientRequest: {
+            name: string;
+            taxId: unknown;
+            address: unknown;
+            email: unknown;
+            country: string;
+            /**
+             * @example GEL
+             * @example USD
+             * @example EUR
+             * @example GBP
+             */
+            defaultCurrency: string;
+            notes: unknown;
+        };
+        UpdateClientRequest: {
+            name?: string;
+            taxId?: unknown;
+            address?: unknown;
+            email?: unknown;
+            country?: string;
+            /**
+             * @example GEL
+             * @example USD
+             * @example EUR
+             * @example GBP
+             */
+            defaultCurrency?: string;
+            notes?: unknown;
+            archived?: boolean;
+        };
+        CurrencyAmount: {
+            /**
+             * @example GEL
+             * @example USD
+             * @example EUR
+             * @example GBP
+             */
+            currency: string;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            amountMinor: string;
+        };
+        ClientView: {
+            /** Format: uuid */
+            id: string;
+            /** Format: uuid */
+            orgId: string;
+            name: string;
+            taxId: string | null;
+            address: string | null;
+            email: string | null;
+            country: string;
+            /**
+             * @example GEL
+             * @example USD
+             * @example EUR
+             * @example GBP
+             */
+            defaultCurrency: string;
+            notes: string | null;
+            archivedAt: string | null;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+            invoiceCount: number;
+            outstanding: components["schemas"]["CurrencyAmount"][];
+            overdueCount: number;
+        };
+        ClientList: {
+            items: components["schemas"]["ClientView"][];
+        };
+        InvoiceLineRequest: {
+            description: string;
+            quantity: string;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            unitPriceMinor: string;
+        };
+        CreateInvoiceRequest: {
+            /** Format: uuid */
+            clientId: string;
+            /**
+             * @example GEL
+             * @example USD
+             * @example EUR
+             * @example GBP
+             */
+            currency?: string;
+            issueDate?: string | null;
+            dueDate?: string | null;
+            bankAccountId?: string | null;
+            notes: unknown;
+            /** @default [] */
+            lines: components["schemas"]["InvoiceLineRequest"][];
+        };
+        UpdateInvoiceRequest: {
+            /** Format: uuid */
+            clientId?: string;
+            /**
+             * @example GEL
+             * @example USD
+             * @example EUR
+             * @example GBP
+             */
+            currency?: string;
+            issueDate?: string | null;
+            dueDate?: string | null;
+            bankAccountId?: string | null;
+            notes?: unknown;
+            lines?: components["schemas"]["InvoiceLineRequest"][];
+        };
+        IssueInvoiceRequest: {
+            /** Format: date */
+            issueDate?: string;
+            /** Format: date */
+            dueDate?: string;
+        };
+        VoidInvoiceRequest: {
+            reason?: string;
+        };
+        InvoiceParty: {
+            name: string;
+            taxId: string | null;
+            address: string | null;
+            email: string | null;
+            phone: string | null;
+            country: string | null;
+        };
+        InvoiceBankDetails: {
+            accountName: string;
+            bank: string | null;
+            iban: string | null;
+            currency: string | null;
+        };
+        InvoiceSnapshot: {
+            seller: components["schemas"]["InvoiceParty"];
+            client: components["schemas"]["InvoiceParty"];
+            bank: components["schemas"]["InvoiceBankDetails"] | null;
+            note: string | null;
+        };
+        InvoiceSummary: {
+            /** Format: uuid */
+            id: string;
+            /** Format: uuid */
+            orgId: string;
+            /** Format: uuid */
+            clientId: string;
+            number: string | null;
+            numberYear: number | null;
+            numberSeq: number | null;
+            issueDate: string | null;
+            dueDate: string | null;
+            /**
+             * @example GEL
+             * @example USD
+             * @example EUR
+             * @example GBP
+             */
+            currency: string;
+            /** @enum {string} */
+            status: "draft" | "issued" | "paid" | "void";
+            bankAccountId: string | null;
+            notes: string | null;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            totalMinor: string;
+            issuedAt: string | null;
+            voidedAt: string | null;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+            clientName: string;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            paidMinor: string;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            outstandingMinor: string;
+            overdue: boolean;
+        };
+        InvoiceList: {
+            items: components["schemas"]["InvoiceSummary"][];
+            nextCursor: string | null;
+        };
+        InvoiceLineView: {
+            /** Format: uuid */
+            id: string;
+            /** Format: uuid */
+            invoiceId: string;
+            /** Format: uuid */
+            orgId: string;
+            position: number;
+            description: string;
+            quantity: string;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            unitPriceMinor: string;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            lineTotalMinor: string;
+        };
+        InvoicePaymentView: {
+            /** Format: uuid */
+            transactionId: string;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            amountMinor: string;
+            /** Format: date */
+            occurredOn: string;
+            description: string;
+            counterparty: string | null;
+            /** Format: date-time */
+            createdAt: string;
+        };
+        InvoiceView: {
+            /** Format: uuid */
+            id: string;
+            /** Format: uuid */
+            orgId: string;
+            /** Format: uuid */
+            clientId: string;
+            number: string | null;
+            numberYear: number | null;
+            numberSeq: number | null;
+            issueDate: string | null;
+            dueDate: string | null;
+            /**
+             * @example GEL
+             * @example USD
+             * @example EUR
+             * @example GBP
+             */
+            currency: string;
+            /** @enum {string} */
+            status: "draft" | "issued" | "paid" | "void";
+            bankAccountId: string | null;
+            notes: string | null;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            totalMinor: string;
+            issuedAt: string | null;
+            voidedAt: string | null;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+            clientName: string;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            paidMinor: string;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            outstandingMinor: string;
+            overdue: boolean;
+            client: components["schemas"]["Client"];
+            lines: components["schemas"]["InvoiceLineView"][];
+            payments: components["schemas"]["InvoicePaymentView"][];
+            parties: components["schemas"]["InvoiceSnapshot"];
+        };
+        InvoiceCurrencyTotals: {
+            /**
+             * @example GEL
+             * @example USD
+             * @example EUR
+             * @example GBP
+             */
+            currency: string;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            outstandingMinor: string;
+            outstandingCount: number;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            overdueMinor: string;
+            overdueCount: number;
+        };
+        InvoiceSummaryTotals: {
+            /** Format: date */
+            today: string;
+            byCurrency: components["schemas"]["InvoiceCurrencyTotals"][];
+            outstandingCount: number;
+            overdueCount: number;
+            draftCount: number;
+        };
+        /**
+         * @description `exact`: the payment equals what is owed. `partial`: less. `over`: more (one transfer for several invoices); only what is owed is allocated.
+         * @enum {string}
+         */
+        AmountMatch: "exact" | "partial" | "over";
+        PaymentSuggestion: {
+            /** Format: uuid */
+            transactionId: string;
+            /** Format: date */
+            occurredOn: string;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            amountMinor: string;
+            /**
+             * @example GEL
+             * @example USD
+             * @example EUR
+             * @example GBP
+             */
+            currency: string;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            unallocatedMinor: string;
+            counterparty: string | null;
+            description: string;
+            score: number;
+            amountMatch: components["schemas"]["AmountMatch"];
+            nameScore: number | null;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            allocateMinor: string;
+        };
+        PaymentSuggestionList: {
+            items: components["schemas"]["PaymentSuggestion"][];
+        };
+        MatchPaymentRequest: {
+            /** Format: uuid */
+            transactionId: string;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            amountMinor?: string;
+        };
+        InvoiceHint: {
+            /** Format: uuid */
+            invoiceId: string;
+            number: string;
+            clientName: string;
+            /**
+             * @example GEL
+             * @example USD
+             * @example EUR
+             * @example GBP
+             */
+            currency: string;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            outstandingMinor: string;
+            dueDate: string | null;
+            score: number;
+            amountMatch: components["schemas"]["AmountMatch"];
+            nameScore: number | null;
+            /**
+             * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+             * @example 125000
+             * @example -69085
+             */
+            allocateMinor: string;
+        };
+        TransactionInvoiceHints: {
+            allocations: {
+                /** Format: uuid */
+                invoiceId: string;
+                number: string | null;
+                clientName: string;
+                /** @enum {string} */
+                status: "draft" | "issued" | "paid" | "void";
+                /**
+                 * @description Integer amount in minor units (e.g. tetri, cents), as a decimal string.
+                 * @example 125000
+                 * @example -69085
+                 */
+                amountMinor: string;
+                /**
+                 * @example GEL
+                 * @example USD
+                 * @example EUR
+                 * @example GBP
+                 */
+                currency: string;
+            }[];
+            suggestions: components["schemas"]["InvoiceHint"][];
+        };
+        ImportInvoiceHints: {
+            items: {
+                /** Format: uuid */
+                rowId: string;
+                invoices: components["schemas"]["InvoiceHint"][];
+            }[];
         };
     };
     responses: never;
@@ -5301,6 +6534,677 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["DashboardView"];
+                };
+            };
+            /** @description Error (RFC 9457 problem details) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    listClients: {
+        parameters: {
+            query?: {
+                includeArchived?: "true" | "false";
+            };
+            header?: never;
+            path: {
+                orgId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Default Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ClientList"];
+                };
+            };
+            /** @description Error (RFC 9457 problem details) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    createClient: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description Client-chosen key; replays return the stored response for 24 h. */
+                "idempotency-key"?: string;
+            };
+            path: {
+                orgId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateClientRequestInput"];
+            };
+        };
+        responses: {
+            /** @description Default Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ClientView"];
+                };
+            };
+            /** @description Error (RFC 9457 problem details) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    getClient: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                orgId: string;
+                clientId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Default Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ClientView"];
+                };
+            };
+            /** @description Error (RFC 9457 problem details) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    updateClient: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description Client-chosen key; replays return the stored response for 24 h. */
+                "idempotency-key"?: string;
+            };
+            path: {
+                orgId: string;
+                clientId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateClientRequestInput"];
+            };
+        };
+        responses: {
+            /** @description Default Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ClientView"];
+                };
+            };
+            /** @description Error (RFC 9457 problem details) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    listInvoices: {
+        parameters: {
+            query?: {
+                cursor?: string;
+                limit?: number;
+                status?: "draft" | "issued" | "overdue" | "paid" | "void";
+                clientId?: string;
+            };
+            header?: never;
+            path: {
+                orgId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Default Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InvoiceList"];
+                };
+            };
+            /** @description Error (RFC 9457 problem details) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    createInvoice: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description Client-chosen key; replays return the stored response for 24 h. */
+                "idempotency-key"?: string;
+            };
+            path: {
+                orgId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateInvoiceRequestInput"];
+            };
+        };
+        responses: {
+            /** @description Default Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InvoiceView"];
+                };
+            };
+            /** @description Error (RFC 9457 problem details) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    getInvoiceSummary: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                orgId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Default Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InvoiceSummaryTotals"];
+                };
+            };
+            /** @description Error (RFC 9457 problem details) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    getInvoice: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                orgId: string;
+                invoiceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Default Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InvoiceView"];
+                };
+            };
+            /** @description Error (RFC 9457 problem details) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    deleteInvoice: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description Client-chosen key; replays return the stored response for 24 h. */
+                "idempotency-key"?: string;
+            };
+            path: {
+                orgId: string;
+                invoiceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Default Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InvoiceSummary"];
+                };
+            };
+            /** @description Error (RFC 9457 problem details) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    updateInvoice: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description Client-chosen key; replays return the stored response for 24 h. */
+                "idempotency-key"?: string;
+            };
+            path: {
+                orgId: string;
+                invoiceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateInvoiceRequestInput"];
+            };
+        };
+        responses: {
+            /** @description Default Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InvoiceView"];
+                };
+            };
+            /** @description Error (RFC 9457 problem details) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    issueInvoice: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description Client-chosen key; replays return the stored response for 24 h. */
+                "idempotency-key"?: string;
+            };
+            path: {
+                orgId: string;
+                invoiceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["IssueInvoiceRequestInput"];
+            };
+        };
+        responses: {
+            /** @description Default Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InvoiceView"];
+                };
+            };
+            /** @description Error (RFC 9457 problem details) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    voidInvoice: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description Client-chosen key; replays return the stored response for 24 h. */
+                "idempotency-key"?: string;
+            };
+            path: {
+                orgId: string;
+                invoiceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["VoidInvoiceRequestInput"];
+            };
+        };
+        responses: {
+            /** @description Default Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InvoiceView"];
+                };
+            };
+            /** @description Error (RFC 9457 problem details) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    duplicateInvoice: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description Client-chosen key; replays return the stored response for 24 h. */
+                "idempotency-key"?: string;
+            };
+            path: {
+                orgId: string;
+                invoiceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Default Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InvoiceView"];
+                };
+            };
+            /** @description Error (RFC 9457 problem details) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    getInvoicePdf: {
+        parameters: {
+            query?: {
+                inline?: "true" | "false";
+            };
+            header?: never;
+            path: {
+                orgId: string;
+                invoiceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The invoice PDF */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/pdf": string;
+                };
+            };
+            /** @description Error (RFC 9457 problem details) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    listPaymentSuggestions: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                orgId: string;
+                invoiceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Default Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PaymentSuggestionList"];
+                };
+            };
+            /** @description Error (RFC 9457 problem details) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    matchInvoicePayment: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description Client-chosen key; replays return the stored response for 24 h. */
+                "idempotency-key"?: string;
+            };
+            path: {
+                orgId: string;
+                invoiceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["MatchPaymentRequestInput"];
+            };
+        };
+        responses: {
+            /** @description Default Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InvoiceView"];
+                };
+            };
+            /** @description Error (RFC 9457 problem details) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    unmatchInvoicePayment: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description Client-chosen key; replays return the stored response for 24 h. */
+                "idempotency-key"?: string;
+            };
+            path: {
+                orgId: string;
+                invoiceId: string;
+                transactionId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Default Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InvoiceView"];
+                };
+            };
+            /** @description Error (RFC 9457 problem details) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    getTransactionInvoiceHints: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                orgId: string;
+                transactionId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Default Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TransactionInvoiceHints"];
+                };
+            };
+            /** @description Error (RFC 9457 problem details) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    getImportInvoiceHints: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                orgId: string;
+                batchId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Default Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ImportInvoiceHints"];
                 };
             };
             /** @description Error (RFC 9457 problem details) */

@@ -54,6 +54,16 @@ export const CreateOrganizationRequest = z
   .meta({ id: 'CreateOrganizationRequest' });
 export type CreateOrganizationRequest = z.output<typeof CreateOrganizationRequest>;
 
+/** Free text that may be cleared: `null` or an empty string clears it. */
+export const OptionalText = (max: number) =>
+  z
+    .string()
+    .trim()
+    .max(max)
+    .nullable()
+    .optional()
+    .transform((v) => (v === '' ? null : v));
+
 /** `PATCH /v1/orgs/:orgId` (owner). Only the fields sent change; `null` clears a field. */
 export const UpdateOrganizationRequest = z
   .object({
@@ -61,6 +71,19 @@ export const UpdateOrganizationRequest = z
     taxId: z.string().trim().min(1).max(50).nullable().optional(),
     /** Small-business status start (may be mid-month). null: no status. */
     sbsEffectiveFrom: IsoDate.nullable().optional(),
+    // Invoice profile: printed on every invoice as the seller's details.
+    address: OptionalText(500),
+    email: z.email().max(254).nullable().optional(),
+    phone: OptionalText(50),
+    /** Letters, digits and `- / . _`, at most 16. Applies to invoices issued from now on. */
+    invoicePrefix: z
+      .string()
+      .trim()
+      .regex(/^[A-Za-z0-9./_-]{1,16}$/, 'Use up to 16 letters, digits or - / . _')
+      .nullable()
+      .optional(),
+    invoiceDueDays: z.int().min(0).max(365).optional(),
+    invoiceNote: OptionalText(1000),
   })
   .refine((b) => Object.values(b).some((v) => v !== undefined), {
     message: 'Send at least one field',

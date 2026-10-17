@@ -17,3 +17,4 @@ export * from './accounts';
 export * from './manual-transactions';
 export * from './rules';
 export * from './declarations';
+export * from './invoices';

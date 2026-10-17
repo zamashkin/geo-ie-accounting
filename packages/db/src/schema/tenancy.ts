@@ -1,5 +1,5 @@
 import { sql } from 'drizzle-orm';
-import { check, date, index, pgTable, primaryKey, text, uuid } from 'drizzle-orm/pg-core';
+import { check, date, index, integer, pgTable, primaryKey, text, uuid } from 'drizzle-orm/pg-core';
 import { createdAt, currency, id, timestamptz } from './_columns';
 import { users } from './auth';
 import { accountingMethodEnum, roleEnum } from './enums';
@@ -14,9 +14,21 @@ export const organizations = pgTable(
     /** Small-business status start; may be mid-month (SPEC §2.1). */
     sbsEffectiveFrom: date('sbs_effective_from', { mode: 'string' }),
     accountingMethod: accountingMethodEnum('accounting_method').notNull().default('cash'),
+    // Invoice profile (WS-09): the seller's details printed on invoices.
+    address: text('address'),
+    email: text('email'),
+    phone: text('phone'),
+    /** Prepended to invoice numbers (`INV-` → `INV-2026-001`). */
+    invoicePrefix: text('invoice_prefix'),
+    /** Issue → due date when an invoice is issued without one. */
+    invoiceDueDays: integer('invoice_due_days').notNull().default(14),
+    invoiceNote: text('invoice_note'),
     createdAt: createdAt(),
   },
-  (t) => [check('organizations_base_currency_gel', sql`${t.baseCurrency} = 'GEL'`)],
+  (t) => [
+    check('organizations_base_currency_gel', sql`${t.baseCurrency} = 'GEL'`),
+    check('organizations_invoice_due_days_range', sql`${t.invoiceDueDays} between 0 and 365`),
+  ],
 );
 
 export const memberships = pgTable(

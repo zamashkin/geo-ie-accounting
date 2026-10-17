@@ -1,4 +1,7 @@
 {
   "extends": "@ie-ledger/config/tsconfig/node.json",
+  "compilerOptions": {
+    "jsx": "react-jsx"
+  },
   "include": ["src", "scripts", "*.ts"]
 }

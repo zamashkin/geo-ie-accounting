@@ -26,3 +26,5 @@ export * from './repositories/transactions';
 export * from './repositories/reports';
 export * from './repositories/rules';
 export * from './repositories/declarations';
+export * from './repositories/clients';
+export * from './repositories/invoices';

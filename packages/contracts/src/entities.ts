@@ -55,6 +55,16 @@ export const Organization = z
     /** Small-business status start; may be mid-month (SPEC §2.1). */
     sbsEffectiveFrom: IsoDate.nullable(),
     accountingMethod: AccountingMethod,
+    /** Postal address printed on invoices; may span lines. */
+    address: z.string().nullable(),
+    email: z.string().nullable(),
+    phone: z.string().nullable(),
+    /** Prepended to invoice numbers: `INV-` gives `INV-2026-001`. null: `2026-001`. */
+    invoicePrefix: z.string().nullable(),
+    /** Days from issue to due date when an invoice is issued without one. */
+    invoiceDueDays: z.int().min(0).max(365),
+    /** Printed at the foot of every invoice (payment terms, a VAT remark). */
+    invoiceNote: z.string().nullable(),
     createdAt: Timestamp,
   })
   .meta({ id: 'Organization' });
@@ -285,12 +295,17 @@ export const Client = z
     id: Uuid,
     orgId: Uuid,
     name: z.string().min(1).max(200),
+    taxId: z.string().nullable(),
+    /** Postal address; may span lines. */
+    address: z.string().nullable(),
+    email: z.email().nullable(),
     /** ISO 3166-1 alpha-2. */
     country: z.string().regex(/^[A-Z]{2}$/),
-    email: z.email().nullable(),
     defaultCurrency: CurrencyCode,
+    notes: z.string().nullable(),
     archivedAt: Timestamp.nullable(),
     createdAt: Timestamp,
+    updatedAt: Timestamp,
   })
   .meta({ id: 'Client' });
 export type Client = z.output<typeof Client>;
@@ -313,19 +328,32 @@ export const Invoice = z
     id: Uuid,
     orgId: Uuid,
     clientId: Uuid,
-    /** Assigned on issue; gapless per org. null while draft. */
-    number: z.int().positive().nullable(),
+    /**
+     * Assigned on issue, gapless per org and year (`2026-001`, with the org prefix if set).
+     * null while draft; a void invoice keeps its number.
+     */
+    number: z.string().nullable(),
+    /** Year and sequence behind `number`. */
+    numberYear: z.int().nullable(),
+    numberSeq: z.int().positive().nullable(),
     issueDate: IsoDate.nullable(),
     dueDate: IsoDate.nullable(),
     currency: CurrencyCode,
     status: InvoiceStatus,
-    pdfKey: z.string().nullable(),
+    /** The bank account whose IBAN is printed for payment. */
+    bankAccountId: Uuid.nullable(),
     notes: z.string().nullable(),
+    /** Σ line totals (domain computeInvoiceTotals), minor units of `currency`. */
+    totalMinor: MinorUnits,
+    issuedAt: Timestamp.nullable(),
+    voidedAt: Timestamp.nullable(),
     createdAt: Timestamp,
+    updatedAt: Timestamp,
   })
   .meta({ id: 'Invoice' });
 export type Invoice = z.output<typeof Invoice>;
 
+/** A share of an incoming bank transaction allocated to an invoice. */
 export const InvoicePayment = z
   .object({
     invoiceId: Uuid,

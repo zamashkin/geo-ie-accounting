@@ -17,7 +17,7 @@ Read `SPEC.md` first. Decisions with alternatives considered live in `docs/adr/`
 | Auth | Better Auth in the API (email+password, magic link), httpOnly session cookie | — |
 | Object storage | S3-compatible (RustFS locally), server-side encryption | 0006 |
 | Validation / contracts | Zod schemas in `packages/contracts`, shared by api, web, worker | — |
-| PDF | `@react-pdf/renderer` in worker | — |
+| PDF | `@react-pdf/renderer` in the API, rendered on request | 0015 |
 | Testing | Vitest (unit + integration with Testcontainers Postgres), Playwright (e2e), Storybook (UI) | — |
 | Observability | OpenTelemetry (traces), pino (logs), Sentry (errors, web + api + worker) | — |
 | CI | GitHub Actions | — |
@@ -138,11 +138,16 @@ categorization_rules(id, org_id, priority, field enum[counterparty|description],
                      op enum[contains|equals|regex], value, target_account_id, is_active)
 column_mappings(id, org_id, account_id, mapping jsonb)
 
-clients(id, org_id, name, country, email, default_currency)
-invoices(id, org_id, client_id, number int, issue_date, due_date, currency,
-         status enum[draft|issued|paid|void], pdf_key null, unique(org_id, number))
-invoice_lines(id, invoice_id, description, quantity numeric, unit_price_minor bigint)
-invoice_payments(invoice_id, transaction_id, amount_minor)
+clients(id, org_id, name, tax_id null, address null, country, email null, default_currency,
+        notes null, archived_at null)
+invoices(id, org_id, client_id, number text null, number_year null, number_seq null,
+         issue_date null, due_date null, currency, status enum[draft|issued|paid|void],
+         bank_account_id null, total_minor bigint, snapshot jsonb null, issued_at, voided_at,
+         unique(org_id, number_year, number_seq))
+  -- number assigned at issue from invoice_sequences(org_id, year, last_seq), gapless;
+  -- issued invoices are immutable apart from status (trigger, ADR 0015)
+invoice_lines(id, invoice_id, description, quantity numeric(12,3), unit_price_minor bigint)
+invoice_payments(invoice_id, transaction_id, amount_minor)  -- no ledger postings
 
 declaration_filings(id, org_id, period char(7) 'YYYY-MM', version int, supersedes_id null,
              rules_version, income_gel_minor, ytd_gel_minor, rate_bp int,  -- 100 = 1%, 300 = 3%
@@ -226,7 +231,7 @@ GET    /v1/orgs/:orgId/audit-log
 | `import.parse` | api | See §6. |
 | `import.commit` | api | See §6. |
 | ~~`declaration.recompute`~~ | — | Not needed: figures and drift are computed on read (ADR 0013). |
-| `invoice.render_pdf` | api | Upload to S3, emit `invoice.pdf_ready`. |
+| ~~`invoice.render_pdf`~~ | — | Not needed yet: the API renders the PDF on request (ADR 0015). |
 
 All job payloads are Zod schemas in `contracts/jobs.ts`. Retries with exponential backoff; after max retries, dead-letter queue + Sentry event.
 

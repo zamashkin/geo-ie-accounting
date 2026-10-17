@@ -38,7 +38,7 @@ describe('schema', () => {
     const tables = Object.values(schema)
       .filter((v): v is typeof schema.accounts => typeof v === 'object' && 'getSQL' in v)
       .map((t) => getTableConfig(t));
-    expect(tables.length).toBe(23);
+    expect(tables.length).toBe(24);
     for (const t of tables.filter((t) => !global.has(t.name))) {
       expect(
         t.columns.some((c) => c.name === 'org_id'),
