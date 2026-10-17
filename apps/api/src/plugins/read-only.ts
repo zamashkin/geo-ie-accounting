@@ -35,14 +35,15 @@ const UNSAFE_METHODS = new Set(['POST', 'PUT', 'PATCH', 'DELETE']);
 /** Better Auth endpoints a read-only login may POST to. */
 const READ_ONLY_AUTH_PATHS = new Set(['/sign-in/email', '/sign-out']);
 
-const readOnly = (user: AuthUser) => (user as AuthUser & { readOnly?: boolean }).readOnly === true;
+const readOnly = (user: AuthUser) => user.readOnly === true;
 
 /** Called by the auth guards with the signed-in user, before the route runs. */
 export function assertMayAct(req: FastifyRequest, user: AuthUser) {
   if (!readOnly(user)) return;
   if (!req.server.demo.enabled) throw new HttpProblem(401, 'unauthenticated', DEMO_OFF_DETAIL);
-  if (UNSAFE_METHODS.has(req.method))
+  if (UNSAFE_METHODS.has(req.method)) {
     throw new HttpProblem(403, 'demo_read_only', READ_ONLY_DETAIL);
+  }
 }
 
 function emailOf(body: unknown): string | null {
@@ -50,8 +51,7 @@ function emailOf(body: unknown): string | null {
   try {
     const parsed = JSON.parse(body) as unknown;
     if (parsed && typeof parsed === 'object' && 'email' in parsed) {
-      const email = (parsed as { email: unknown }).email;
-      return typeof email === 'string' ? email : null;
+      return typeof parsed.email === 'string' ? parsed.email : null;
     }
   } catch {
     // Not JSON: Better Auth answers it itself.

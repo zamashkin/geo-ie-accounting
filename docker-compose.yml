@@ -1,5 +1,6 @@
 # Local development services. `docker compose up -d` then `pnpm db:migrate && pnpm db:seed`.
-# Credentials here are for local use only.
+# Credentials here are for local use only. Host ports can be moved with POSTGRES_PORT, S3_PORT,
+# S3_CONSOLE_PORT, MAILPIT_SMTP_PORT and MAILPIT_UI_PORT (e.g. a second stack under `-p`).
 name: geo-ie-accounting
 
 services:
@@ -10,7 +11,7 @@ services:
       POSTGRES_PASSWORD: geo_ie_accounting
       POSTGRES_DB: geo_ie_accounting
     ports:
-      - '5432:5432'
+      - '${POSTGRES_PORT:-5432}:5432'
     volumes:
       - pgdata:/var/lib/postgresql/data
     healthcheck:
@@ -28,8 +29,8 @@ services:
       RUSTFS_ACCESS_KEY: geo_ie_accounting
       RUSTFS_SECRET_KEY: geo_ie_accounting_secret
     ports:
-      - '9000:9000' # S3 API
-      - '9001:9001' # web console
+      - '${S3_PORT:-9000}:9000' # S3 API
+      - '${S3_CONSOLE_PORT:-9001}:9001' # web console
     volumes:
       - s3data:/data
     healthcheck:
@@ -63,8 +64,8 @@ services:
   mailpit:
     image: axllent/mailpit:v1.31.6
     ports:
-      - '1025:1025' # SMTP
-      - '8025:8025' # web UI
+      - '${MAILPIT_SMTP_PORT:-1025}:1025' # SMTP
+      - '${MAILPIT_UI_PORT:-8025}:8025' # web UI
     healthcheck:
       test: ['CMD', '/mailpit', 'readyz']
       interval: 2s

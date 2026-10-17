@@ -26,6 +26,7 @@ import {
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { type ReactNode, useMemo } from 'react';
+import { Notice } from '@/components/Notice';
 import { errorMessage } from '@/lib/api/api-error';
 import { NEW_ORG_PATH, ORG_NAV, ORG_SETTINGS_NAV, type OrgNavKey, orgHref } from '@/lib/nav';
 import { useThemePreference } from '@/lib/theme';
@@ -126,7 +127,7 @@ export function OrgShell({
           orgs={session.memberships.map((m) => ({ id: m.orgId, name: m.orgName, role: m.role }))}
           currentOrgId={orgId}
           getOrgHref={(id) => orgHref(id)}
-          createHref={NEW_ORG_PATH}
+          {...(session.user.readOnly ? {} : { createHref: NEW_ORG_PATH })}
         />
       }
       nav={<SidebarNav sections={sections} currentPath={pathname} />}
@@ -148,6 +149,12 @@ export function OrgShell({
         />
       }
     >
+      {session.user.readOnly ? (
+        <Notice tone="info" className="rounded-none border-x-0 border-t-0 px-4 py-2 sm:px-6">
+          <strong className="font-medium">Read-only demo: changes are disabled.</strong> The data is
+          made up.
+        </Notice>
+      ) : null}
       {children}
     </AppShell>
   );
