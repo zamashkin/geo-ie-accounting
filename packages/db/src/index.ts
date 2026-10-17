@@ -8,11 +8,11 @@ export {
 } from './chart-of-accounts';
 export { DbEnv, loadDbEnv } from './env';
 export {
-  DEMO,
-  DEMO_RATE_FIXTURES,
+  DEV,
+  DEV_RATE_FIXTURES,
   readRateFixture,
-  seedDemo,
-  seedDemoRates,
+  seedDev,
+  seedDevRates,
   type SeedResult,
 } from './seed';
 export * from './repositories/rates';
@@ -28,3 +28,4 @@ export * from './repositories/rules';
 export * from './repositories/declarations';
 export * from './repositories/clients';
 export * from './repositories/invoices';
+export * from './repositories/demo';

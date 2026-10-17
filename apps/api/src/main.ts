@@ -35,7 +35,9 @@ const app = await buildApp(
       secureCookies: env.API_PUBLIC_URL.startsWith('https://'),
       cookieDomain: env.AUTH_COOKIE_DOMAIN,
       rateLimit: env.NODE_ENV !== 'test',
+      signUpEnabled: env.DEMO_SIGNUP,
     },
+    demo: { enabled: env.DEMO_MODE },
   },
   {
     db,

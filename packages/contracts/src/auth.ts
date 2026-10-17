@@ -41,3 +41,22 @@ export const MagicLinkBody = z
   })
   .meta({ id: 'MagicLinkBody' });
 export type MagicLinkBody = z.output<typeof MagicLinkBody>;
+
+// ── Public settings ─────────────────────────────────────────────────────────────────────
+
+/** The read-only demo login, shown on the sign-in page when the demo is on. */
+export const DemoLogin = z
+  .object({ email: z.email(), password: z.string() })
+  .meta({ id: 'DemoLogin' });
+export type DemoLogin = z.output<typeof DemoLogin>;
+
+/** `GET /v1/public-config`: what the sign-in and sign-up pages need before anyone signs in. */
+export const PublicConfig = z
+  .object({
+    /** Null unless the API runs with `DEMO_MODE=true`. */
+    demo: DemoLogin.nullable(),
+    /** False when the API runs with `DEMO_SIGNUP=false`. */
+    signUpEnabled: z.boolean(),
+  })
+  .meta({ id: 'PublicConfig' });
+export type PublicConfig = z.output<typeof PublicConfig>;

@@ -8,6 +8,7 @@ import type { InjectOptions, LightMyRequestResponse } from 'fastify';
 import { uuidv7 } from 'uuidv7';
 import { buildApp, type App } from '../app';
 import type { Mailer, MailMessage } from '../auth/mailer';
+import type { DemoSettings } from '../plugins/read-only';
 
 export const WEB_ORIGIN = 'http://localhost:3000';
 export const API_URL = 'http://localhost:4000';
@@ -41,6 +42,10 @@ export interface ApiTestEnvOptions {
   now?: () => Date;
   /** Replaces the fixture-backed NBG client, e.g. with one that always fails. */
   rates?: RateSource;
+  /** `DEMO_MODE` (off by default). */
+  demo?: DemoSettings;
+  /** `DEMO_SIGNUP` (on by default). */
+  signUpEnabled?: boolean;
 }
 
 export async function startApiTestEnv(opts: ApiTestEnvOptions = {}): Promise<ApiTestEnv> {
@@ -53,7 +58,8 @@ export async function startApiTestEnv(opts: ApiTestEnvOptions = {}): Promise<Api
       version: 'test',
       webOrigin: WEB_ORIGIN,
       logger: false,
-      auth: { baseUrl: API_URL, rateLimit: false },
+      auth: { baseUrl: API_URL, rateLimit: false, signUpEnabled: opts.signUpEnabled ?? true },
+      ...(opts.demo ? { demo: opts.demo } : {}),
     },
     {
       checkDatabase: () => Promise.resolve(true),

@@ -7,15 +7,19 @@ import type { Db } from './client';
 import { upsertRates, type NewExchangeRate, type UpsertRatesResult } from './repositories/rates';
 import { authAccounts, memberships, organizations, users } from './schema/index';
 
-/** Fixed ids so the seed is idempotent and tests/docs can refer to the demo org. */
-export const DEMO = {
-  userId: '01900000-0000-7000-8000-000000000001',
-  userEmail: 'demo@geo-ie-accounting.local',
-  userName: 'Demo Entrepreneur',
+/**
+ * The local development login (`pnpm db:seed`): owner of an empty workspace. Fixed ids so the
+ * seed is idempotent and tests can refer to it. The public, read-only demo is a different login
+ * (`pnpm db:seed:demo`, apps/api/src/demo).
+ */
+export const DEV = {
+  userId: '01900000-0000-7000-8000-000000000011',
+  userEmail: 'dev@geo-ie-accounting.local',
+  userName: 'Dev Entrepreneur',
   /** Local development only: sign in with this email and password. */
-  password: 'demo-password-2026',
-  orgId: '01900000-0000-7000-8000-000000000002',
-  orgName: 'Demo IE',
+  password: 'dev-password-2026',
+  orgId: '01900000-0000-7000-8000-000000000012',
+  orgName: 'Dev IE',
   sbsEffectiveFrom: '2025-01-01',
 } as const;
 
@@ -34,17 +38,17 @@ export interface SeedResult {
  * The login is a Better Auth `credential` account: accountId = user id and a scrypt hash made by
  * the same `@better-auth/utils` version Better Auth verifies with.
  */
-export async function seedDemo(db: Db): Promise<SeedResult> {
-  const passwordHash = await hashPassword(DEMO.password);
+export async function seedDev(db: Db): Promise<SeedResult> {
+  const passwordHash = await hashPassword(DEV.password);
   return db.transaction(async (tx) => {
     await tx
       .insert(users)
-      .values({ id: DEMO.userId, email: DEMO.userEmail, name: DEMO.userName, emailVerified: true })
+      .values({ id: DEV.userId, email: DEV.userEmail, name: DEV.userName, emailVerified: true })
       .onConflictDoNothing({ target: users.email });
     const [user] = await tx
       .select({ id: users.id })
       .from(users)
-      .where(eq(users.email, DEMO.userEmail));
+      .where(eq(users.email, DEV.userEmail));
     if (!user) throw new Error('Seed user missing after insert');
 
     const [credential] = await tx
@@ -62,18 +66,18 @@ export async function seedDemo(db: Db): Promise<SeedResult> {
 
     const inserted = await tx
       .insert(organizations)
-      .values({ id: DEMO.orgId, name: DEMO.orgName, sbsEffectiveFrom: DEMO.sbsEffectiveFrom })
+      .values({ id: DEV.orgId, name: DEV.orgName, sbsEffectiveFrom: DEV.sbsEffectiveFrom })
       .onConflictDoNothing({ target: organizations.id })
       .returning({ id: organizations.id });
 
     let accountCount = 0;
     if (inserted.length > 0) {
-      await tx.insert(memberships).values({ orgId: DEMO.orgId, userId: user.id, role: 'owner' });
-      accountCount = (await seedChartOfAccounts(tx, DEMO.orgId)).length;
+      await tx.insert(memberships).values({ orgId: DEV.orgId, userId: user.id, role: 'owner' });
+      accountCount = (await seedChartOfAccounts(tx, DEV.orgId)).length;
     }
     return {
       userId: user.id,
-      orgId: DEMO.orgId,
+      orgId: DEV.orgId,
       createdOrg: inserted.length > 0,
       createdLogin: !credential,
       accounts: accountCount,
@@ -85,10 +89,10 @@ export async function seedDemo(db: Db): Promise<SeedResult> {
 
 /**
  * Recorded NBG responses (fixtures/nbg/) for the dates the BoG statement fixture books on, so
- * the demo import works without network: 04.06 and 11.06 (incoming payments) and 05.06 (the
+ * the MVP import path (docs/MVP.md) works without network: 04.06 and 11.06 (incoming payments) and 05.06 (the
  * conversions). See fixtures/nbg/README.md.
  */
-export const DEMO_RATE_FIXTURES = [
+export const DEV_RATE_FIXTURES = [
   'GBP_2025-06-04.json',
   'GBP_2025-06-05.json',
   'GBP_2025-06-11.json',
@@ -129,7 +133,7 @@ export function readRateFixture(name: string): NewExchangeRate[] {
   );
 }
 
-/** Stores the demo's NBG rates. Idempotent: existing rows are kept (see `upsertRates`). */
-export async function seedDemoRates(db: Db): Promise<UpsertRatesResult> {
-  return upsertRates(db, DEMO_RATE_FIXTURES.flatMap(readRateFixture));
+/** Stores the BoG fixture's NBG rates. Idempotent: existing rows are kept (see `upsertRates`). */
+export async function seedDevRates(db: Db): Promise<UpsertRatesResult> {
+  return upsertRates(db, DEV_RATE_FIXTURES.flatMap(readRateFixture));
 }
