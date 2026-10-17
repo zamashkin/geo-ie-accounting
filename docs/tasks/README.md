@@ -6,11 +6,11 @@
 
 Done since the MVP: polish pass, declarations filing and dashboard widgets, accounts / manual transactions / rules, invoices, CI.
 
-1. **Public demo:** a seed that generates a realistic anonymised year, plus a read-only demo login.
+1. **Public demo:** done (2026-10-17, [ADR 0016](../adr/0016-public-demo.md)): `pnpm db:seed:demo` builds two generated workspaces and a read-only demo login; `DEMO_MODE` and `DEMO_SIGNUP` switch it on for a hosted server. Hosting it is part of deployment below.
 2. **Account and member management:** password reset pages, return to the requested page after sign-in, and member role change/removal with a last-owner guard.
 3. **Smaller items:** keep bank-GEL warnings on the batch, multi-line address fields, client list paging, PDF page numbers, and an automatic rate backfill when a manual transaction's rate is missing.
 4. **Exports:** ledger CSV and a declaration summary PDF.
-5. **Behind the scenes (order not set yet):** reviewer README, real e2e/Storybook jobs in CI, deployment (needs SPEC Q4), Sentry/tracing, background import pipeline (S3, worker jobs, SSE), Postgres RLS, admin role for rate backfill.
+5. **Behind the scenes (order not set yet):** reviewer README, real e2e/Storybook jobs in CI, deployment and hosting the public demo (needs SPEC Q4), Sentry/tracing, background import pipeline (S3, worker jobs, SSE), Postgres RLS, admin role for rate backfill.
 6. **Blocked: TBC Bank statements.** Wanted, but there are no TBC exports to build from yet.
 7. **Last:** accountant mode, then the audit log UI.
 

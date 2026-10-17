@@ -28,7 +28,8 @@
     },
     "dev": {
       "cache": false,
-      "persistent": true
+      "persistent": true,
+      "passThroughEnv": ["DEMO_MODE", "DEMO_SIGNUP"]
     }
   }
 }
