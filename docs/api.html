@@ -17,17 +17,24 @@
   To try requests, run the API locally and open <code>http://localhost:4000/docs</code>.
 </p>
 <div id="swagger"></div>
-<script src="https://cdn.jsdelivr.net/npm/swagger-ui-dist@5.33.3/swagger-ui-bundle.js" crossorigin></script>
 <script>
-  // Absolute URL so the page works both from htmlpreview.github.io and opened as a local file.
-  window.ui = SwaggerUIBundle({
-    url: 'https://raw.githubusercontent.com/zamashkin/geo-ie-accounting/main/apps/api/openapi.json',
-    dom_id: '#swagger',
-    deepLinking: true,
-    docExpansion: 'none',
-    defaultModelsExpandDepth: 0,
-    supportedSubmitMethods: [],
-  });
+  // The bundle is loaded from here rather than with a <script src> tag: htmlpreview.github.io
+  // runs inline scripts before external ones have loaded. The absolute spec URL works there
+  // and when the file is opened locally.
+  var bundle = document.createElement('script');
+  bundle.src = 'https://cdn.jsdelivr.net/npm/swagger-ui-dist@5.33.3/swagger-ui-bundle.js';
+  bundle.crossOrigin = 'anonymous';
+  bundle.onload = function () {
+    window.ui = SwaggerUIBundle({
+      url: 'https://raw.githubusercontent.com/zamashkin/geo-ie-accounting/main/apps/api/openapi.json',
+      dom_id: '#swagger',
+      deepLinking: true,
+      docExpansion: 'none',
+      defaultModelsExpandDepth: 0,
+      supportedSubmitMethods: [],
+    });
+  };
+  document.head.appendChild(bundle);
 </script>
 </body>
 </html>
