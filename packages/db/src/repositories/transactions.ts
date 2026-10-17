@@ -74,29 +74,29 @@ export async function insertTransaction(
 async function withPostings(db: DbOrTx, orgId: string, rows: TransactionRow[]) {
   if (rows.length === 0) return [];
   const ids = rows.map((r) => r.id);
-  const [postingRows, reversals] = await Promise.all([
-    db
-      .select({
-        posting: postings,
-        accountName: accounts.name,
-        accountKind: accounts.kind,
-        accountSystemKey: accounts.systemKey,
-        accountIncomeClass: accounts.incomeClass,
-        rate: exchangeRates.rate,
-        rateQuantity: exchangeRates.quantity,
-        rateValidFrom: exchangeRates.validFrom,
-      })
-      .from(postings)
-      .innerJoin(accounts, and(eq(accounts.id, postings.accountId), eq(accounts.orgId, orgId)))
-      .leftJoin(exchangeRates, eq(exchangeRates.id, postings.rateId))
-      .where(and(eq(postings.orgId, orgId), inArray(postings.transactionId, ids)))
-      // uuid v7 ids keep the insert order, which is the builder's order (bank leg first).
-      .orderBy(postings.transactionId, postings.id),
-    db
-      .select({ id: transactions.id, reversesId: transactions.reversesId })
-      .from(transactions)
-      .where(and(eq(transactions.orgId, orgId), inArray(transactions.reversesId, ids))),
-  ]);
+  // Sequential, not Promise.all: `db` may be a transaction, and one pg client runs one query
+  // at a time (concurrent calls are deprecated and removed in pg 9).
+  const postingRows = await db
+    .select({
+      posting: postings,
+      accountName: accounts.name,
+      accountKind: accounts.kind,
+      accountSystemKey: accounts.systemKey,
+      accountIncomeClass: accounts.incomeClass,
+      rate: exchangeRates.rate,
+      rateQuantity: exchangeRates.quantity,
+      rateValidFrom: exchangeRates.validFrom,
+    })
+    .from(postings)
+    .innerJoin(accounts, and(eq(accounts.id, postings.accountId), eq(accounts.orgId, orgId)))
+    .leftJoin(exchangeRates, eq(exchangeRates.id, postings.rateId))
+    .where(and(eq(postings.orgId, orgId), inArray(postings.transactionId, ids)))
+    // uuid v7 ids keep the insert order, which is the builder's order (bank leg first).
+    .orderBy(postings.transactionId, postings.id);
+  const reversals = await db
+    .select({ id: transactions.id, reversesId: transactions.reversesId })
+    .from(transactions)
+    .where(and(eq(transactions.orgId, orgId), inArray(transactions.reversesId, ids)));
   const byTx = new Map<string, PostingDetail[]>();
   for (const r of postingRows) {
     const list = byTx.get(r.posting.transactionId) ?? [];

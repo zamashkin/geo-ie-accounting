@@ -29,12 +29,11 @@ export async function loadSuggester(
   orgId: string,
   bankAccountId: string,
 ): Promise<(row: SuggestableRow) => Suggestion> {
-  const [rules, accounts, sbsIncome, fxClearing] = await Promise.all([
-    listRules(db, orgId),
-    listAccounts(db, orgId),
-    getDefaultSbsIncomeAccount(db, orgId),
-    getSystemAccount(db, orgId, 'fx_clearing'),
-  ]);
+  // Sequential: `db` is often the request transaction, which runs one query at a time.
+  const rules = await listRules(db, orgId);
+  const accounts = await listAccounts(db, orgId);
+  const sbsIncome = await getDefaultSbsIncomeAccount(db, orgId);
+  const fxClearing = await getSystemAccount(db, orgId, 'fx_clearing');
   // Active accounts only: a rule pointing at an archived account is passed over.
   const active = new Map(accounts.map((a) => [a.id, a]));
 
