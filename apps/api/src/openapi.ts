@@ -1,4 +1,4 @@
-import { MinorUnitsString } from '@ie-ledger/contracts';
+import { MinorUnitsString } from '@geo-ie-accounting/contracts';
 import {
   createJsonSchemaTransform,
   createJsonSchemaTransformObject,

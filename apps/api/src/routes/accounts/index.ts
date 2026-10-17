@@ -11,7 +11,7 @@ import {
   OrgParams,
   UpdateAccountRequest,
   type AccountBalance,
-} from '@ie-ledger/contracts';
+} from '@geo-ie-accounting/contracts';
 import {
   accountBalances,
   createAccount,
@@ -20,7 +20,7 @@ import {
   lockAccount,
   updateAccount,
   type AccountRow,
-} from '@ie-ledger/db';
+} from '@geo-ie-accounting/db';
 import {
   BASE_CURRENCY,
   formatRate,
@@ -29,8 +29,8 @@ import {
   parseRate,
   SUPPORTED_CURRENCIES,
   toGel,
-} from '@ie-ledger/domain';
-import { tbilisiDate } from '@ie-ledger/nbg';
+} from '@geo-ie-accounting/domain';
+import { tbilisiDate } from '@geo-ie-accounting/nbg';
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod';
 import { requireRole } from '../../plugins/authz';
 import { HttpProblem, problemResponse } from '../../problem';

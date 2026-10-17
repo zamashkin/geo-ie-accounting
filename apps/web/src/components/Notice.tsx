@@ -1,6 +1,6 @@
 import { AlertCircle, AlertTriangle, CheckCircle2, Info } from 'lucide-react';
 import type { ReactNode } from 'react';
-import { cx } from '@ie-ledger/ui';
+import { cx } from '@geo-ie-accounting/ui';
 
 export type NoticeTone = 'info' | 'warning' | 'error' | 'success';
 

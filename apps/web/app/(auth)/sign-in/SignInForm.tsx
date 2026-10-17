@@ -1,8 +1,8 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { MagicLinkBody, SignInBody } from '@ie-ledger/contracts';
-import { Button, Card, Tab, TabList, TabPanel, Tabs, TextField } from '@ie-ledger/ui';
+import { MagicLinkBody, SignInBody } from '@geo-ie-accounting/contracts';
+import { Button, Card, Tab, TabList, TabPanel, Tabs, TextField } from '@geo-ie-accounting/ui';
 import type { Route } from 'next';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';

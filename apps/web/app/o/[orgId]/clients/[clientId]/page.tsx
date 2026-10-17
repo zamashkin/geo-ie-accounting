@@ -1,4 +1,4 @@
-import { Card, EmptyState, PageContainer, PageHeader } from '@ie-ledger/ui';
+import { Card, EmptyState, PageContainer, PageHeader } from '@geo-ie-accounting/ui';
 import { FileText } from 'lucide-react';
 import type { Metadata } from 'next';
 import { Amount } from '@/components/Amount';

@@ -1,4 +1,4 @@
-import { cx } from '@ie-ledger/ui';
+import { cx } from '@geo-ie-accounting/ui';
 import { type FormatMinorOptions, formatMinor, parseMinor } from '@/lib/format';
 
 /**

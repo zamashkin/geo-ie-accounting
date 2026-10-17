@@ -1,4 +1,4 @@
-import { NBG_TIME_ZONE } from '@ie-ledger/nbg';
+import { NBG_TIME_ZONE } from '@geo-ie-accounting/nbg';
 import type { PgBoss } from 'pg-boss';
 import { defineJob, type JobDefinition } from '../define';
 import { backfillRates } from './backfill';

@@ -92,7 +92,7 @@ jobs:
     steps:
       - uses: actions/checkout@v7.0.1
       - uses: ./.github/actions/setup
-      - run: pnpm --filter @ie-ledger/db db:check
+      - run: pnpm --filter @geo-ie-accounting/db db:check
       - run: pnpm db:generate
       - name: Schema and committed migrations agree
         run: |

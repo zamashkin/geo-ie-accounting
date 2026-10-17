@@ -10,7 +10,7 @@ import { authAccounts, memberships, organizations, users } from './schema/index'
 /** Fixed ids so the seed is idempotent and tests/docs can refer to the demo org. */
 export const DEMO = {
   userId: '01900000-0000-7000-8000-000000000001',
-  userEmail: 'demo@ie-ledger.local',
+  userEmail: 'demo@geo-ie-accounting.local',
   userName: 'Demo Entrepreneur',
   /** Local development only: sign in with this email and password. */
   password: 'demo-password-2026',

@@ -13,7 +13,7 @@ import {
   Select,
   SkeletonText,
   toast,
-} from '@ie-ledger/ui';
+} from '@geo-ie-accounting/ui';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { ArrowLeft, FileQuestion, Wand2 } from 'lucide-react';
 import { createContext, useContext, useMemo, useState } from 'react';

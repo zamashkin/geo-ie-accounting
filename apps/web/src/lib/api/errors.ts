@@ -1,4 +1,4 @@
-import { Problem, PROBLEM_CODES, type ProblemCode } from '@ie-ledger/contracts';
+import { Problem, PROBLEM_CODES, type ProblemCode } from '@geo-ie-accounting/contracts';
 import { ApiError, networkError } from './api-error';
 
 export { ApiError, errorMessage, isApiError, networkError } from './api-error';

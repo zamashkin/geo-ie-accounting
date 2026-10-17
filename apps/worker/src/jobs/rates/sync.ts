@@ -1,6 +1,6 @@
-import type { CurrencyCode } from '@ie-ledger/contracts';
-import { latestValidFrom } from '@ie-ledger/db';
-import { addDays, tbilisiDate } from '@ie-ledger/nbg';
+import type { CurrencyCode } from '@geo-ie-accounting/contracts';
+import { latestValidFrom } from '@geo-ie-accounting/db';
+import { addDays, tbilisiDate } from '@geo-ie-accounting/nbg';
 import type { Logger } from 'pino';
 import { backfillRates, type BackfillSummary } from './backfill';
 import type { RatesDeps } from './deps';

@@ -1,4 +1,4 @@
-import { EmptyState, PageContainer, PageHeader } from '@ie-ledger/ui';
+import { EmptyState, PageContainer, PageHeader } from '@geo-ie-accounting/ui';
 import { Construction } from 'lucide-react';
 
 /**

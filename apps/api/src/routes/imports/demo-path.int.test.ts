@@ -2,7 +2,7 @@
 // the June 2025 figures, re-upload without duplicates, reverse. NBG answers from fixtures/nbg/.
 import { readFileSync } from 'node:fs';
 import { randomUUID } from 'node:crypto';
-import { listAuditEntries } from '@ie-ledger/db';
+import { listAuditEntries } from '@geo-ie-accounting/db';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import {
   addMemberViaInvite,

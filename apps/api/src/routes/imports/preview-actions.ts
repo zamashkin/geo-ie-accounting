@@ -8,7 +8,7 @@ import {
   MutationHeaders,
   type ImportBatchStats,
   type ImportRowStatus,
-} from '@ie-ledger/contracts';
+} from '@geo-ie-accounting/contracts';
 import {
   getAccount,
   getImportBatch,
@@ -19,7 +19,7 @@ import {
   type AccountRow,
   type ImportBatchRow,
   type Tx,
-} from '@ie-ledger/db';
+} from '@geo-ie-accounting/db';
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod';
 import { requireRole } from '../../plugins/authz';
 import { HttpProblem, problemResponse } from '../../problem';

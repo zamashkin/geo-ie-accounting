@@ -1,4 +1,4 @@
-import { JOB_NAMES } from '@ie-ledger/contracts';
+import { JOB_NAMES } from '@geo-ie-accounting/contracts';
 import { describe, expect, it } from 'vitest';
 import { deadLetterQueue, DEFAULT_QUEUE_OPTIONS } from './define';
 import { jobs } from './index';

@@ -1,4 +1,4 @@
-import { Card, PageContainer, PageHeader } from '@ie-ledger/ui';
+import { Card, PageContainer, PageHeader } from '@geo-ie-accounting/ui';
 import type { Metadata, Route } from 'next';
 import Link from 'next/link';
 import { Amount } from '@/components/Amount';

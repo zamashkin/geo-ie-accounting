@@ -1,6 +1,10 @@
 'use client';
 
-import { computeInvoiceTotals, invoiceLineTotal, SUPPORTED_CURRENCIES } from '@ie-ledger/domain';
+import {
+  computeInvoiceTotals,
+  invoiceLineTotal,
+  SUPPORTED_CURRENCIES,
+} from '@geo-ie-accounting/domain';
 import {
   Button,
   Card,
@@ -11,7 +15,7 @@ import {
   Select,
   TextField,
   toast,
-} from '@ie-ledger/ui';
+} from '@geo-ie-accounting/ui';
 import { useQueryClient } from '@tanstack/react-query';
 import { Download, Plus, Send, Trash2 } from 'lucide-react';
 import type { Route } from 'next';

@@ -1,4 +1,4 @@
-import { cx } from '@ie-ledger/ui';
+import { cx } from '@geo-ie-accounting/ui';
 import { niceAxis, share } from '@/lib/chart-scale';
 import { formatMinor, formatPeriod, parseMinor } from '@/lib/format';
 

@@ -9,7 +9,7 @@ import {
   RuleList,
   RuleParams,
   UpdateRuleRequest,
-} from '@ie-ledger/contracts';
+} from '@geo-ie-accounting/contracts';
 import {
   createRule,
   deleteRule,
@@ -20,8 +20,8 @@ import {
   updateRule,
   type DbOrTx,
   type RuleRow,
-} from '@ie-ledger/db';
-import { hasAnyCondition } from '@ie-ledger/domain';
+} from '@geo-ie-accounting/db';
+import { hasAnyCondition } from '@geo-ie-accounting/domain';
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod';
 import { requireRole } from '../../plugins/authz';
 import { HttpProblem, problemResponse } from '../../problem';

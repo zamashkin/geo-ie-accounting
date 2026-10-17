@@ -1,4 +1,4 @@
-import type { Bank, SystemAccountKey } from '@ie-ledger/contracts';
+import type { Bank, SystemAccountKey } from '@geo-ie-accounting/contracts';
 import { and, asc, eq, isNull, notExists, sql } from 'drizzle-orm';
 import type { DbOrTx, Tx } from '../client';
 import { accounts, postings } from '../schema/index';

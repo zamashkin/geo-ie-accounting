@@ -1,4 +1,4 @@
-import { DEFAULT_CHART_OF_ACCOUNTS, listAuditEntries, schema } from '@ie-ledger/db';
+import { DEFAULT_CHART_OF_ACCOUNTS, listAuditEntries, schema } from '@geo-ie-accounting/db';
 import { eq } from 'drizzle-orm';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import {

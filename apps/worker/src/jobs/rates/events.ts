@@ -1,5 +1,5 @@
 import { randomUUID } from 'node:crypto';
-import { EVENTS_NOTIFY_CHANNEL, NotifyPayload, type OrgEvent } from '@ie-ledger/contracts';
+import { EVENTS_NOTIFY_CHANNEL, NotifyPayload, type OrgEvent } from '@geo-ie-accounting/contracts';
 import type { z } from 'zod';
 
 type RatesEvent = Extract<z.input<typeof OrgEvent>, { type: 'rates.backfilled' }>;

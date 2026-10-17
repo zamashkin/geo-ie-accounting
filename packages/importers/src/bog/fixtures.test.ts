@@ -1,12 +1,12 @@
 // Every committed fixture must parse to its reviewed `*.expected.json`.
 //
-// To regenerate after an intentional change: UPDATE_EXPECTED=1 pnpm --filter @ie-ledger/importers test
+// To regenerate after an intentional change: UPDATE_EXPECTED=1 pnpm --filter @geo-ie-accounting/importers test
 // then review the diff line by line against the source file. Never accept a snapshot blindly.
 
 import { readFileSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
-import type { ParseOptions } from '@ie-ledger/contracts';
-import { ParseResult } from '@ie-ledger/contracts';
+import type { ParseOptions } from '@geo-ie-accounting/contracts';
+import { ParseResult } from '@geo-ie-accounting/contracts';
 import { describe, expect, it } from 'vitest';
 import type { StatementParser } from '../parser';
 import { detectBest } from '../registry';

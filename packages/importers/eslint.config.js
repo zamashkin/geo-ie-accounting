@@ -1,9 +1,9 @@
-import { ieLedger } from '@ie-ledger/config/eslint';
+import { geoIeAccounting } from '@geo-ie-accounting/config/eslint';
 
 const PURE =
   'packages/importers is pure and runtime-neutral: parsers take a Uint8Array, not Node APIs.';
 
-export default ieLedger({
+export default geoIeAccounting({
   pkg: 'importers',
   root: import.meta.dirname,
   extra: [

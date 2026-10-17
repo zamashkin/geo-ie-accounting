@@ -1,5 +1,5 @@
-import type { Role } from '@ie-ledger/contracts';
-import { getMembership } from '@ie-ledger/db';
+import type { Role } from '@geo-ie-accounting/contracts';
+import { getMembership } from '@geo-ie-accounting/db';
 import { fromNodeHeaders } from 'better-auth/node';
 import type {
   FastifyInstance,
@@ -35,7 +35,7 @@ const TENANT_ROUTE = /^\/v1\/orgs\/:orgId(\/|$)/;
 const ORG_SCOPED_PREFIX = /^\/v1\/orgs\/:/;
 
 type GuardKind = 'auth' | 'role';
-const GUARD = Symbol('ie-ledger.guard');
+const GUARD = Symbol('geo-ie-accounting.guard');
 type TaggedHook = onRequestAsyncHookHandler & { [GUARD]?: { kind: GuardKind; role?: Role } };
 
 function tag(

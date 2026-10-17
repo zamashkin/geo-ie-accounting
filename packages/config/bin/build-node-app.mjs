@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // Bundles a Node app (apps/api, apps/worker) into dist/ with esbuild.
 //
-// Workspace packages (@ie-ledger/*) are TypeScript sources, so they are bundled in. npm packages
+// Workspace packages (@geo-ie-accounting/*) are TypeScript sources, so they are bundled in. npm packages
 // the app lists in its own package.json stay external and are installed next to it in production
 // (`pnpm deploy`). Other npm packages reached only through workspace packages are bundled.
 //
@@ -34,12 +34,12 @@ const packageName = (spec) =>
 
 /** @type {import('esbuild').Plugin} */
 const externals = {
-  name: 'ie-ledger-externals',
+  name: 'geo-ie-accounting-externals',
   setup(b) {
     b.onResolve({ filter: /^[^./]/ }, (args) => {
       if (args.path.startsWith('node:')) return { external: true };
       const name = packageName(args.path);
-      if (name.startsWith('@ie-ledger/')) return undefined;
+      if (name.startsWith('@geo-ie-accounting/')) return undefined;
       if (ownDeps.has(name) || alwaysExternal.has(name)) return { external: true };
       return undefined;
     });

@@ -1,4 +1,4 @@
-import { createDb, type Db } from '@ie-ledger/db';
+import { createDb, type Db } from '@geo-ie-accounting/db';
 import type { FastifyInstance } from 'fastify';
 import { createAuth, type AuthSettings } from '../auth/better-auth';
 import { unconfiguredMailer, type Mailer } from '../auth/mailer';

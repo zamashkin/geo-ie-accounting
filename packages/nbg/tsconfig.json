@@ -1,4 +1,4 @@
 {
-  "extends": "@ie-ledger/config/tsconfig/node.json",
+  "extends": "@geo-ie-accounting/config/tsconfig/node.json",
   "include": ["src", "scripts", "*.ts"]
 }

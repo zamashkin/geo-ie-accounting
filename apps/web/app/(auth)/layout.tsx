@@ -10,8 +10,8 @@ export default function AuthLayout({ children }: { children: ReactNode }) {
         {children}
       </main>
       <footer className="mt-10 max-w-sm text-center text-xs text-fg-muted">
-        Figures for the monthly small-business return on rs.ge. IE Ledger never files anything for
-        you.
+        Figures for the monthly small-business return on rs.ge. geo-ie-accounting never files
+        anything for you.
       </footer>
     </div>
   );

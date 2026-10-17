@@ -1,5 +1,5 @@
 import type { Schemas } from '@/lib/api/client';
-import { Badge, type BadgeTone, cx } from '@ie-ledger/ui';
+import { Badge, type BadgeTone, cx } from '@geo-ie-accounting/ui';
 import { formatBp, formatMinor } from '@/lib/format';
 
 type LimitStatus = Schemas['AnnualLimitStatus'];

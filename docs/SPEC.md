@@ -1,6 +1,6 @@
-# IE Ledger: product spec
+# geo-ie-accounting: product spec
 
-Working name: **IE Ledger** (rename later; see Open questions).
+Working name: **geo-ie-accounting** (rename later; see Open questions).
 
 Bookkeeping and tax tool for individual entrepreneurs (IE, "ინდმეწარმე") in Georgia with **small business status** (1% turnover tax). Users import bank statements, the app converts foreign-currency income to GEL at the official National Bank of Georgia (NBG) rate for the date of receipt, keeps a double-entry ledger, and produces the numbers needed for the monthly declaration on rs.ge.
 

@@ -22,7 +22,7 @@ export function BrandMark({ href = '/' }: { href?: '/' }) {
           <path d="M7 8.5h6M7 11.5h6M7 14.5h3.5" strokeLinecap="round" />
         </svg>
       </span>
-      <span className="text-base font-semibold tracking-tight">IE Ledger</span>
+      <span className="text-base font-semibold tracking-tight">geo-ie-accounting</span>
     </Link>
   );
 }

@@ -1,4 +1,4 @@
-import { bankStatementLine, money, parseRate } from '@ie-ledger/domain';
+import { bankStatementLine, money, parseRate } from '@geo-ie-accounting/domain';
 import { eq } from 'drizzle-orm';
 import { uuidv7 } from 'uuidv7';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';

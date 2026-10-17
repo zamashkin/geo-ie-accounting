@@ -12,7 +12,7 @@ import {
   ROLES,
   RULE_DIRECTIONS,
   TRANSACTION_SOURCES,
-} from '@ie-ledger/contracts';
+} from '@geo-ie-accounting/contracts';
 import { pgEnum } from 'drizzle-orm/pg-core';
 
 // Values come from packages/contracts so the DB and the API cannot drift.

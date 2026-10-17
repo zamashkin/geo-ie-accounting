@@ -1,5 +1,5 @@
 // Test helpers: a `fetch` that answers from the recorded responses in fixtures/nbg/ and never
-// touches the network. Exported as `@ie-ledger/nbg/testing` for the worker and API tests.
+// touches the network. Exported as `@geo-ie-accounting/nbg/testing` for the worker and API tests.
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 

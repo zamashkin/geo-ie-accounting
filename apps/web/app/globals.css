@@ -1,6 +1,6 @@
 @import 'tailwindcss';
 /* Design tokens, Tailwind theme mapping and base styles live in the ui kit. */
-@import '@ie-ledger/ui/theme.css';
+@import '@geo-ie-accounting/ui/theme.css';
 
 /* App sources (packages/ui registers its own). */
 @source '../app';

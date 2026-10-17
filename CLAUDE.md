@@ -1,4 +1,4 @@
-# IE Ledger: agent instructions
+# geo-ie-accounting: agent instructions
 
 Bookkeeping + 1% small-business tax tool for Georgian individual entrepreneurs. Portfolio project: code quality is part of the product.
 

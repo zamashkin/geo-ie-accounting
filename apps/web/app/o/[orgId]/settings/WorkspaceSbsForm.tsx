@@ -1,6 +1,6 @@
 'use client';
 
-import { toast } from '@ie-ledger/ui';
+import { toast } from '@geo-ie-accounting/ui';
 import { useRouter } from 'next/navigation';
 import { SbsDateForm } from '@/components/workspace/SbsDateForm';
 import { formatIsoDate } from '@/lib/format';

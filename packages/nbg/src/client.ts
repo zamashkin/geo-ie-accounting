@@ -1,4 +1,4 @@
-import { CurrencyCode, IsoDate } from '@ie-ledger/contracts';
+import { CurrencyCode, IsoDate } from '@geo-ie-accounting/contracts';
 import {
   NbgError,
   NbgHttpError,

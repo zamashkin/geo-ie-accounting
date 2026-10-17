@@ -1,4 +1,4 @@
-import { ButtonLink, PageContainer, PageHeader } from '@ie-ledger/ui';
+import { ButtonLink, PageContainer, PageHeader } from '@geo-ie-accounting/ui';
 import { ArrowLeft } from 'lucide-react';
 import type { Metadata } from 'next';
 import { Notice } from '@/components/Notice';

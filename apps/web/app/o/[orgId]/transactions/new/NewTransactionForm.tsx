@@ -1,6 +1,6 @@
 'use client';
 
-import { SUPPORTED_CURRENCIES } from '@ie-ledger/domain';
+import { SUPPORTED_CURRENCIES } from '@geo-ie-accounting/domain';
 import {
   Badge,
   Button,
@@ -12,7 +12,7 @@ import {
   SkeletonText,
   TextField,
   toast,
-} from '@ie-ledger/ui';
+} from '@geo-ie-accounting/ui';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import type { Route } from 'next';
 import { useRouter } from 'next/navigation';

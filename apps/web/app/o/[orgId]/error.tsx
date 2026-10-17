@@ -1,6 +1,6 @@
 'use client';
 
-import { Button, EmptyState, PageContainer } from '@ie-ledger/ui';
+import { Button, EmptyState, PageContainer } from '@geo-ie-accounting/ui';
 import { AlertTriangle } from 'lucide-react';
 
 /**

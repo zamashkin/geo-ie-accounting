@@ -2,8 +2,8 @@
 
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
-import type { GenericCsvMapping, ParseOptions } from '@ie-ledger/contracts';
-import { ParseResult } from '@ie-ledger/contracts';
+import type { GenericCsvMapping, ParseOptions } from '@geo-ie-accounting/contracts';
+import { ParseResult } from '@geo-ie-accounting/contracts';
 import { describe, expect, it } from 'vitest';
 import { bogXlsx } from './bog/xlsx';
 import { parsers } from './registry';

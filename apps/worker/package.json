@@ -1,5 +1,5 @@
 {
-  "name": "@ie-ledger/worker",
+  "name": "@geo-ie-accounting/worker",
   "version": "0.0.0",
   "private": true,
   "type": "module",
@@ -13,17 +13,17 @@
     "test:integration": "vitest run --config vitest.integration.config.ts"
   },
   "dependencies": {
-    "@ie-ledger/contracts": "workspace:*",
-    "@ie-ledger/db": "workspace:*",
-    "@ie-ledger/domain": "workspace:*",
-    "@ie-ledger/importers": "workspace:*",
-    "@ie-ledger/nbg": "workspace:*",
+    "@geo-ie-accounting/contracts": "workspace:*",
+    "@geo-ie-accounting/db": "workspace:*",
+    "@geo-ie-accounting/domain": "workspace:*",
+    "@geo-ie-accounting/importers": "workspace:*",
+    "@geo-ie-accounting/nbg": "workspace:*",
     "pg-boss": "12.38.0",
     "pino": "10.4.0",
     "zod": "4.6.7"
   },
   "devDependencies": {
-    "@ie-ledger/config": "workspace:*",
+    "@geo-ie-accounting/config": "workspace:*",
     "@types/node": "26.6.5",
     "eslint": "10.12.0",
     "pino-pretty": "13.2.0",

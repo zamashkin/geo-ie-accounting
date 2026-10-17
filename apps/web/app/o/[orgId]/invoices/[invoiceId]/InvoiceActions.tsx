@@ -10,7 +10,7 @@ import {
   SkeletonText,
   TextField,
   toast,
-} from '@ie-ledger/ui';
+} from '@geo-ie-accounting/ui';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Ban, Copy, Download, Link2, Unlink, Wallet } from 'lucide-react';
 import type { Route } from 'next';

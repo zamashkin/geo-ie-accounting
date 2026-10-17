@@ -1,5 +1,5 @@
-import type { Role } from '@ie-ledger/contracts';
-import type { Db, Tx } from '@ie-ledger/db';
+import type { Role } from '@geo-ie-accounting/contracts';
+import type { Db, Tx } from '@geo-ie-accounting/db';
 import type { FastifyInstance, FastifyRequest } from 'fastify';
 import type { Auth, AuthSession, AuthUser } from '../auth/better-auth';
 import { HttpProblem } from '../problem';

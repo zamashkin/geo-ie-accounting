@@ -1,20 +1,20 @@
 # Local development services. `docker compose up -d` then `pnpm db:migrate && pnpm db:seed`.
 # Credentials here are for local use only.
-name: ie-ledger
+name: geo-ie-accounting
 
 services:
   postgres:
     image: postgres:17.11-alpine
     environment:
-      POSTGRES_USER: ie_ledger
-      POSTGRES_PASSWORD: ie_ledger
-      POSTGRES_DB: ie_ledger
+      POSTGRES_USER: geo_ie_accounting
+      POSTGRES_PASSWORD: geo_ie_accounting
+      POSTGRES_DB: geo_ie_accounting
     ports:
       - '5432:5432'
     volumes:
       - pgdata:/var/lib/postgresql/data
     healthcheck:
-      test: ['CMD-SHELL', 'pg_isready -U ie_ledger -d ie_ledger']
+      test: ['CMD-SHELL', 'pg_isready -U geo_ie_accounting -d geo_ie_accounting']
       interval: 2s
       timeout: 3s
       retries: 30
@@ -25,8 +25,8 @@ services:
   s3:
     image: rustfs/rustfs:1.0.1
     environment:
-      RUSTFS_ACCESS_KEY: ie_ledger
-      RUSTFS_SECRET_KEY: ie_ledger_secret
+      RUSTFS_ACCESS_KEY: geo_ie_accounting
+      RUSTFS_SECRET_KEY: geo_ie_accounting_secret
     ports:
       - '9000:9000' # S3 API
       - '9001:9001' # web console
@@ -45,10 +45,10 @@ services:
       s3:
         condition: service_healthy
     environment:
-      AWS_ACCESS_KEY_ID: ie_ledger
-      AWS_SECRET_ACCESS_KEY: ie_ledger_secret
+      AWS_ACCESS_KEY_ID: geo_ie_accounting
+      AWS_SECRET_ACCESS_KEY: geo_ie_accounting_secret
       AWS_DEFAULT_REGION: us-east-1
-      BUCKET: ie-ledger-statements
+      BUCKET: geo-ie-accounting-statements
     entrypoint: ['/bin/sh', '-c']
     command:
       - |

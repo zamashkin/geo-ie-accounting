@@ -1,6 +1,6 @@
 'use client';
 
-import { UiProvider } from '@ie-ledger/ui';
+import { UiProvider } from '@geo-ie-accounting/ui';
 import type { Route } from 'next';
 import { useRouter } from 'next/navigation';
 import type { ReactNode } from 'react';

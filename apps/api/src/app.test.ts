@@ -1,4 +1,4 @@
-import { Money, PaginationQuery, Problem } from '@ie-ledger/contracts';
+import { Money, PaginationQuery, Problem } from '@geo-ie-accounting/contracts';
 import { afterEach, describe, expect, it } from 'vitest';
 import { z } from 'zod';
 import { buildApp, type App } from './app';

@@ -1,4 +1,4 @@
-import { ButtonLink } from '@ie-ledger/ui';
+import { ButtonLink } from '@geo-ie-accounting/ui';
 import type { Route } from 'next';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
@@ -26,7 +26,7 @@ export default async function HomePage() {
   return (
     <main className="mx-auto flex max-w-2xl flex-col gap-6 px-4 py-16 sm:px-6">
       <header>
-        <h1 className="text-3xl font-semibold tracking-tight">IE Ledger</h1>
+        <h1 className="text-3xl font-semibold tracking-tight">geo-ie-accounting</h1>
         <p className="mt-2 text-fg-muted">
           Bookkeeping and tax figures for individual entrepreneurs on Georgia&apos;s 1% small
           business regime.

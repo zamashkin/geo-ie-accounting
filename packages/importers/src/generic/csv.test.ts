@@ -1,4 +1,4 @@
-import type { GenericCsvMapping } from '@ie-ledger/contracts';
+import type { GenericCsvMapping } from '@geo-ie-accounting/contracts';
 import { describe, expect, it } from 'vitest';
 import { genericCsv } from './csv';
 

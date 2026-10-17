@@ -1,5 +1,5 @@
 /*
- * IE Ledger design tokens. Plain CSS custom properties, so anything (Tailwind utilities,
+ * geo-ie-accounting design tokens. Plain CSS custom properties, so anything (Tailwind utilities,
  * inline styles, charts) can read them. Light is the default; dark applies when the OS asks
  * for it, unless the page pins a theme with <html data-theme="light|dark">.
  *

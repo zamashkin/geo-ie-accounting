@@ -1,4 +1,4 @@
-import type { ProblemCode } from '@ie-ledger/contracts';
+import type { ProblemCode } from '@geo-ie-accounting/contracts';
 
 // Maps Postgres errors to problem+json by SQLSTATE and constraint name. Drizzle wraps the
 // driver error, so the cause chain is searched. Unknown database errors stay 500s.

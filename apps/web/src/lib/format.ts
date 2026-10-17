@@ -1,4 +1,9 @@
-import { formatAmount, formatMoney, formatPeriodLabel, formatRateBp } from '@ie-ledger/domain';
+import {
+  formatAmount,
+  formatMoney,
+  formatPeriodLabel,
+  formatRateBp,
+} from '@geo-ie-accounting/domain';
 
 // The one place web formats money, rates and periods. Amounts arrive from the API as decimal
 // strings of minor units (`"569866"` = GEL 5,698.66); they become bigint here and go through

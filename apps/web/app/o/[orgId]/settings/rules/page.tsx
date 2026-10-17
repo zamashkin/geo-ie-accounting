@@ -1,4 +1,4 @@
-import { PageContainer, PageHeader } from '@ie-ledger/ui';
+import { PageContainer, PageHeader } from '@geo-ie-accounting/ui';
 import type { Metadata } from 'next';
 import { canWrite, orgRole } from '@/lib/auth/role';
 import { RulesView } from './RulesView';

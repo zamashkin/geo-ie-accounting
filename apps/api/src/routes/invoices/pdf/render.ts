@@ -1,5 +1,5 @@
 // Renders an invoice to PDF bytes on request (ADR 0015): no worker job, nothing stored.
-import type { InvoiceView } from '@ie-ledger/contracts';
+import type { InvoiceView } from '@geo-ie-accounting/contracts';
 import { renderToBuffer, type DocumentProps } from '@react-pdf/renderer';
 import { createElement, type ReactElement } from 'react';
 import { registerInvoiceFonts } from './fonts';

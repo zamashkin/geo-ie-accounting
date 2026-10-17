@@ -1,5 +1,5 @@
-import { createDb } from '@ie-ledger/db';
-import { createNbgClient } from '@ie-ledger/nbg';
+import { createDb } from '@geo-ie-accounting/db';
+import { createNbgClient } from '@geo-ie-accounting/nbg';
 import { sql } from 'drizzle-orm';
 import { buildApp, LOG_REDACT_PATHS } from './app';
 import { createSmtpMailer } from './auth/mailer';
@@ -10,7 +10,7 @@ const env = loadEnv();
 
 const { db, close: closeDb } = createDb({
   connectionString: env.DATABASE_URL,
-  applicationName: 'ie-ledger-api',
+  applicationName: 'geo-ie-accounting-api',
   // Runs only after startup, by which time `app` exists.
   onIdleClientError: (err) => {
     app.log.warn({ err }, 'idle database connection failed; the pool will reconnect');

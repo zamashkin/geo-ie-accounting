@@ -1,4 +1,4 @@
-import { ButtonLink, PageContainer, PageHeader, SkeletonText } from '@ie-ledger/ui';
+import { ButtonLink, PageContainer, PageHeader, SkeletonText } from '@geo-ie-accounting/ui';
 import { Plus } from 'lucide-react';
 import type { Metadata } from 'next';
 import { Suspense } from 'react';

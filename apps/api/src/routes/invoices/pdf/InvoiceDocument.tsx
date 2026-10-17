@@ -1,7 +1,7 @@
 // The invoice PDF (@react-pdf/renderer). Pure layout: every figure comes from the InvoiceView
 // (totals from packages/domain), amounts are formatted by packages/domain/format.ts.
-import type { InvoiceParty, InvoiceView } from '@ie-ledger/contracts';
-import { formatAmount, formatMoney } from '@ie-ledger/domain';
+import type { InvoiceParty, InvoiceView } from '@geo-ie-accounting/contracts';
+import { formatAmount, formatMoney } from '@geo-ie-accounting/domain';
 import { Document, Page, StyleSheet, Text, View } from '@react-pdf/renderer';
 import type { ReactNode } from 'react';
 import { FONT_FAMILY } from './fonts';
@@ -203,8 +203,8 @@ export function InvoiceDocument({ invoice }: { invoice: InvoiceView }) {
       title={title}
       author={seller.name}
       subject={`${title} to ${client.name}`}
-      creator="IE Ledger"
-      producer="IE Ledger"
+      creator="geo-ie-accounting"
+      producer="geo-ie-accounting"
     >
       <Page size="A4" style={s.page}>
         <View style={s.header}>

@@ -3,7 +3,7 @@ import { randomUUID } from 'node:crypto';
 
 /** A multipart/form-data body with one `file` part and optional text fields. */
 export function multipart(file: Buffer, fileName: string, fields: Record<string, string> = {}) {
-  const boundary = `----ie-ledger-${randomUUID()}`;
+  const boundary = `----geo-ie-accounting-${randomUUID()}`;
   const chunks: Buffer[] = [];
   for (const [name, value] of Object.entries(fields)) {
     chunks.push(

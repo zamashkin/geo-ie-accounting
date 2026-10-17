@@ -14,7 +14,7 @@ import {
   OrgParams,
   UpdateInvoiceRequest,
   VoidInvoiceRequest,
-} from '@ie-ledger/contracts';
+} from '@geo-ie-accounting/contracts';
 import {
   createInvoice,
   deleteInvoice,
@@ -33,15 +33,15 @@ import {
   type InvoicePatch,
   type InvoiceRow,
   type NewInvoiceLine,
-} from '@ie-ledger/db';
+} from '@geo-ie-accounting/db';
 import {
   assertIssuable,
   computeInvoiceTotals,
   DomainError,
   formatInvoiceNumber,
   resolveIssueDates,
-} from '@ie-ledger/domain';
-import { tbilisiDate } from '@ie-ledger/nbg';
+} from '@geo-ie-accounting/domain';
+import { tbilisiDate } from '@geo-ie-accounting/nbg';
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod';
 import { z } from 'zod';
 import { requireRole } from '../../plugins/authz';

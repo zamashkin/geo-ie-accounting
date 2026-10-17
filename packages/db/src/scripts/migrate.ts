@@ -6,7 +6,7 @@ const { DATABASE_URL } = loadDbEnv();
 const handle = createDb({
   connectionString: DATABASE_URL,
   max: 1,
-  applicationName: 'ie-ledger-migrate',
+  applicationName: 'geo-ie-accounting-migrate',
 });
 try {
   await runMigrations(handle.db);

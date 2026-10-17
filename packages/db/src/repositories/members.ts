@@ -1,4 +1,4 @@
-import type { Role } from '@ie-ledger/contracts';
+import type { Role } from '@geo-ie-accounting/contracts';
 import { and, asc, eq, gt, isNull, sql } from 'drizzle-orm';
 import type { DbOrTx } from '../client';
 import { invitations, memberships, organizations, users } from '../schema/index';

@@ -2,7 +2,7 @@
 // BoG GBP fixture (June 2025: income 5,698.66 GEL). NBG answers from fixtures/nbg/.
 import { readFileSync } from 'node:fs';
 import { randomUUID } from 'node:crypto';
-import { listAuditEntries, schema } from '@ie-ledger/db';
+import { listAuditEntries, schema } from '@geo-ie-accounting/db';
 import { eq } from 'drizzle-orm';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import {

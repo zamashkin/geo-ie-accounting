@@ -1,6 +1,6 @@
 'use client';
 
-import { Button, Dialog, DialogFooter, TextField, toast } from '@ie-ledger/ui';
+import { Button, Dialog, DialogFooter, TextField, toast } from '@geo-ie-accounting/ui';
 import { useMutation } from '@tanstack/react-query';
 import { Check, Copy, FileCheck2, Printer } from 'lucide-react';
 import { useRouter } from 'next/navigation';

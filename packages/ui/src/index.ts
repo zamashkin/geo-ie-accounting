@@ -1,5 +1,5 @@
-// packages/ui: the IE Ledger design system. Components only, no app logic.
-// Styles: import '@ie-ledger/ui/theme.css' after Tailwind (see src/styles/theme.css).
+// packages/ui: the geo-ie-accounting design system. Components only, no app logic.
+// Styles: import '@geo-ie-accounting/ui/theme.css' after Tailwind (see src/styles/theme.css).
 
 export { cx } from './lib/cx';
 

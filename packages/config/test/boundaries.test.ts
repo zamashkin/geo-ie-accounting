@@ -37,20 +37,20 @@ async function lint(pkg: PackageName, code: string, file = 'src/example.ts') {
 
 describe('workspace dependency rules (ARCHITECTURE §2)', () => {
   it('web importing db fails lint', async () => {
-    expect(await lint('web', "import { schema } from '@ie-ledger/db';\n")).toContain(
+    expect(await lint('web', "import { schema } from '@geo-ie-accounting/db';\n")).toContain(
       'no-restricted-imports',
     );
   });
 
   it('web importing a db subpath, or as a type, fails lint', async () => {
-    expect(await lint('web', "import type { Db } from '@ie-ledger/db/client';\n")).toContain(
-      'no-restricted-imports',
-    );
+    expect(
+      await lint('web', "import type { Db } from '@geo-ie-accounting/db/client';\n"),
+    ).toContain('no-restricted-imports');
   });
 
   it('web test files may not import db either', async () => {
     expect(
-      await lint('web', "import { schema } from '@ie-ledger/db';\n", 'src/page.test.ts'),
+      await lint('web', "import { schema } from '@geo-ie-accounting/db';\n", 'src/page.test.ts'),
     ).toContain('no-restricted-imports');
   });
 
@@ -63,9 +63,9 @@ describe('workspace dependency rules (ARCHITECTURE §2)', () => {
 
   it('web importing contracts, ui and domain passes', async () => {
     const code = [
-      "import { Money } from '@ie-ledger/contracts';",
-      "import { x } from '@ie-ledger/ui';",
-      "import { y } from '@ie-ledger/domain';",
+      "import { Money } from '@geo-ie-accounting/contracts';",
+      "import { x } from '@geo-ie-accounting/ui';",
+      "import { y } from '@geo-ie-accounting/domain';",
       '',
     ].join('\n');
     expect(await lint('web', code)).toEqual([]);
@@ -79,7 +79,7 @@ describe('workspace dependency rules (ARCHITECTURE §2)', () => {
   });
 
   it('domain importing anything from the workspace fails lint', async () => {
-    expect(await lint('domain', "import { z } from '@ie-ledger/contracts';\n")).toContain(
+    expect(await lint('domain', "import { z } from '@geo-ie-accounting/contracts';\n")).toContain(
       'no-restricted-imports',
     );
   });
@@ -104,7 +104,7 @@ describe('workspace dependency rules (ARCHITECTURE §2)', () => {
   });
 
   it('importers importing db fails lint', async () => {
-    expect(await lint('importers', "export { schema } from '@ie-ledger/db';\n")).toContain(
+    expect(await lint('importers', "export { schema } from '@geo-ie-accounting/db';\n")).toContain(
       'no-restricted-imports',
     );
   });
@@ -112,14 +112,14 @@ describe('workspace dependency rules (ARCHITECTURE §2)', () => {
   it('relative imports that leave the package fail lint', async () => {
     expect(
       await lint('web', "import { schema } from '../../../packages/db/src/index';\n"),
-    ).toContain('ie-ledger/no-cross-package-relative');
+    ).toContain('geo-ie-accounting/no-cross-package-relative');
     expect(await lint('web', "import { a } from './lib/a';\n")).toEqual([]);
   });
 
   it('dynamic imports are checked as well', async () => {
     expect(
       await lint('web', "export const m = () => import('../../../packages/db/src');\n"),
-    ).toContain('ie-ledger/no-cross-package-relative');
+    ).toContain('geo-ie-accounting/no-cross-package-relative');
   });
 });
 

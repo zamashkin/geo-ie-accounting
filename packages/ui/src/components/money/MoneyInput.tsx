@@ -1,6 +1,6 @@
 'use client';
 
-import { iso4217Exponent } from '@ie-ledger/domain';
+import { iso4217Exponent } from '@geo-ie-accounting/domain';
 import { useState } from 'react';
 import {
   Group,

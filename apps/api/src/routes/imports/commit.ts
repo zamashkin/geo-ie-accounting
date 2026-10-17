@@ -9,7 +9,7 @@ import {
   CommitImportResponse,
   ImportBatchParams,
   MutationHeaders,
-} from '@ie-ledger/contracts';
+} from '@geo-ie-accounting/contracts';
 import {
   findFingerprints,
   getImportBatch,
@@ -21,7 +21,7 @@ import {
   updateImportBatch,
   updateImportRow,
   type ExchangeRateRow,
-} from '@ie-ledger/db';
+} from '@geo-ie-accounting/db';
 import {
   BASE_CURRENCY,
   bankStatementLine,
@@ -29,7 +29,7 @@ import {
   dedupeHashes,
   money,
   parseRate,
-} from '@ie-ledger/domain';
+} from '@geo-ie-accounting/domain';
 import type { FastifyRequest } from 'fastify';
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod';
 import { requireRole } from '../../plugins/authz';

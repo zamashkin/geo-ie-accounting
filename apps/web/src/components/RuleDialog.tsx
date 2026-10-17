@@ -1,9 +1,9 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { CreateRuleRequest } from '@ie-ledger/contracts';
-import { SUPPORTED_CURRENCIES } from '@ie-ledger/domain';
-import { Button, Dialog, DialogFooter, MoneyInput, Select, TextField } from '@ie-ledger/ui';
+import { CreateRuleRequest } from '@geo-ie-accounting/contracts';
+import { SUPPORTED_CURRENCIES } from '@geo-ie-accounting/domain';
+import { Button, Dialog, DialogFooter, MoneyInput, Select, TextField } from '@geo-ie-accounting/ui';
 import { useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
 import { Controller, useForm, useWatch } from 'react-hook-form';

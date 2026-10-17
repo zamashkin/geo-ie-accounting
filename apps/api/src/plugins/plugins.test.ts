@@ -62,7 +62,7 @@ describe('guards without a session', () => {
       const res = await a.inject({
         method: 'POST',
         url: '/v1/orgs',
-        headers: { cookie: 'ie-ledger.session_token=x', ...(origin ? { origin } : {}) },
+        headers: { cookie: 'geo-ie-accounting.session_token=x', ...(origin ? { origin } : {}) },
         payload: { name: 'X' },
       });
       expect(res.statusCode).toBe(403);

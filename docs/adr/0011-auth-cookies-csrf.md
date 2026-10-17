@@ -9,7 +9,7 @@ Better Auth runs inside the API (ARCHITECTURE §1). Locally the web app is on `h
 
 **Endpoints.** Better Auth is mounted at `/v1/auth/*` (`basePath`), with Better Auth 1.7.7 pinned. That version cleared pnpm's minimum release age; 1.7.10 was a few hours old at the time. The methods are email + password (verification required before a password sign-in works), magic link (10 min, single use, token stored hashed) and password reset. IDs are UUID v7 from the app.
 
-**Cookie.** `ie-ledger.session_token` is httpOnly, `SameSite=Lax` and `Path=/`, and lasts 7 days, refreshed daily. Over HTTPS Better Auth adds `Secure` and the `__Secure-` prefix. Cookies ignore ports, so the cookie the API sets on `localhost:4000` is also sent to `localhost:3000`. `localhost:3000` and `localhost:4000` count as the same site, so `fetch(..., { credentials: 'include' })` from the web app carries it. CORS allows only `WEB_ORIGIN`, with credentials.
+**Cookie.** `geo-ie-accounting.session_token` is httpOnly, `SameSite=Lax` and `Path=/`, and lasts 7 days, refreshed daily. Over HTTPS Better Auth adds `Secure` and the `__Secure-` prefix. Cookies ignore ports, so the cookie the API sets on `localhost:4000` is also sent to `localhost:3000`. `localhost:3000` and `localhost:4000` count as the same site, so `fetch(..., { credentials: 'include' })` from the web app carries it. CORS allows only `WEB_ORIGIN`, with credentials.
 
 **Production.** Put web and API on sibling subdomains of one registrable domain, for example `app.example.ge` and `api.example.ge`. Set:
 

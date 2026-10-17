@@ -1,4 +1,4 @@
-import type { SelectOption } from '@ie-ledger/ui';
+import type { SelectOption } from '@geo-ie-accounting/ui';
 import type { Schemas } from './api/client';
 
 type Account = Schemas['Account'];

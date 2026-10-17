@@ -4,7 +4,7 @@
 // minus signs, Excel exponent notation. packages/domain's `parseDecimal` is deliberately strict
 // (canonical "1234.50" only, exact), so it cannot read bank exports; the step from digits to
 // minor units rounds with domain `round` and exponents come from domain `iso4217Exponent`.
-import { round } from '@ie-ledger/domain';
+import { round } from '@geo-ie-accounting/domain';
 
 /** A decimal split into sign and digit strings, e.g. "-1,180.5" -> { negative, "1180", "5" }. */
 export interface DecimalParts {

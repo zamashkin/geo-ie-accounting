@@ -1,7 +1,7 @@
 {
   "openapi": "3.1.0",
   "info": {
-    "title": "IE Ledger API",
+    "title": "geo-ie-accounting API",
     "description": "Bookkeeping and 1% small-business tax figures for Georgian individual entrepreneurs. Money amounts are integer minor units encoded as strings.",
     "version": "0.1.0"
   },

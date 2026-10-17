@@ -1,7 +1,7 @@
 // Invoices (WS-09): drafts, issue with gapless numbering, payments allocated from imported bank
 // transactions. Totals are computed by packages/domain and stored on the invoice for the list
 // aggregates; this module only stores and aggregates.
-import type { InvoiceStatus } from '@ie-ledger/contracts';
+import type { InvoiceStatus } from '@geo-ie-accounting/contracts';
 import { and, asc, desc, eq, inArray, lt, sql, type SQL } from 'drizzle-orm';
 import type { DbOrTx, Tx } from '../client';
 import {

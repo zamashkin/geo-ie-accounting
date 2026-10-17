@@ -5,7 +5,7 @@ import {
   MeResponse,
   type SignInBody,
   type SignUpBody,
-} from '@ie-ledger/contracts';
+} from '@geo-ie-accounting/contracts';
 import { networkError } from '../api/api-error';
 import { toApiError } from '../api/errors';
 import type { AuthClient } from './types';

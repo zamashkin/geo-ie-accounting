@@ -1,4 +1,4 @@
-import { HealthResponse } from '@ie-ledger/contracts';
+import { HealthResponse } from '@geo-ie-accounting/contracts';
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod';
 import { problemResponse } from '../problem';
 

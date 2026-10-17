@@ -10,7 +10,7 @@ import {
   type RatesFilter,
 } from './_lib/rates';
 
-export const metadata: Metadata = { title: 'NBG exchange rates · IE Ledger' };
+export const metadata: Metadata = { title: 'NBG exchange rates · geo-ie-accounting' };
 
 // Plain server-rendered page: the filter is a GET form, so it works without client JavaScript.
 // WS-04 restyles it with the UI kit.

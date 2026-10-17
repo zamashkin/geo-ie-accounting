@@ -1,4 +1,4 @@
-import { Badge, ButtonLink, Card, PageContainer, PageHeader, cx } from '@ie-ledger/ui';
+import { Badge, ButtonLink, Card, PageContainer, PageHeader, cx } from '@geo-ie-accounting/ui';
 import type { Metadata, Route } from 'next';
 import Link from 'next/link';
 import { Notice } from '@/components/Notice';

@@ -1,5 +1,5 @@
 import 'server-only';
-import { MeResponse } from '@ie-ledger/contracts';
+import { MeResponse } from '@geo-ie-accounting/contracts';
 import { cookies } from 'next/headers';
 import { cache } from 'react';
 import { serverEnv } from '@/env';

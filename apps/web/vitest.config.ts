@@ -1,5 +1,5 @@
 import { fileURLToPath } from 'node:url';
-import { unitConfig } from '@ie-ledger/config/vitest';
+import { unitConfig } from '@geo-ie-accounting/config/vitest';
 import { defineConfig, mergeConfig } from 'vitest/config';
 
 export default mergeConfig(

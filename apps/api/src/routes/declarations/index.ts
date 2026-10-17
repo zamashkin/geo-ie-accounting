@@ -11,22 +11,22 @@ import {
   MutationHeaders,
   OrgParams,
   YearQuery,
-} from '@ie-ledger/contracts';
+} from '@geo-ie-accounting/contracts';
 import {
   insertFiling,
   listContributingTransactions,
   listFilings,
   lockFilingPeriod,
   type DbOrTx,
-} from '@ie-ledger/db';
+} from '@geo-ie-accounting/db';
 import {
   diffTransactionIds,
   filingBlocker,
   firstDayOf,
   parsePeriod,
   ruleSetFor,
-} from '@ie-ledger/domain';
-import { tbilisiDate } from '@ie-ledger/nbg';
+} from '@geo-ie-accounting/domain';
+import { tbilisiDate } from '@geo-ie-accounting/nbg';
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod';
 import { z } from 'zod';
 import { requireRole } from '../../plugins/authz';

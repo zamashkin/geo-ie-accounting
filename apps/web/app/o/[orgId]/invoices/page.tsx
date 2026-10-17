@@ -1,5 +1,5 @@
-import { INVOICE_LIST_FILTERS, type InvoiceListFilter } from '@ie-ledger/contracts';
-import { ButtonLink, Card, cx, EmptyState, PageContainer, PageHeader } from '@ie-ledger/ui';
+import { INVOICE_LIST_FILTERS, type InvoiceListFilter } from '@geo-ie-accounting/contracts';
+import { ButtonLink, Card, cx, EmptyState, PageContainer, PageHeader } from '@geo-ie-accounting/ui';
 import { FileText, Plus } from 'lucide-react';
 import type { Metadata, Route } from 'next';
 import Link from 'next/link';

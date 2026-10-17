@@ -6,7 +6,7 @@ import { themeInitScript } from '@/lib/theme-script';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: { default: 'IE Ledger', template: '%s · IE Ledger' },
+  title: { default: 'geo-ie-accounting', template: '%s · geo-ie-accounting' },
   description:
     'Bookkeeping and 1% small-business tax figures for Georgian individual entrepreneurs.',
 };

@@ -1,7 +1,7 @@
 // Bank of Georgia XLSX statement (`Statement of Account` sheet). See bog/FORMAT.md.
 
-import type { ParsedRow, ParseOptions, StatementMeta } from '@ie-ledger/contracts';
-import { isCurrencyCode, iso4217Exponent } from '@ie-ledger/domain';
+import type { ParsedRow, ParseOptions, StatementMeta } from '@geo-ie-accounting/contracts';
+import { isCurrencyCode, iso4217Exponent } from '@geo-ie-accounting/domain';
 import { excelSerialToIso, parseDate } from '../lib/dates';
 import type { DecimalParts } from '../lib/decimal';
 import { isZero, parseAmountText, parsePlainNumber, toMinor } from '../lib/decimal';

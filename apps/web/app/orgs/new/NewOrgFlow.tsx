@@ -1,6 +1,6 @@
 'use client';
 
-import { Button, Card, Stepper, TextField } from '@ie-ledger/ui';
+import { Button, Card, Stepper, TextField } from '@geo-ie-accounting/ui';
 import type { Route } from 'next';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';

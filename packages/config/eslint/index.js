@@ -1,4 +1,4 @@
-// Shared ESLint flat config. Each package has an `eslint.config.js` that calls `ieLedger()`.
+// Shared ESLint flat config. Each package has an `eslint.config.js` that calls `geoIeAccounting()`.
 import js from '@eslint/js';
 import prettier from 'eslint-config-prettier';
 import globals from 'globals';
@@ -23,10 +23,10 @@ const MONEY_MESSAGE =
  * @param {import('eslint').Linter.Config[]} [options.extra] package specific entries
  * @returns {import('eslint').Linter.Config[]}
  */
-export function ieLedger({ pkg, root, typeChecked = true, extra = [] }) {
+export function geoIeAccounting({ pkg, root, typeChecked = true, extra = [] }) {
   return [
     {
-      name: 'ie-ledger/ignores',
+      name: 'geo-ie-accounting/ignores',
       ignores: [
         '**/node_modules/**',
         '**/dist/**',
@@ -41,7 +41,7 @@ export function ieLedger({ pkg, root, typeChecked = true, extra = [] }) {
     js.configs.recommended,
     ...(typeChecked ? tseslint.configs.strictTypeChecked : tseslint.configs.strict),
     {
-      name: 'ie-ledger/language',
+      name: 'geo-ie-accounting/language',
       languageOptions: {
         ecmaVersion: 2024,
         sourceType: 'module',
@@ -51,7 +51,7 @@ export function ieLedger({ pkg, root, typeChecked = true, extra = [] }) {
       linterOptions: { reportUnusedDisableDirectives: 'error' },
     },
     {
-      name: 'ie-ledger/rules',
+      name: 'geo-ie-accounting/rules',
       rules: {
         'no-restricted-globals': ['error', { name: 'parseFloat', message: MONEY_MESSAGE }],
         'no-restricted-properties': [
@@ -83,12 +83,12 @@ export function ieLedger({ pkg, root, typeChecked = true, extra = [] }) {
       },
     },
     {
-      name: 'ie-ledger/js-files',
+      name: 'geo-ie-accounting/js-files',
       files: ['**/*.{js,mjs,cjs}'],
       ...(typeChecked ? tseslint.configs.disableTypeChecked : {}),
     },
     {
-      name: 'ie-ledger/tests',
+      name: 'geo-ie-accounting/tests',
       files: ['**/*.test.ts', '**/test/**/*.ts'],
       rules: {
         '@typescript-eslint/no-non-null-assertion': 'off',

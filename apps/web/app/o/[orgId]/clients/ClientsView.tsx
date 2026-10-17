@@ -1,6 +1,6 @@
 'use client';
 
-import { Badge, Button, Card, EmptyState, SkeletonText } from '@ie-ledger/ui';
+import { Badge, Button, Card, EmptyState, SkeletonText } from '@geo-ie-accounting/ui';
 import { useQuery } from '@tanstack/react-query';
 import { Plus, Users } from 'lucide-react';
 import type { Route } from 'next';

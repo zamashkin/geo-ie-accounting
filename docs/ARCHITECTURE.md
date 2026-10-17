@@ -1,4 +1,4 @@
-# IE Ledger: architecture
+# geo-ie-accounting: architecture
 
 Read `SPEC.md` first. Decisions with alternatives considered live in `docs/adr/`.
 
@@ -28,7 +28,7 @@ Pin exact versions in M0 and record them in the root `package.json`. Agents must
 ## 2. Repository layout
 
 ```
-ie-ledger/
+geo-ie-accounting/
   apps/
     web/            Next.js app. UI only. No DB access. Talks to api over HTTP.
     api/            Fastify. Auth, HTTP routes, authorization, enqueues jobs, SSE.

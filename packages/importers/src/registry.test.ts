@@ -1,4 +1,4 @@
-import { PARSER_IDS, StatementDetection } from '@ie-ledger/contracts';
+import { PARSER_IDS, StatementDetection } from '@geo-ie-accounting/contracts';
 import { describe, expect, it } from 'vitest';
 import { buildXlsx } from './test/build-xlsx';
 import { detect, detectBest, MIN_CONFIDENCE, parserById, parsers } from './registry';

@@ -1,6 +1,6 @@
 'use client';
 
-import { IMPORT_MAX_FILE_BYTES } from '@ie-ledger/contracts';
+import { IMPORT_MAX_FILE_BYTES } from '@geo-ie-accounting/contracts';
 import {
   Badge,
   Button,
@@ -9,7 +9,7 @@ import {
   DataTable,
   EmptyState,
   FileDropzone,
-} from '@ie-ledger/ui';
+} from '@geo-ie-accounting/ui';
 import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { FileSpreadsheet, Upload } from 'lucide-react';
 import type { Route } from 'next';

@@ -7,9 +7,9 @@ import {
   FILING_STATUS_KINDS,
   OrgParams,
   type FilingStatusKind,
-} from '@ie-ledger/contracts';
-import { sbsIncomeByCounterparty, sbsIncomeByCurrency } from '@ie-ledger/db';
-import { tbilisiDate } from '@ie-ledger/nbg';
+} from '@geo-ie-accounting/contracts';
+import { sbsIncomeByCounterparty, sbsIncomeByCurrency } from '@geo-ie-accounting/db';
+import { tbilisiDate } from '@geo-ie-accounting/nbg';
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod';
 import { requireRole } from '../../plugins/authz';
 import { problemResponse } from '../../problem';

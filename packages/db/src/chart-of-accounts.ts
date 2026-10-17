@@ -1,4 +1,9 @@
-import type { AccountKind, Bank, IncomeClass, SystemAccountKey } from '@ie-ledger/contracts';
+import type {
+  AccountKind,
+  Bank,
+  IncomeClass,
+  SystemAccountKey,
+} from '@geo-ie-accounting/contracts';
 import type { DbOrTx } from './client';
 import { accounts } from './schema/index';
 

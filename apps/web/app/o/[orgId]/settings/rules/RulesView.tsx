@@ -9,7 +9,7 @@ import {
   EmptyState,
   SkeletonText,
   toast,
-} from '@ie-ledger/ui';
+} from '@geo-ie-accounting/ui';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { ArrowDown, ArrowUp, Pencil, Plus, Trash2, Wand2 } from 'lucide-react';
 import { useState } from 'react';

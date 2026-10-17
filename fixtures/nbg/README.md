@@ -35,5 +35,5 @@ File names are `<codes joined by ->_<requested date>.json`. Each body is NBG's J
   which would be in the future if it were really UTC. The client reads the clock time as UTC+04:00
   (Georgia has had no daylight saving time since 2005).
 
-To re-record, run `pnpm --filter @ie-ledger/nbg record-fixtures` and review the diff. Rates for past
+To re-record, run `pnpm --filter @geo-ie-accounting/nbg record-fixtures` and review the diff. Rates for past
 dates should not change.

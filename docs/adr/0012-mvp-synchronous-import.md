@@ -6,7 +6,7 @@ Status: accepted (MVP-A, 2026-10-16)
 ARCHITECTURE §6 sends an upload to S3 and parses and commits it in worker jobs, with SSE progress. The MVP (docs/MVP.md) needs a working import first. Statements are small: a month of BoG lines is a few kilobytes, and parsing takes milliseconds.
 
 ## Decision
-- `POST /v1/orgs/:orgId/imports` takes the file as multipart (one file, at most 5 MB), detects the format and parses it in the API process with `@ie-ledger/importers`. It stores the batch and the parsed rows in Postgres and never stores the file: `import_batches.file_key` is null.
+- `POST /v1/orgs/:orgId/imports` takes the file as multipart (one file, at most 5 MB), detects the format and parses it in the API process with `@geo-ie-accounting/importers`. It stores the batch and the parsed rows in Postgres and never stores the file: `import_batches.file_key` is null.
 - `POST /v1/orgs/:orgId/imports/:id/commit` books every remaining row in one request transaction.
 - Rates: a `preHandler` resolves every (currency, booked date) the batch needs with `resolveRate` before the request transaction opens, because `resolveRate` may call NBG. The handler inside the transaction only reads the resolved rows. `resolveRate` moved from the worker into `packages/db` with the rate source injected (`RateSource`, which `NbgClient` satisfies), so the API and the worker share one implementation without db importing nbg.
 - `api -> importers` is added to the dependency rules (`packages/config/eslint/boundaries.js`, ARCHITECTURE §2). Importers stay pure, so this adds no I/O to the API.

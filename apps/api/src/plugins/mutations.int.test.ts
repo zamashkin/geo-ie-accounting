@@ -1,4 +1,4 @@
-import { schema } from '@ie-ledger/db';
+import { schema } from '@geo-ie-accounting/db';
 import { and, eq } from 'drizzle-orm';
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';

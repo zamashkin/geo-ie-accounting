@@ -1,4 +1,4 @@
-import type { SystemAccountKey } from '@ie-ledger/contracts';
+import type { SystemAccountKey } from '@geo-ie-accounting/contracts';
 import { sql } from 'drizzle-orm';
 import {
   type AnyPgColumn,

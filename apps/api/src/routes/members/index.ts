@@ -13,7 +13,7 @@ import {
   PaginationQuery,
   Uuid,
   type InvitationStatus,
-} from '@ie-ledger/contracts';
+} from '@geo-ie-accounting/contracts';
 import {
   addMember,
   createInvitation,
@@ -29,7 +29,7 @@ import {
   normaliseEmail,
   revokeInvitation,
   type InvitationRow,
-} from '@ie-ledger/db';
+} from '@geo-ie-accounting/db';
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod';
 import { invitationMail } from '../../auth/emails';
 import type { Mailer } from '../../auth/mailer';

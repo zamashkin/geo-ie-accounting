@@ -33,7 +33,7 @@ export const ApiEnv = z
       .string()
       .regex(/^smtps?:\/\//)
       .default('smtp://localhost:1025'),
-    MAIL_FROM: z.string().min(3).default('IE Ledger <no-reply@ie-ledger.local>'),
+    MAIL_FROM: z.string().min(3).default('geo-ie-accounting <no-reply@geo-ie-accounting.local>'),
   })
   .refine((env) => env.NODE_ENV !== 'production' || env.BETTER_AUTH_SECRET !== undefined, {
     path: ['BETTER_AUTH_SECRET'],

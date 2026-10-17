@@ -1,4 +1,4 @@
-import { unitConfig } from '@ie-ledger/config/vitest';
+import { unitConfig } from '@geo-ie-accounting/config/vitest';
 import { defineConfig, mergeConfig } from 'vitest/config';
 
 // The domain is the money and tax core: `pnpm test` enforces coverage (WS-01 acceptance: ≥ 95%).

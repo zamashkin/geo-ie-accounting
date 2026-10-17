@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { ApiError, errorMessage, networkError, toApiError, unwrap } from './errors';
 
 const problem = {
-  type: 'https://ie-ledger.dev/problems/validation',
+  type: 'https://geo-ie-accounting.dev/problems/validation',
   title: 'Validation failed',
   status: 422,
   code: 'validation_failed',

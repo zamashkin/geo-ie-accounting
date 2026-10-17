@@ -1,6 +1,11 @@
-import type { CurrencyCode, IsoDate } from '@ie-ledger/contracts';
-import { listRates, upsertRates, type NewExchangeRate, type RateConflict } from '@ie-ledger/db';
-import { eachDay, type NbgRate } from '@ie-ledger/nbg';
+import type { CurrencyCode, IsoDate } from '@geo-ie-accounting/contracts';
+import {
+  listRates,
+  upsertRates,
+  type NewExchangeRate,
+  type RateConflict,
+} from '@geo-ie-accounting/db';
+import { eachDay, type NbgRate } from '@geo-ie-accounting/nbg';
 import type { Logger } from 'pino';
 import type { RatesDeps } from './deps';
 

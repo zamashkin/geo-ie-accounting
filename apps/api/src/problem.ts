@@ -3,7 +3,7 @@ import {
   Problem,
   type Problem as ProblemBody,
   type ProblemCode,
-} from '@ie-ledger/contracts';
+} from '@geo-ie-accounting/contracts';
 import type { FastifyError, FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
 import {
   hasZodFastifySchemaValidationErrors,
@@ -25,7 +25,7 @@ export class HttpProblem extends Error {
   }
 }
 
-export const problemType = (code: ProblemCode) => `urn:ie-ledger:problem:${code}`;
+export const problemType = (code: ProblemCode) => `urn:geo-ie-accounting:problem:${code}`;
 
 function body(
   req: FastifyRequest,

@@ -1,14 +1,14 @@
 // Suggested account of an import row: the first matching categorisation rule, else the fixed
 // MVP suggestions (incoming payment → SBS income, conversion → FX Clearing), else none.
-import type { OperationType } from '@ie-ledger/contracts';
+import type { OperationType } from '@geo-ie-accounting/contracts';
 import {
   getDefaultSbsIncomeAccount,
   getSystemAccount,
   listAccounts,
   listRules,
   type DbOrTx,
-} from '@ie-ledger/db';
-import { findMatchingRule } from '@ie-ledger/domain';
+} from '@geo-ie-accounting/db';
+import { findMatchingRule } from '@geo-ie-accounting/domain';
 
 export interface SuggestableRow {
   counterparty: string | null;

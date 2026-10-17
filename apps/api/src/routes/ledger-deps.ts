@@ -1,4 +1,4 @@
-import type { RateSource } from '@ie-ledger/db';
+import type { RateSource } from '@geo-ie-accounting/db';
 import { HttpProblem } from '../problem';
 
 /** What the ledger routes need beyond the database, injected so tests never call NBG. */

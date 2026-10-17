@@ -1,4 +1,4 @@
-import { Badge, type BadgeTone } from '@ie-ledger/ui';
+import { Badge, type BadgeTone } from '@geo-ie-accounting/ui';
 import type { Schemas } from '@/lib/api/client';
 
 export type FilingStatus = Schemas['FilingStatus'];

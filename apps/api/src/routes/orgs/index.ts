@@ -8,14 +8,14 @@ import {
   UpdateOrganizationRequest,
   Uuid,
   type Role,
-} from '@ie-ledger/contracts';
+} from '@geo-ie-accounting/contracts';
 import {
   createOrganization,
   getOrganizationForUser,
   listOrganizationsForUser,
   updateOrganization,
   type OrganizationRow,
-} from '@ie-ledger/db';
+} from '@geo-ie-accounting/db';
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod';
 import { requireAuth, requireRole } from '../../plugins/authz';
 import { HttpProblem, problemResponse } from '../../problem';

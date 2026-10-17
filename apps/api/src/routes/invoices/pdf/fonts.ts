@@ -9,10 +9,10 @@ export const FONT_FAMILY = ['NotoSans', 'NotoSansGeorgian'];
 
 /**
  * `apps/api/assets/fonts`: four levels up from this file under `tsx` (src/routes/invoices/pdf),
- * one level up from the esbuild bundle (dist/main.js). `IE_LEDGER_FONT_DIR` overrides both.
+ * one level up from the esbuild bundle (dist/main.js). `GEO_IE_ACCOUNTING_FONT_DIR` overrides both.
  */
 function fontDir(): string {
-  const override = process.env.IE_LEDGER_FONT_DIR;
+  const override = process.env.GEO_IE_ACCOUNTING_FONT_DIR;
   if (override) return override;
   const candidates = ['../../../../assets/fonts/', '../assets/fonts/'].map((rel) =>
     fileURLToPath(new URL(rel, import.meta.url)),

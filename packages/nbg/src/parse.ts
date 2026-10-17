@@ -1,4 +1,4 @@
-import { CurrencyCode, RateDecimal, type IsoDate } from '@ie-ledger/contracts';
+import { CurrencyCode, RateDecimal, type IsoDate } from '@geo-ie-accounting/contracts';
 import { z } from 'zod';
 import { NBG_UTC_OFFSET } from './dates';
 import { NbgResponseError } from './errors';

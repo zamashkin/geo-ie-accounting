@@ -1,4 +1,9 @@
-import { INCOME_CLASSES, PAYMENT_METHODS, ROLES, SYSTEM_ACCOUNT_KEYS } from '@ie-ledger/contracts';
+import {
+  INCOME_CLASSES,
+  PAYMENT_METHODS,
+  ROLES,
+  SYSTEM_ACCOUNT_KEYS,
+} from '@geo-ie-accounting/contracts';
 import { getTableConfig } from 'drizzle-orm/pg-core';
 import { describe, expect, it } from 'vitest';
 import { DEFAULT_CHART_OF_ACCOUNTS } from './chart-of-accounts';

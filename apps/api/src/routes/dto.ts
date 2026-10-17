@@ -5,15 +5,15 @@ import type {
   ImportBatch,
   ImportRowView,
   TransactionView,
-} from '@ie-ledger/contracts';
+} from '@geo-ie-accounting/contracts';
 import type {
   AccountRow,
   ImportBatchRow,
   ImportRowRow,
   RuleRow,
   TransactionDetail,
-} from '@ie-ledger/db';
-import { formatRate, parseRate } from '@ie-ledger/domain';
+} from '@geo-ie-accounting/db';
+import { formatRate, parseRate } from '@geo-ie-accounting/domain';
 import type { z } from 'zod';
 import { HttpProblem } from '../problem';
 

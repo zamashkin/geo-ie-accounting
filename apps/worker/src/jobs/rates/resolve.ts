@@ -1,5 +1,5 @@
-import type { CurrencyCode, IsoDate } from '@ie-ledger/contracts';
-import { resolveRate as resolveStoredRate, type ExchangeRateRow } from '@ie-ledger/db';
+import type { CurrencyCode, IsoDate } from '@geo-ie-accounting/contracts';
+import { resolveRate as resolveStoredRate, type ExchangeRateRow } from '@geo-ie-accounting/db';
 import type { RatesDeps } from './deps';
 
 /**

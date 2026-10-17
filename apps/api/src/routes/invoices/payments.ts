@@ -13,7 +13,7 @@ import {
   TransactionInvoiceHints,
   TransactionParams,
   type InvoiceHint,
-} from '@ie-ledger/contracts';
+} from '@geo-ie-accounting/contracts';
 import {
   deleteInvoicePayment,
   getImportBatch,
@@ -30,15 +30,15 @@ import {
   updateInvoice,
   type DbOrTx,
   type OpenInvoice,
-} from '@ie-ledger/db';
+} from '@geo-ie-accounting/db';
 import {
   compareMatches,
   invoiceOutstanding,
   isFullyPaid,
   scorePaymentMatch,
   type MatchablePayment,
-} from '@ie-ledger/domain';
-import { tbilisiDate } from '@ie-ledger/nbg';
+} from '@geo-ie-accounting/domain';
+import { tbilisiDate } from '@geo-ie-accounting/nbg';
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod';
 import { requireRole } from '../../plugins/authz';
 import { HttpProblem, problemResponse } from '../../problem';

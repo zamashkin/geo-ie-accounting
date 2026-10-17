@@ -25,7 +25,7 @@ async function startContainer(): Promise<TestDatabase> {
   const { PostgreSqlContainer } = await import('@testcontainers/postgresql');
   const container = await new PostgreSqlContainer(TEST_POSTGRES_IMAGE).start();
   const connectionString = container.getConnectionUri();
-  const handle = createDb({ connectionString, max: 5, applicationName: 'ie-ledger-test' });
+  const handle = createDb({ connectionString, max: 5, applicationName: 'geo-ie-accounting-test' });
   await runMigrations(handle.db);
   return {
     ...handle,
@@ -38,7 +38,7 @@ async function startContainer(): Promise<TestDatabase> {
 }
 
 async function createOnServer(serverUrl: string): Promise<TestDatabase> {
-  const name = `ie_ledger_test_${randomUUID().replaceAll('-', '')}`;
+  const name = `geo_ie_accounting_test_${randomUUID().replaceAll('-', '')}`;
   const admin = new pg.Client({ connectionString: serverUrl });
   await admin.connect();
   try {
@@ -49,7 +49,7 @@ async function createOnServer(serverUrl: string): Promise<TestDatabase> {
   const url = new URL(serverUrl);
   url.pathname = `/${name}`;
   const connectionString = url.toString();
-  const handle = createDb({ connectionString, max: 5, applicationName: 'ie-ledger-test' });
+  const handle = createDb({ connectionString, max: 5, applicationName: 'geo-ie-accounting-test' });
   await runMigrations(handle.db);
   return {
     ...handle,

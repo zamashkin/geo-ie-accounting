@@ -7,7 +7,7 @@ import type {
   InvoiceSnapshot,
   InvoiceSummary,
   InvoiceView,
-} from '@ie-ledger/contracts';
+} from '@geo-ie-accounting/contracts';
 import {
   getAccount,
   getClient,
@@ -20,14 +20,14 @@ import {
   type DbOrTx,
   type InvoiceListRow,
   type OrganizationRow,
-} from '@ie-ledger/db';
+} from '@geo-ie-accounting/db';
 import {
   computeInvoiceTotals,
   invoiceOutstanding,
   isInvoiceOverdue,
   isSupportedCurrency,
   SUPPORTED_CURRENCIES,
-} from '@ie-ledger/domain';
+} from '@geo-ie-accounting/domain';
 import { HttpProblem } from '../../problem';
 import { isBankAccount } from '../dto';
 

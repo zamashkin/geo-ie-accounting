@@ -1,9 +1,9 @@
 // Test support for API integration tests (`*.int.test.ts`): a real Postgres (see
 // packages/db/src/testing), the full app, an in-memory mail outbox and session helpers.
-import type { RateSource } from '@ie-ledger/db';
-import { startTestDatabase, type TestDatabase } from '@ie-ledger/db/testing';
-import { createNbgClient } from '@ie-ledger/nbg';
-import { createFixtureFetch } from '@ie-ledger/nbg/testing';
+import type { RateSource } from '@geo-ie-accounting/db';
+import { startTestDatabase, type TestDatabase } from '@geo-ie-accounting/db/testing';
+import { createNbgClient } from '@geo-ie-accounting/nbg';
+import { createFixtureFetch } from '@geo-ie-accounting/nbg/testing';
 import type { InjectOptions, LightMyRequestResponse } from 'fastify';
 import { uuidv7 } from 'uuidv7';
 import { buildApp, type App } from '../app';

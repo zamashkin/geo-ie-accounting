@@ -1,5 +1,10 @@
-import type { JobPayload } from '@ie-ledger/contracts';
-import { listRates, type Db, type ExchangeRateRow, type ListRatesOptions } from '@ie-ledger/db';
+import type { JobPayload } from '@geo-ie-accounting/contracts';
+import {
+  listRates,
+  type Db,
+  type ExchangeRateRow,
+  type ListRatesOptions,
+} from '@geo-ie-accounting/db';
 import { PgBoss } from 'pg-boss';
 import { z } from 'zod';
 
@@ -58,7 +63,7 @@ export function createRatesRouteDeps({
     (boss ??= (async () => {
       const b = new PgBoss({
         connectionString,
-        application_name: 'ie-ledger-api',
+        application_name: 'geo-ie-accounting-api',
         supervise: false,
         schedule: false,
       });

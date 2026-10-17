@@ -1,4 +1,4 @@
-import type { InvoiceSnapshot } from '@ie-ledger/contracts';
+import type { InvoiceSnapshot } from '@geo-ie-accounting/contracts';
 import { sql } from 'drizzle-orm';
 import {
   char,

@@ -43,7 +43,9 @@ function Shell() {
   const [theme, setTheme] = useState<ThemePreference>('system');
   return (
     <AppShell
-      brand={<span className="text-base font-semibold tracking-tight text-fg">IE Ledger</span>}
+      brand={
+        <span className="text-base font-semibold tracking-tight text-fg">geo-ie-accounting</span>
+      }
       orgSwitcher={
         <OrgSwitcher
           orgs={[

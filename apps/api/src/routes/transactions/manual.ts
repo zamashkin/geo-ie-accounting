@@ -1,7 +1,7 @@
 // Manual transactions (WS-06): request → domain event builder → TransactionDraft. Accounts are
 // checked here (kind, currency, archived); the arithmetic and the balance check are domain's.
-import type { CreateTransactionRequest, TransactionPreview } from '@ie-ledger/contracts';
-import type { AccountRow, ExchangeRateRow } from '@ie-ledger/db';
+import type { CreateTransactionRequest, TransactionPreview } from '@geo-ie-accounting/contracts';
+import type { AccountRow, ExchangeRateRow } from '@geo-ie-accounting/db';
 import {
   BASE_CURRENCY,
   DomainError,
@@ -19,7 +19,7 @@ import {
   transfer,
   type RateSnapshot,
   type TransactionDraft,
-} from '@ie-ledger/domain';
+} from '@geo-ie-accounting/domain';
 import { HttpProblem } from '../../problem';
 import { isBankAccount } from '../dto';
 

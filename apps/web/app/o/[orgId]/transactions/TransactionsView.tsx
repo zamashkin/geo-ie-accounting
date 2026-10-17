@@ -10,7 +10,7 @@ import {
   EmptyState,
   Select,
   TextField,
-} from '@ie-ledger/ui';
+} from '@geo-ie-accounting/ui';
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 import { ArrowLeftRight } from 'lucide-react';
 import { useCallback, useEffect, useMemo, useState } from 'react';

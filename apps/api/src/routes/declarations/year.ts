@@ -6,7 +6,7 @@ import type {
   FiledFigures as FiledFiguresDto,
   FilingStatus as FilingStatusDto,
   FilingSummary,
-} from '@ie-ledger/contracts';
+} from '@geo-ie-accounting/contracts';
 import {
   getOrganizationForUser,
   latestFilingsForYear,
@@ -15,7 +15,7 @@ import {
   type DbOrTx,
   type DeclarationFilingRow,
   type DeclarationFilingWithFiler,
-} from '@ie-ledger/db';
+} from '@geo-ie-accounting/db';
 import {
   annualLimitStatus,
   annualLimitUsageBp,
@@ -26,7 +26,7 @@ import {
   type FiledFigures,
   type FilingStatus,
   type MonthDeclaration,
-} from '@ie-ledger/domain';
+} from '@geo-ie-accounting/domain';
 import { HttpProblem } from '../../problem';
 
 export function filedFiguresOf(row: DeclarationFilingRow): FiledFigures {

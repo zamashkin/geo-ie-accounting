@@ -1,5 +1,5 @@
 {
-  "name": "@ie-ledger/web",
+  "name": "@geo-ie-accounting/web",
   "version": "0.0.0",
   "private": true,
   "type": "module",
@@ -16,9 +16,9 @@
   },
   "dependencies": {
     "@hookform/resolvers": "5.9.1",
-    "@ie-ledger/contracts": "workspace:*",
-    "@ie-ledger/domain": "workspace:*",
-    "@ie-ledger/ui": "workspace:*",
+    "@geo-ie-accounting/contracts": "workspace:*",
+    "@geo-ie-accounting/domain": "workspace:*",
+    "@geo-ie-accounting/ui": "workspace:*",
     "@tanstack/react-query": "5.104.2",
     "lucide-react": "1.56.0",
     "next": "16.4.1",
@@ -31,7 +31,7 @@
   },
   "devDependencies": {
     "@axe-core/playwright": "4.14.0",
-    "@ie-ledger/config": "workspace:*",
+    "@geo-ie-accounting/config": "workspace:*",
     "@next/eslint-plugin-next": "16.4.1",
     "@playwright/test": "1.64.1",
     "@tailwindcss/postcss": "4.3.3",

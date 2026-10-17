@@ -1,5 +1,5 @@
-import { MeResponse } from '@ie-ledger/contracts';
-import { listOrganizationsForUser } from '@ie-ledger/db';
+import { MeResponse } from '@geo-ie-accounting/contracts';
+import { listOrganizationsForUser } from '@geo-ie-accounting/db';
 import { fromNodeHeaders } from 'better-auth/node';
 import type { FastifyPluginAsync } from 'fastify';
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod';

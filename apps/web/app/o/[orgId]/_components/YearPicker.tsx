@@ -1,6 +1,6 @@
 'use client';
 
-import { Select } from '@ie-ledger/ui';
+import { Select } from '@geo-ie-accounting/ui';
 import type { Route } from 'next';
 import { usePathname, useRouter } from 'next/navigation';
 import { useTransition } from 'react';

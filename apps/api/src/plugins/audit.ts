@@ -1,4 +1,4 @@
-import { insertAuditEntry } from '@ie-ledger/db';
+import { insertAuditEntry } from '@geo-ie-accounting/db';
 import type { FastifyInstance, FastifyRequest } from 'fastify';
 
 // req.audit(entity, id, before, after) writes one audit_log row inside req.tx, with the

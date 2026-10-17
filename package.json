@@ -1,5 +1,5 @@
 {
-  "name": "ie-ledger",
+  "name": "geo-ie-accounting",
   "private": true,
   "type": "module",
   "packageManager": "pnpm@11.21.0",
@@ -16,15 +16,15 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "env:init": "node scripts/init-env.mjs",
-    "db:generate": "pnpm --filter @ie-ledger/db db:generate",
-    "db:migrate": "pnpm --filter @ie-ledger/db db:migrate",
-    "db:seed": "pnpm --filter @ie-ledger/db db:seed",
-    "gen:api": "pnpm --filter @ie-ledger/api openapi && pnpm --filter @ie-ledger/web gen:api",
-    "e2e": "pnpm --filter @ie-ledger/web e2e"
+    "db:generate": "pnpm --filter @geo-ie-accounting/db db:generate",
+    "db:migrate": "pnpm --filter @geo-ie-accounting/db db:migrate",
+    "db:seed": "pnpm --filter @geo-ie-accounting/db db:seed",
+    "gen:api": "pnpm --filter @geo-ie-accounting/api openapi && pnpm --filter @geo-ie-accounting/web gen:api",
+    "e2e": "pnpm --filter @geo-ie-accounting/web e2e"
   },
-  "prettier": "@ie-ledger/config/prettier",
+  "prettier": "@geo-ie-accounting/config/prettier",
   "devDependencies": {
-    "@ie-ledger/config": "workspace:*",
+    "@geo-ie-accounting/config": "workspace:*",
     "prettier": "3.9.10",
     "turbo": "2.11.8",
     "typescript": "6.0.3"

@@ -1,4 +1,4 @@
-import { jobPayloads, type JobName, type JobPayload } from '@ie-ledger/contracts';
+import { jobPayloads, type JobName, type JobPayload } from '@geo-ie-accounting/contracts';
 import type { Job, PgBoss, Queue } from 'pg-boss';
 import type { Logger } from 'pino';
 

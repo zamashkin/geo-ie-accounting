@@ -5,8 +5,8 @@ import type {
   IncomeClass,
   SystemAccountKey,
   TransactionSource,
-} from '@ie-ledger/contracts';
-import type { TransactionDraft } from '@ie-ledger/domain';
+} from '@geo-ie-accounting/contracts';
+import type { TransactionDraft } from '@geo-ie-accounting/domain';
 import { and, desc, eq, exists, gte, ilike, inArray, lt, lte, or, sql } from 'drizzle-orm';
 import type { DbOrTx, Tx } from '../client';
 import { accounts, exchangeRates, importRows, postings, transactions } from '../schema/index';

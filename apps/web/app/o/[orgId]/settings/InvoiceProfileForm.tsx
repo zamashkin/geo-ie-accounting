@@ -1,7 +1,7 @@
 'use client';
 
-import { formatInvoiceNumber, INVOICE_PREFIX_PATTERN } from '@ie-ledger/domain';
-import { Button, TextField, toast } from '@ie-ledger/ui';
+import { formatInvoiceNumber, INVOICE_PREFIX_PATTERN } from '@geo-ie-accounting/domain';
+import { Button, TextField, toast } from '@geo-ie-accounting/ui';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { FormAlert } from '@/components/form-helpers';

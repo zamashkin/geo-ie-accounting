@@ -1,4 +1,8 @@
-import type { GenericCsvMapping, ImportBatchStats, ParseWarning } from '@ie-ledger/contracts';
+import type {
+  GenericCsvMapping,
+  ImportBatchStats,
+  ParseWarning,
+} from '@geo-ie-accounting/contracts';
 import { sql } from 'drizzle-orm';
 import {
   boolean,

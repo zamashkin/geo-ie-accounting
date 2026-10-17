@@ -2,9 +2,9 @@
 // 409 already committed, 503 NBG unavailable) and the bank-GEL cross-check. Uses a hand-made statement (no real data) with one incoming payment whose printed GEL
 // equivalent is 5 tetri off the NBG conversion, and one bank fee that gets no suggestion.
 import { readFileSync } from 'node:fs';
-import { listAuditEntries } from '@ie-ledger/db';
-import { createNbgClient } from '@ie-ledger/nbg';
-import { createFixtureFetch } from '@ie-ledger/nbg/testing';
+import { listAuditEntries } from '@geo-ie-accounting/db';
+import { createNbgClient } from '@geo-ie-accounting/nbg';
+import { createFixtureFetch } from '@geo-ie-accounting/nbg/testing';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import {
   as,

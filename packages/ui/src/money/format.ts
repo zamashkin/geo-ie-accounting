@@ -8,7 +8,7 @@
 //
 // Everything here works on bigint minor units and decimal strings. No JS numbers touch an
 // amount: Intl.NumberFormat formats an exact decimal string (ECMA-402 "Intl.NumberFormat v3").
-import { formatDecimal, iso4217Exponent } from '@ie-ledger/domain';
+import { formatDecimal, iso4217Exponent } from '@geo-ie-accounting/domain';
 
 export const DEFAULT_LOCALE = 'en-GB';
 

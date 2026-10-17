@@ -1,4 +1,4 @@
-import type { SelectOption } from '@ie-ledger/ui';
+import type { SelectOption } from '@geo-ie-accounting/ui';
 import type { ApiError } from '@/lib/api/api-error';
 import type { Schemas } from '@/lib/api/client';
 

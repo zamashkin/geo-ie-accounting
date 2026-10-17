@@ -1,4 +1,4 @@
-import { CreateTransactionRequest } from '@ie-ledger/contracts';
+import { CreateTransactionRequest } from '@geo-ie-accounting/contracts';
 import type { FieldErrors, Resolver } from 'react-hook-form';
 import { set } from 'react-hook-form';
 import type { CreateTransactionInput } from '@/lib/api/ledger';

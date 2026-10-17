@@ -1,5 +1,5 @@
 {
-  "name": "@ie-ledger/contracts",
+  "name": "@geo-ie-accounting/contracts",
   "version": "0.0.0",
   "private": true,
   "description": "Zod schemas for every request, response, job payload and event. Source of truth.",
@@ -16,7 +16,7 @@
     "zod": "4.6.7"
   },
   "devDependencies": {
-    "@ie-ledger/config": "workspace:*",
+    "@geo-ie-accounting/config": "workspace:*",
     "eslint": "10.12.0",
     "typescript": "6.0.3",
     "vitest": "5.0.5"

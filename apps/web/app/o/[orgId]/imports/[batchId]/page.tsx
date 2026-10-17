@@ -1,5 +1,5 @@
-import { Uuid } from '@ie-ledger/contracts';
-import { PageContainer } from '@ie-ledger/ui';
+import { Uuid } from '@geo-ie-accounting/contracts';
+import { PageContainer } from '@geo-ie-accounting/ui';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { canWrite, orgRole } from '@/lib/auth/role';

@@ -8,7 +8,7 @@ import {
   MutationHeaders,
   OrgParams,
   UpdateClientRequest,
-} from '@ie-ledger/contracts';
+} from '@geo-ie-accounting/contracts';
 import {
   clientInvoiceStats,
   createClient,
@@ -18,8 +18,8 @@ import {
   type ClientPatch,
   type ClientRow,
   type ClientInvoiceStats,
-} from '@ie-ledger/db';
-import { tbilisiDate } from '@ie-ledger/nbg';
+} from '@geo-ie-accounting/db';
+import { tbilisiDate } from '@geo-ie-accounting/nbg';
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod';
 import { requireRole } from '../../plugins/authz';
 import { HttpProblem, problemResponse } from '../../problem';

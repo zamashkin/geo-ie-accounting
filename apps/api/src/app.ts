@@ -8,7 +8,7 @@ import {
   type ZodTypeProvider,
 } from 'fastify-type-provider-zod';
 import { jsonSchemaTransform, jsonSchemaTransformObject } from './openapi';
-import type { Db } from '@ie-ledger/db';
+import type { Db } from '@geo-ie-accounting/db';
 import type { AuthSettings } from './auth/better-auth';
 import type { Mailer } from './auth/mailer';
 import { DEV_AUTH_SETTINGS, registerPlatform } from './plugins/index';
@@ -86,7 +86,7 @@ export async function buildApp(config: AppConfig, deps: AppDeps) {
     openapi: {
       openapi: '3.1.0',
       info: {
-        title: 'IE Ledger API',
+        title: 'geo-ie-accounting API',
         description:
           'Bookkeeping and 1% small-business tax figures for Georgian individual entrepreneurs. ' +
           'Money amounts are integer minor units encoded as strings.',

@@ -5,10 +5,10 @@ import type {
   ParsedRow,
   ParseOptions,
   StatementMeta,
-} from '@ie-ledger/contracts';
+} from '@geo-ie-accounting/contracts';
 import type { Delimiter } from '../lib/csv';
 import { isBlankRecord, parseCsv, sniffDelimiter } from '../lib/csv';
-import { isCurrencyCode, iso4217Exponent } from '@ie-ledger/domain';
+import { isCurrencyCode, iso4217Exponent } from '@geo-ie-accounting/domain';
 import { parseDate } from '../lib/dates';
 import type { DecimalParts } from '../lib/decimal';
 import { isZero, parseAmountText, toMinor } from '../lib/decimal';

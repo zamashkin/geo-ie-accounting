@@ -1,4 +1,4 @@
-import { ieLedger } from '@ie-ledger/config/eslint';
+import { geoIeAccounting } from '@geo-ie-accounting/config/eslint';
 import jsxA11y from 'eslint-plugin-jsx-a11y-x';
 import reactHooks from 'eslint-plugin-react-hooks';
 import storybook from 'eslint-plugin-storybook';
@@ -7,7 +7,7 @@ import globals from 'globals';
 // a11y lint: eslint-plugin-jsx-a11y does not declare ESLint 10 support, so we use its
 // maintained fork eslint-plugin-jsx-a11y-x (same rules, ESLint 9/10 flat config). Static
 // rules catch only part of the problem; axe runs on every story in `pnpm test:storybook`.
-export default ieLedger({
+export default geoIeAccounting({
   pkg: 'ui',
   root: import.meta.dirname,
   extra: [

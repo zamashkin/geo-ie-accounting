@@ -1,8 +1,8 @@
 /*
- * Tailwind CSS 4 preset for IE Ledger. Import it after Tailwind:
+ * Tailwind CSS 4 preset for geo-ie-accounting. Import it after Tailwind:
  *
  *   @import 'tailwindcss';
- *   @import '@ie-ledger/ui/theme.css';
+ *   @import '@geo-ie-accounting/ui/theme.css';
  *
  * It maps the design tokens to Tailwind theme variables (bg-surface, text-fg-muted,
  * border-line, ...), registers the ui sources so their classes are generated, and sets

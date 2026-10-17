@@ -6,7 +6,7 @@ import {
   PageHeader,
   Skeleton,
   SkeletonText,
-} from '@ie-ledger/ui';
+} from '@geo-ie-accounting/ui';
 import { Upload } from 'lucide-react';
 import type { Metadata, Route } from 'next';
 import Link from 'next/link';

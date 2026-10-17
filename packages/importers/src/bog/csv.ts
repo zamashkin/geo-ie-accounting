@@ -4,10 +4,15 @@
 // keyboard mapping). They are matched exactly and case-sensitively: `T` and `t` are different
 // Georgian letters (`TariRi` = თარიღი, date).
 
-import type { OperationType, ParsedRow, ParseOptions, StatementMeta } from '@ie-ledger/contracts';
+import type {
+  OperationType,
+  ParsedRow,
+  ParseOptions,
+  StatementMeta,
+} from '@geo-ie-accounting/contracts';
 import type { CsvRecord } from '../lib/csv';
 import { isBlankRecord, parseCsv } from '../lib/csv';
-import { isCurrencyCode } from '@ie-ledger/domain';
+import { isCurrencyCode } from '@geo-ie-accounting/domain';
 import { parseDate } from '../lib/dates';
 import type { DecimalParts } from '../lib/decimal';
 import { isZero, parseAmountText } from '../lib/decimal';

@@ -1,4 +1,4 @@
-import { startTestDatabase, type TestDatabase } from '@ie-ledger/db/testing';
+import { startTestDatabase, type TestDatabase } from '@geo-ie-accounting/db/testing';
 import { pino } from 'pino';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { defineJob } from './jobs/define';

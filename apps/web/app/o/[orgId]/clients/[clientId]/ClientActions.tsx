@@ -1,6 +1,6 @@
 'use client';
 
-import { Button, ButtonLink, toast } from '@ie-ledger/ui';
+import { Button, ButtonLink, toast } from '@geo-ie-accounting/ui';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Archive, ArchiveRestore, Pencil, Plus } from 'lucide-react';
 import { useRouter } from 'next/navigation';

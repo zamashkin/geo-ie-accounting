@@ -1,5 +1,5 @@
-import { ListRatesResponse, Problem, type JobPayload } from '@ie-ledger/contracts';
-import type { ExchangeRateRow, ListRatesOptions } from '@ie-ledger/db';
+import { ListRatesResponse, Problem, type JobPayload } from '@geo-ie-accounting/contracts';
+import type { ExchangeRateRow, ListRatesOptions } from '@geo-ie-accounting/db';
 import { afterEach, describe, expect, it } from 'vitest';
 import { buildApp, type App } from '../../app';
 import { encodeRatesCursor, QueueUnavailableError, type RatesRouteDeps } from './index';

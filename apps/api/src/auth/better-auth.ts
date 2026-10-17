@@ -1,4 +1,4 @@
-import { schema, type Db } from '@ie-ledger/db';
+import { schema, type Db } from '@geo-ie-accounting/db';
 import { betterAuth } from 'better-auth';
 import { drizzleAdapter } from 'better-auth/adapters/drizzle';
 import { magicLink } from 'better-auth/plugins/magic-link';
@@ -10,8 +10,8 @@ import type { Mailer } from './mailer';
 /** Better Auth's endpoints live under the API's versioned base path. */
 export const AUTH_BASE_PATH = '/v1/auth';
 
-/** Session cookie name prefix: `ie-ledger.session_token` (`__Secure-` prefixed over HTTPS). */
-export const COOKIE_PREFIX = 'ie-ledger';
+/** Session cookie name prefix: `geo-ie-accounting.session_token` (`__Secure-` prefixed over HTTPS). */
+export const COOKIE_PREFIX = 'geo-ie-accounting';
 
 export interface AuthSettings {
   /** Public URL of the API (Better Auth `baseURL`). */
@@ -37,7 +37,7 @@ const DAY = 24 * 60 * 60;
 
 export function createAuth(opts: CreateAuthOptions) {
   return betterAuth({
-    appName: 'IE Ledger',
+    appName: 'geo-ie-accounting',
     baseURL: opts.baseUrl,
     basePath: AUTH_BASE_PATH,
     secret: opts.secret,

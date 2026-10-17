@@ -19,7 +19,7 @@ export async function startWorker({
   log,
   jobs,
 }: WorkerOptions): Promise<RunningWorker> {
-  const boss = new PgBoss({ connectionString, application_name: 'ie-ledger-worker' });
+  const boss = new PgBoss({ connectionString, application_name: 'geo-ie-accounting-worker' });
   boss.on('error', (err) => {
     log.error({ err }, 'pg-boss error');
   });

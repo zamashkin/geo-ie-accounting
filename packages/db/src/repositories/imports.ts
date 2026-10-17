@@ -1,6 +1,10 @@
 // Import batches, their parsed rows and the dedupe fingerprints (ARCHITECTURE §6). Rows hold
 // statement data: never log them.
-import type { ImportBatchStatus, ImportBatchStats, ImportRowStatus } from '@ie-ledger/contracts';
+import type {
+  ImportBatchStatus,
+  ImportBatchStats,
+  ImportRowStatus,
+} from '@geo-ie-accounting/contracts';
 import { and, asc, desc, eq, gt, inArray, lt, or } from 'drizzle-orm';
 import type { DbOrTx, Tx } from '../client';
 import { importBatches, importRows, transactionFingerprints } from '../schema/index';

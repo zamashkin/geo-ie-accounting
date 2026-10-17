@@ -1,4 +1,4 @@
-import { DEMO, seedDemo } from '@ie-ledger/db';
+import { DEMO, seedDemo } from '@geo-ie-accounting/db';
 import { uuidv7 } from 'uuidv7';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import {
@@ -51,7 +51,7 @@ describe('email + password', () => {
     const res = await signIn(email, PASSWORD);
     expect(res.statusCode).toBe(200);
     const setCookie = String(res.headers['set-cookie']);
-    expect(setCookie).toMatch(/ie-ledger\.session_token=/);
+    expect(setCookie).toMatch(/geo-ie-accounting\.session_token=/);
     expect(setCookie).toMatch(/HttpOnly/i);
     expect(setCookie).toMatch(/SameSite=Lax/i);
 

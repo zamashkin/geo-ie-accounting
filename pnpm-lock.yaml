@@ -8,7 +8,7 @@ importers:
 
   .:
     devDependencies:
-      '@ie-ledger/config':
+      '@geo-ie-accounting/config':
         specifier: workspace:*
         version: link:packages/config
       prettier:
@@ -32,19 +32,19 @@ importers:
       '@fastify/swagger':
         specifier: 9.9.2
         version: 9.9.2(supports-color@10.2.2)
-      '@ie-ledger/contracts':
+      '@geo-ie-accounting/contracts':
         specifier: workspace:*
         version: link:../../packages/contracts
-      '@ie-ledger/db':
+      '@geo-ie-accounting/db':
         specifier: workspace:*
         version: link:../../packages/db
-      '@ie-ledger/domain':
+      '@geo-ie-accounting/domain':
         specifier: workspace:*
         version: link:../../packages/domain
-      '@ie-ledger/importers':
+      '@geo-ie-accounting/importers':
         specifier: workspace:*
         version: link:../../packages/importers
-      '@ie-ledger/nbg':
+      '@geo-ie-accounting/nbg':
         specifier: workspace:*
         version: link:../../packages/nbg
       '@react-pdf/renderer':
@@ -81,7 +81,7 @@ importers:
         specifier: 4.6.7
         version: 4.6.7
     devDependencies:
-      '@ie-ledger/config':
+      '@geo-ie-accounting/config':
         specifier: workspace:*
         version: link:../../packages/config
       '@types/node':
@@ -111,18 +111,18 @@ importers:
 
   apps/web:
     dependencies:
+      '@geo-ie-accounting/contracts':
+        specifier: workspace:*
+        version: link:../../packages/contracts
+      '@geo-ie-accounting/domain':
+        specifier: workspace:*
+        version: link:../../packages/domain
+      '@geo-ie-accounting/ui':
+        specifier: workspace:*
+        version: link:../../packages/ui
       '@hookform/resolvers':
         specifier: 5.9.1
         version: 5.9.1(@standard-schema/spec@1.1.0)(ajv@8.20.0)(react-hook-form@7.90.0(@types/react@19.3.0)(react@19.3.1))(zod@4.6.7)
-      '@ie-ledger/contracts':
-        specifier: workspace:*
-        version: link:../../packages/contracts
-      '@ie-ledger/domain':
-        specifier: workspace:*
-        version: link:../../packages/domain
-      '@ie-ledger/ui':
-        specifier: workspace:*
-        version: link:../../packages/ui
       '@tanstack/react-query':
         specifier: 5.104.2
         version: 5.104.2(react@19.3.1)
@@ -154,7 +154,7 @@ importers:
       '@axe-core/playwright':
         specifier: 4.14.0
         version: 4.14.0(playwright-core@1.64.1)
-      '@ie-ledger/config':
+      '@geo-ie-accounting/config':
         specifier: workspace:*
         version: link:../../packages/config
       '@next/eslint-plugin-next':
@@ -202,19 +202,19 @@ importers:
 
   apps/worker:
     dependencies:
-      '@ie-ledger/contracts':
+      '@geo-ie-accounting/contracts':
         specifier: workspace:*
         version: link:../../packages/contracts
-      '@ie-ledger/db':
+      '@geo-ie-accounting/db':
         specifier: workspace:*
         version: link:../../packages/db
-      '@ie-ledger/domain':
+      '@geo-ie-accounting/domain':
         specifier: workspace:*
         version: link:../../packages/domain
-      '@ie-ledger/importers':
+      '@geo-ie-accounting/importers':
         specifier: workspace:*
         version: link:../../packages/importers
-      '@ie-ledger/nbg':
+      '@geo-ie-accounting/nbg':
         specifier: workspace:*
         version: link:../../packages/nbg
       pg-boss:
@@ -227,7 +227,7 @@ importers:
         specifier: 4.6.7
         version: 4.6.7
     devDependencies:
-      '@ie-ledger/config':
+      '@geo-ie-accounting/config':
         specifier: workspace:*
         version: link:../../packages/config
       '@types/node':
@@ -286,7 +286,7 @@ importers:
         specifier: 4.6.7
         version: 4.6.7
     devDependencies:
-      '@ie-ledger/config':
+      '@geo-ie-accounting/config':
         specifier: workspace:*
         version: link:../config
       eslint:
@@ -304,10 +304,10 @@ importers:
       '@better-auth/utils':
         specifier: 0.4.2
         version: 0.4.2
-      '@ie-ledger/contracts':
+      '@geo-ie-accounting/contracts':
         specifier: workspace:*
         version: link:../contracts
-      '@ie-ledger/domain':
+      '@geo-ie-accounting/domain':
         specifier: workspace:*
         version: link:../domain
       drizzle-orm:
@@ -323,7 +323,7 @@ importers:
         specifier: 4.6.7
         version: 4.6.7
     devDependencies:
-      '@ie-ledger/config':
+      '@geo-ie-accounting/config':
         specifier: workspace:*
         version: link:../config
       '@testcontainers/postgresql':
@@ -356,7 +356,7 @@ importers:
 
   packages/domain:
     devDependencies:
-      '@ie-ledger/config':
+      '@geo-ie-accounting/config':
         specifier: workspace:*
         version: link:../config
       '@vitest/coverage-v8':
@@ -377,17 +377,17 @@ importers:
 
   packages/importers:
     dependencies:
-      '@ie-ledger/contracts':
+      '@geo-ie-accounting/contracts':
         specifier: workspace:*
         version: link:../contracts
-      '@ie-ledger/domain':
+      '@geo-ie-accounting/domain':
         specifier: workspace:*
         version: link:../domain
       fflate:
         specifier: 0.8.3
         version: 0.8.3
     devDependencies:
-      '@ie-ledger/config':
+      '@geo-ie-accounting/config':
         specifier: workspace:*
         version: link:../config
       '@types/node':
@@ -405,17 +405,17 @@ importers:
 
   packages/nbg:
     dependencies:
-      '@ie-ledger/contracts':
+      '@geo-ie-accounting/contracts':
         specifier: workspace:*
         version: link:../contracts
-      '@ie-ledger/domain':
+      '@geo-ie-accounting/domain':
         specifier: workspace:*
         version: link:../domain
       zod:
         specifier: 4.6.7
         version: 4.6.7
     devDependencies:
-      '@ie-ledger/config':
+      '@geo-ie-accounting/config':
         specifier: workspace:*
         version: link:../config
       '@types/node':
@@ -433,7 +433,7 @@ importers:
 
   packages/ui:
     dependencies:
-      '@ie-ledger/domain':
+      '@geo-ie-accounting/domain':
         specifier: workspace:*
         version: link:../domain
       '@internationalized/date':
@@ -452,7 +452,7 @@ importers:
         specifier: 1.22.1
         version: 1.22.1(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
     devDependencies:
-      '@ie-ledger/config':
+      '@geo-ie-accounting/config':
         specifier: workspace:*
         version: link:../config
       '@storybook/addon-a11y':

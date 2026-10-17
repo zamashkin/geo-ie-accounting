@@ -1,5 +1,5 @@
 {
-  "name": "@ie-ledger/importers",
+  "name": "@geo-ie-accounting/importers",
   "version": "0.0.0",
   "private": true,
   "description": "Pure statement parsers: (file bytes, options) -> ParsedRow[]. No I/O.",
@@ -13,12 +13,12 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "@ie-ledger/contracts": "workspace:*",
-    "@ie-ledger/domain": "workspace:*",
+    "@geo-ie-accounting/contracts": "workspace:*",
+    "@geo-ie-accounting/domain": "workspace:*",
     "fflate": "0.8.3"
   },
   "devDependencies": {
-    "@ie-ledger/config": "workspace:*",
+    "@geo-ie-accounting/config": "workspace:*",
     "@types/node": "26.6.5",
     "eslint": "10.12.0",
     "typescript": "6.0.3",

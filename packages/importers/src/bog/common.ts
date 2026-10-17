@@ -1,7 +1,7 @@
 // Shared Bank of Georgia rules. Field semantics: fixtures/statements/bog/FORMAT.md.
 
-import type { OperationType, ParsedRow, StatementMeta } from '@ie-ledger/contracts';
-import { isCurrencyCode, iso4217Exponent } from '@ie-ledger/domain';
+import type { OperationType, ParsedRow, StatementMeta } from '@geo-ie-accounting/contracts';
+import { isCurrencyCode, iso4217Exponent } from '@geo-ie-accounting/domain';
 import { parseDate } from '../lib/dates';
 import type { DecimalParts } from '../lib/decimal';
 import { parseAmountText, toMinor } from '../lib/decimal';

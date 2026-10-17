@@ -5,8 +5,8 @@ import {
   type ExchangeRate,
   ListRatesQuery,
   ListRatesResponse,
-} from '@ie-ledger/contracts';
-import type { ExchangeRateRow, RatesCursor } from '@ie-ledger/db';
+} from '@geo-ie-accounting/contracts';
+import type { ExchangeRateRow, RatesCursor } from '@geo-ie-accounting/db';
 import type { FastifyRequest } from 'fastify';
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod';
 import { z } from 'zod';

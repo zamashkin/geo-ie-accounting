@@ -4,7 +4,7 @@ import type {
   MeResponse,
   SignInBody,
   SignUpBody,
-} from '@ie-ledger/contracts';
+} from '@geo-ie-accounting/contracts';
 import { ApiError } from '../api/api-error';
 import {
   decodeMockSession,

@@ -1,5 +1,5 @@
 {
-  "name": "@ie-ledger/config",
+  "name": "@geo-ie-accounting/config",
   "version": "0.0.0",
   "private": true,
   "type": "module",

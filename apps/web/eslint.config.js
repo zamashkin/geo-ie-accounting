@@ -1,5 +1,5 @@
 import nextPlugin from '@next/eslint-plugin-next';
-import { ieLedger } from '@ie-ledger/config/eslint';
+import { geoIeAccounting } from '@geo-ie-accounting/config/eslint';
 import jsxA11y from 'eslint-plugin-jsx-a11y-x';
 import reactHooks from 'eslint-plugin-react-hooks';
 import globals from 'globals';
@@ -8,7 +8,7 @@ import globals from 'globals';
 // declare ESLint 10 support yet. The Next and React Hooks rule sets are added directly, and
 // a11y rules come from eslint-plugin-jsx-a11y-x, the maintained fork that supports ESLint 10
 // (ADR 0009). axe in Storybook covers what static rules cannot.
-export default ieLedger({
+export default geoIeAccounting({
   pkg: 'web',
   root: import.meta.dirname,
   extra: [

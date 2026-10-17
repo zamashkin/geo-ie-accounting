@@ -1,11 +1,11 @@
 // Writes docs/samples/invoice-sample.pdf from synthetic data (no database), so the layout and
 // the embedded Georgian font can be checked without running the stack:
-//   pnpm --filter @ie-ledger/api invoice:sample
+//   pnpm --filter @geo-ie-accounting/api invoice:sample
 import { mkdir, writeFile } from 'node:fs/promises';
 import { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import type { InvoiceView } from '@ie-ledger/contracts';
-import { computeInvoiceTotals } from '@ie-ledger/domain';
+import type { InvoiceView } from '@geo-ie-accounting/contracts';
+import { computeInvoiceTotals } from '@geo-ie-accounting/domain';
 import { renderInvoicePdf } from '../src/routes/invoices/pdf/render';
 
 const ORG = '00000000-0000-7000-8000-000000000001';

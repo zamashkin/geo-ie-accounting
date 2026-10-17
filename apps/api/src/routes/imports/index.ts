@@ -21,7 +21,7 @@ import {
   type Bank,
   type ParseResult,
   type ParserId,
-} from '@ie-ledger/contracts';
+} from '@geo-ie-accounting/contracts';
 import {
   createImportBatch,
   findFingerprints,
@@ -35,9 +35,9 @@ import {
   updateImportRow,
   type AccountRow,
   type NewImportRow,
-} from '@ie-ledger/db';
-import { dedupeHashes } from '@ie-ledger/domain';
-import { detectBest, MIN_CONFIDENCE } from '@ie-ledger/importers';
+} from '@geo-ie-accounting/db';
+import { dedupeHashes } from '@geo-ie-accounting/domain';
+import { detectBest, MIN_CONFIDENCE } from '@geo-ie-accounting/importers';
 import type { FastifyRequest } from 'fastify';
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod';
 import { z } from 'zod';

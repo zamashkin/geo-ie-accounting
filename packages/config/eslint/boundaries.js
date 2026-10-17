@@ -1,17 +1,17 @@
 // Package dependency rules from docs/ARCHITECTURE.md §2, enforced by ESLint.
 //
 // Three checks per workspace package:
-//   1. `@ie-ledger/*` imports must be in the package's allow-list (WORKSPACE_DEPS).
+//   1. `@geo-ie-accounting/*` imports must be in the package's allow-list (WORKSPACE_DEPS).
 //   2. Some packages may not import certain third-party modules (FORBIDDEN_MODULES),
 //      e.g. `domain` and `importers` do no I/O, `contracts` imports nothing but zod.
-//   3. Relative imports may not leave the package root (`ie-ledger/no-cross-package-relative`).
+//   3. Relative imports may not leave the package root (`geo-ie-accounting/no-cross-package-relative`).
 //
 // The same table is checked against every package.json by the config package's tests.
 import path from 'node:path';
 
 /** @typedef {'web'|'api'|'worker'|'contracts'|'domain'|'db'|'importers'|'nbg'|'ui'|'config'} PackageName */
 
-export const SCOPE = '@ie-ledger';
+export const SCOPE = '@geo-ie-accounting';
 
 /**
  * Which workspace packages each package may depend on.
@@ -142,7 +142,7 @@ const noCrossPackageRelative = {
 };
 
 export const plugin = {
-  meta: { name: 'ie-ledger' },
+  meta: { name: 'geo-ie-accounting' },
   rules: { 'no-cross-package-relative': noCrossPackageRelative },
 };
 
@@ -169,17 +169,17 @@ export function boundaries(pkg, packageRoot) {
   return [
     {
       // Every file, tests and tooling included: workspace rules and package roots.
-      name: `ie-ledger/boundaries/${pkg}`,
-      plugins: { 'ie-ledger': plugin },
+      name: `geo-ie-accounting/boundaries/${pkg}`,
+      plugins: { 'geo-ie-accounting': plugin },
       rules: {
         'no-restricted-imports': ['error', { patterns: workspacePatterns }],
-        'ie-ledger/no-cross-package-relative': ['error', { root: packageRoot }],
+        'geo-ie-accounting/no-cross-package-relative': ['error', { root: packageRoot }],
       },
     },
     {
       // Production sources: also the third-party restrictions (purity, no DB in web, ...).
       // Tests and config files may use vitest, node:fs for fixtures, and so on.
-      name: `ie-ledger/boundaries/${pkg}/sources`,
+      name: `geo-ie-accounting/boundaries/${pkg}/sources`,
       files: ['src/**/*.{ts,tsx,js,mjs}', 'app/**/*.{ts,tsx}'],
       ignores: ['**/*.test.{ts,tsx}', '**/*.int.test.ts', '**/test/**'],
       rules: {

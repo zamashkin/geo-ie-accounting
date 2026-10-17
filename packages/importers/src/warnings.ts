@@ -1,4 +1,4 @@
-import type { ParseWarning, ParseWarningCode } from '@ie-ledger/contracts';
+import type { ParseWarning, ParseWarningCode } from '@geo-ie-accounting/contracts';
 
 // The warning catalogue lives in contracts (`PARSE_WARNING_CODES`, one comment per code).
 // Messages never include statement contents (names, IBANs, amounts): warnings may end up in logs.

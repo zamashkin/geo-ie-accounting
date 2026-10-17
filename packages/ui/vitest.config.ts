@@ -1,5 +1,5 @@
 import path from 'node:path';
-import { unitConfig } from '@ie-ledger/config/vitest';
+import { unitConfig } from '@geo-ie-accounting/config/vitest';
 import { storybookTest } from '@storybook/addon-vitest/vitest-plugin';
 import { playwright } from '@vitest/browser-playwright';
 import { defineConfig, mergeConfig } from 'vitest/config';

@@ -6,7 +6,7 @@ const { DATABASE_URL } = loadDbEnv();
 const handle = createDb({
   connectionString: DATABASE_URL,
   max: 1,
-  applicationName: 'ie-ledger-seed',
+  applicationName: 'geo-ie-accounting-seed',
 });
 try {
   const result = await seedDemo(handle.db);

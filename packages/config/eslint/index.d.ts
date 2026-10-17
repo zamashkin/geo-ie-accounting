@@ -9,7 +9,7 @@ export {
   type PackageName,
 } from './boundaries.js';
 
-export declare function ieLedger(options: {
+export declare function geoIeAccounting(options: {
   pkg: PackageName;
   root: string;
   typeChecked?: boolean;

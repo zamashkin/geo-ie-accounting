@@ -1,4 +1,4 @@
-# IE Ledger
+# geo-ie-accounting
 
 Bookkeeping and tax figures for individual entrepreneurs in Georgia on the 1% small business regime. Import your TBC or Bank of Georgia statements, and the app converts foreign-currency income to GEL at the official NBG rate for each receipt date, keeps a double-entry ledger, and shows what to declare each month.
 
@@ -47,7 +47,7 @@ Testcontainers looks for Docker at `/var/run/docker.sock`. Docker Desktop provid
 export DOCKER_HOST=unix://$HOME/.orbstack/run/docker.sock
 ```
 
-You can also skip containers and use the compose database: `TEST_DATABASE_URL=postgres://ie_ledger:ie_ledger@localhost:5432/postgres pnpm test:integration`.
+You can also skip containers and use the compose database: `TEST_DATABASE_URL=postgres://geo_ie_accounting:geo_ie_accounting@localhost:5432/postgres pnpm test:integration`.
 
 ### Layout
 

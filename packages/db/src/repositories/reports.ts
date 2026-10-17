@@ -1,8 +1,8 @@
 // Read models for declarations and the dashboard. The figures themselves are computed by
 // packages/domain (computeDeclarationYear); this only loads its input and aggregates. Every
 // query here is one aggregated SQL statement scoped by orgId: no per-month or per-row queries.
-import type { PaymentMethod, TransactionSource } from '@ie-ledger/contracts';
-import { firstDayOf, nextPeriod, type SbsIncomeEntry } from '@ie-ledger/domain';
+import type { PaymentMethod, TransactionSource } from '@geo-ie-accounting/contracts';
+import { firstDayOf, nextPeriod, type SbsIncomeEntry } from '@geo-ie-accounting/domain';
 import { and, asc, eq, gte, lte, max, sql } from 'drizzle-orm';
 import type { DbOrTx } from '../client';
 import { accounts, importRows, postings, transactions } from '../schema/index';

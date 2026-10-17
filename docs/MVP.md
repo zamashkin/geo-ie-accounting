@@ -35,7 +35,7 @@ Two agents, one after the other, so the frontend builds against real, merged end
 ### MVP-A: backend slice
 Owns `apps/api/src/routes/{accounts,imports,transactions,declarations,dashboard}/**`, the matching `packages/db/src/repositories/*`, new contracts files, org settings route (`PATCH /v1/orgs/:orgId` for `sbsEffectiveFrom`), and a db migration if needed.
 - Contracts with OpenAPI ids for every new response.
-- `POST /v1/orgs/:orgId/imports` (multipart, max 5 MB; detect + parse with `@ie-ledger/importers`; match/create the bank account by IBAN + currency; dedupe against `transaction_fingerprints`, and within the batch; store `import_batches` + `import_rows`), `GET` batch + rows, `PATCH` row (chosen account / skip), `POST .../commit`.
+- `POST /v1/orgs/:orgId/imports` (multipart, max 5 MB; detect + parse with `@geo-ie-accounting/importers`; match/create the bank account by IBAN + currency; dedupe against `transaction_fingerprints`, and within the batch; store `import_batches` + `import_rows`), `GET` batch + rows, `PATCH` row (chosen account / skip), `POST .../commit`.
 - Transactions: list (cursor pagination, filters: date range, account, source), detail with postings and rate, reverse.
 - `GET /v1/orgs/:orgId/declarations?year=` and `GET /v1/orgs/:orgId/dashboard?year=`, both computed with `packages/domain`.
 - Use the WS-02 rates code (`resolveRate`, `getRateFor`). Move `resolveRate` into a package both api and worker can use if needed.
@@ -52,10 +52,10 @@ Starts after MVP-A is merged. Owns `apps/web/**` pages for the demo path.
 ## How Aleksandr tests it
 
 ```sh
-cd ~/Documents/ie-ledger
+cd geo-ie-accounting   # your clone
 pnpm env:init   # first time only
 docker compose up -d --wait && pnpm db:migrate && pnpm db:seed && pnpm dev
-# open http://localhost:3000, sign in as demo@ie-ledger.local / demo-password-2026
+# open http://localhost:3000, sign in as demo@geo-ie-accounting.local / demo-password-2026
 # upload fixtures/statements/bog/bog-gbp-2025-06.xlsx, or a real statement from fixtures/statements/raw/
 ```
 

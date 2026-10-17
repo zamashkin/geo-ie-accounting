@@ -1,4 +1,9 @@
-import type { ParseOptions, ParseResult, ParserId, StatementMeta } from '@ie-ledger/contracts';
+import type {
+  ParseOptions,
+  ParseResult,
+  ParserId,
+  StatementMeta,
+} from '@geo-ie-accounting/contracts';
 import { Warnings } from './warnings';
 
 /** ARCHITECTURE §6. Implementations are pure: bytes in, result out, never throw. */

@@ -9,7 +9,7 @@ import {
   Sheet,
   SkeletonText,
   toast,
-} from '@ie-ledger/ui';
+} from '@geo-ie-accounting/ui';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { FileText, Link2, Undo2 } from 'lucide-react';
 import type { Route } from 'next';

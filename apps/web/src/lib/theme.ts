@@ -1,6 +1,6 @@
 'use client';
 
-import type { ThemePreference } from '@ie-ledger/ui';
+import type { ThemePreference } from '@geo-ie-accounting/ui';
 import { useCallback, useSyncExternalStore } from 'react';
 
 // Theme preference: system (default), light or dark. Stored per browser in localStorage and

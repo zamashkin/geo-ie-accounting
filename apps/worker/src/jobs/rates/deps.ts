@@ -1,6 +1,6 @@
-import { CurrencyCode, type RatesBackfilledEvent } from '@ie-ledger/contracts';
-import { createDb, loadDbEnv, type Db } from '@ie-ledger/db';
-import { createNbgClient, type NbgClient } from '@ie-ledger/nbg';
+import { CurrencyCode, type RatesBackfilledEvent } from '@geo-ie-accounting/contracts';
+import { createDb, loadDbEnv, type Db } from '@geo-ie-accounting/db';
+import { createNbgClient, type NbgClient } from '@geo-ie-accounting/nbg';
 import { z } from 'zod';
 import { publishEvent } from './events';
 
@@ -45,7 +45,7 @@ export function defaultRatesDeps(): RatesDeps {
   const { db, pool } = createDb({
     connectionString: loadDbEnv().DATABASE_URL,
     max: 4,
-    applicationName: 'ie-ledger-worker-rates',
+    applicationName: 'geo-ie-accounting-worker-rates',
   });
   defaults = {
     db,

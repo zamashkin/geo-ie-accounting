@@ -8,7 +8,7 @@ import {
   TransactionParams,
   TransactionPreview,
   TransactionView,
-} from '@ie-ledger/contracts';
+} from '@geo-ie-accounting/contracts';
 import {
   getTransaction,
   insertTransaction,
@@ -17,8 +17,8 @@ import {
   lockTransaction,
   resolveRate,
   type ExchangeRateRow,
-} from '@ie-ledger/db';
-import { reverse } from '@ie-ledger/domain';
+} from '@geo-ie-accounting/db';
+import { reverse } from '@geo-ie-accounting/domain';
 import type { FastifyRequest } from 'fastify';
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod';
 import { z } from 'zod';

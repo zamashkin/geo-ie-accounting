@@ -1,6 +1,6 @@
 'use client';
 
-import { Button, DatePicker } from '@ie-ledger/ui';
+import { Button, DatePicker } from '@geo-ie-accounting/ui';
 import { type ReactNode, useState } from 'react';
 import { FormAlert } from '@/components/form-helpers';
 import { errorMessage } from '@/lib/api/api-error';

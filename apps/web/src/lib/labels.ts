@@ -1,4 +1,4 @@
-import type { BadgeTone } from '@ie-ledger/ui';
+import type { BadgeTone } from '@geo-ie-accounting/ui';
 import type { Schemas } from './api/client';
 
 // Display labels for API enums. Keyed by the generated types, so a new enum value fails the

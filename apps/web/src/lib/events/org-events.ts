@@ -1,4 +1,4 @@
-import { OrgEvent, type OrgEventOf, type OrgEventType } from '@ie-ledger/contracts';
+import { OrgEvent, type OrgEventOf, type OrgEventType } from '@geo-ie-accounting/contracts';
 
 // Client side of ADR 0005: one EventSource per org on GET /v1/orgs/:orgId/events.
 // The SSE `event:` field is the event type, `data:` is the JSON of the whole event, `id:` is

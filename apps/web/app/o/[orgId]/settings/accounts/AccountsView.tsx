@@ -10,7 +10,7 @@ import {
   MenuTrigger,
   SkeletonText,
   toast,
-} from '@ie-ledger/ui';
+} from '@geo-ie-accounting/ui';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Landmark, MoreHorizontal, Plus } from 'lucide-react';
 import { useState } from 'react';

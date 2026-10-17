@@ -19,7 +19,7 @@ function message(to: string, subject: string, intro: string, action: string, url
 export const verifyEmailMail = (to: string, url: string) =>
   message(
     to,
-    'Confirm your email for IE Ledger',
+    'Confirm your email for geo-ie-accounting',
     'Confirm your email address.',
     'Confirm email',
     url,
@@ -28,7 +28,7 @@ export const verifyEmailMail = (to: string, url: string) =>
 export const magicLinkMail = (to: string, url: string) =>
   message(
     to,
-    'Your IE Ledger sign-in link',
+    'Your geo-ie-accounting sign-in link',
     'Use this link to sign in. It works once and expires in 10 minutes.',
     'Sign in',
     url,
@@ -37,7 +37,7 @@ export const magicLinkMail = (to: string, url: string) =>
 export const resetPasswordMail = (to: string, url: string) =>
   message(
     to,
-    'Reset your IE Ledger password',
+    'Reset your geo-ie-accounting password',
     'Someone asked to reset your password.',
     'Reset password',
     url,
@@ -46,7 +46,7 @@ export const resetPasswordMail = (to: string, url: string) =>
 export const invitationMail = (to: string, orgName: string, role: string, url: string) =>
   message(
     to,
-    `You are invited to ${orgName} on IE Ledger`,
+    `You are invited to ${orgName} on geo-ie-accounting`,
     `You have been invited to ${orgName} as ${role}. The invitation expires in 7 days.`,
     'Open invitation',
     url,

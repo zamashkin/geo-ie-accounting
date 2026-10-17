@@ -6,7 +6,9 @@ export default defineConfig({
   schema: './src/schema/index.ts',
   out: './drizzle',
   dbCredentials: {
-    url: process.env.DATABASE_URL ?? 'postgres://ie_ledger:ie_ledger@localhost:5432/ie_ledger',
+    url:
+      process.env.DATABASE_URL ??
+      'postgres://geo_ie_accounting:geo_ie_accounting@localhost:5432/geo_ie_accounting',
   },
   strict: true,
   verbose: true,

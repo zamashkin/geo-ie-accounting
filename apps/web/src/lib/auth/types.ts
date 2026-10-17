@@ -5,7 +5,7 @@ import type {
   MeResponse,
   SignInBody,
   SignUpBody,
-} from '@ie-ledger/contracts';
+} from '@geo-ie-accounting/contracts';
 
 /**
  * What the auth pages need from the backend. Two implementations: `HttpAuthClient` (Better

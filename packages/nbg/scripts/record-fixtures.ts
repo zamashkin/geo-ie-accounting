@@ -1,6 +1,6 @@
 // Records real NBG responses into fixtures/nbg/. Uses the live network: run by hand, never in tests.
 //
-//   pnpm --filter @ie-ledger/nbg record-fixtures
+//   pnpm --filter @geo-ie-accounting/nbg record-fixtures
 //
 // Bodies are written verbatim. fixtures/nbg/README.md explains what each case demonstrates.
 import { mkdir, writeFile } from 'node:fs/promises';

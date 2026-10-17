@@ -1,6 +1,10 @@
 import { createHash } from 'node:crypto';
-import { IdempotencyKey } from '@ie-ledger/contracts';
-import { claimIdempotencyKey, completeIdempotencyKey, type IdempotencyScope } from '@ie-ledger/db';
+import { IdempotencyKey } from '@geo-ie-accounting/contracts';
+import {
+  claimIdempotencyKey,
+  completeIdempotencyKey,
+  type IdempotencyScope,
+} from '@geo-ie-accounting/db';
 import type {
   FastifyInstance,
   FastifyReply,

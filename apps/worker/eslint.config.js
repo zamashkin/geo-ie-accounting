@@ -1,3 +1,3 @@
-import { ieLedger } from '@ie-ledger/config/eslint';
+import { geoIeAccounting } from '@geo-ie-accounting/config/eslint';
 
-export default ieLedger({ pkg: 'worker', root: import.meta.dirname });
+export default geoIeAccounting({ pkg: 'worker', root: import.meta.dirname });

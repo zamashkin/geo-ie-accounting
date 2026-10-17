@@ -1,4 +1,4 @@
-import { Uuid } from '@ie-ledger/contracts';
+import { Uuid } from '@geo-ie-accounting/contracts';
 import { notFound, redirect } from 'next/navigation';
 import { RememberWorkspace } from '@/components/workspace/RememberWorkspace';
 import { getSession } from '@/lib/auth/server';

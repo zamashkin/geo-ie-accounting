@@ -1,5 +1,5 @@
 import 'server-only';
-import { ListRatesQuery } from '@ie-ledger/contracts';
+import { ListRatesQuery } from '@geo-ie-accounting/contracts';
 import { serverEnv } from '@/env';
 import { createApiClient } from '@/lib/api/client';
 import type { components } from '@/lib/api/schema.gen';

@@ -1,5 +1,5 @@
 {
-  "name": "@ie-ledger/nbg",
+  "name": "@geo-ie-accounting/nbg",
   "version": "0.0.0",
   "private": true,
   "description": "National Bank of Georgia exchange-rate client.",
@@ -15,12 +15,12 @@
     "record-fixtures": "node scripts/record-fixtures.ts"
   },
   "dependencies": {
-    "@ie-ledger/contracts": "workspace:*",
-    "@ie-ledger/domain": "workspace:*",
+    "@geo-ie-accounting/contracts": "workspace:*",
+    "@geo-ie-accounting/domain": "workspace:*",
     "zod": "4.6.7"
   },
   "devDependencies": {
-    "@ie-ledger/config": "workspace:*",
+    "@geo-ie-accounting/config": "workspace:*",
     "@types/node": "26.6.5",
     "eslint": "10.12.0",
     "typescript": "6.0.3",

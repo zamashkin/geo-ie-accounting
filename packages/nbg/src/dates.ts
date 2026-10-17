@@ -1,4 +1,4 @@
-import { IsoDate } from '@ie-ledger/contracts';
+import { IsoDate } from '@geo-ie-accounting/contracts';
 
 // Calendar helpers for NBG dates. Dates are `YYYY-MM-DD` strings with no time zone; arithmetic is
 // done on UTC midnights so it never crosses a daylight-saving boundary.

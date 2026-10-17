@@ -1,8 +1,8 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { PASSWORD_MIN_LENGTH, SignUpBody } from '@ie-ledger/contracts';
-import { Button, Card, TextField } from '@ie-ledger/ui';
+import { PASSWORD_MIN_LENGTH, SignUpBody } from '@geo-ie-accounting/contracts';
+import { Button, Card, TextField } from '@geo-ie-accounting/ui';
 import Link from 'next/link';
 import { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';

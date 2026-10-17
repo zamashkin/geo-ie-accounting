@@ -1,4 +1,4 @@
-import type { ParserId } from '@ie-ledger/contracts';
+import type { ParserId } from '@geo-ie-accounting/contracts';
 import { bogCsv } from './bog/csv';
 import { bogXlsx } from './bog/xlsx';
 import { genericCsv } from './generic/csv';

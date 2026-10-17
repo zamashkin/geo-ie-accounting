@@ -22,7 +22,7 @@ export default async function SignInPage({ searchParams }: PageProps<'/sign-in'>
         </p>
       ) : process.env.NODE_ENV !== 'production' ? (
         <p className="text-center text-xs text-fg-muted">
-          Local demo login: <code className="font-mono">demo@ie-ledger.local</code> /{' '}
+          Local demo login: <code className="font-mono">demo@geo-ie-accounting.local</code> /{' '}
           <code className="font-mono">demo-password-2026</code> (after{' '}
           <code className="font-mono">pnpm db:seed</code>).
         </p>

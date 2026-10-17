@@ -1,8 +1,8 @@
-import { EVENTS_NOTIFY_CHANNEL, NotifyPayload } from '@ie-ledger/contracts';
-import { getRateFor, listRates } from '@ie-ledger/db';
-import { startTestDatabase, type TestDatabase } from '@ie-ledger/db/testing';
-import { createNbgClient } from '@ie-ledger/nbg';
-import { createFixtureFetch, type FixtureFetch } from '@ie-ledger/nbg/testing';
+import { EVENTS_NOTIFY_CHANNEL, NotifyPayload } from '@geo-ie-accounting/contracts';
+import { getRateFor, listRates } from '@geo-ie-accounting/db';
+import { startTestDatabase, type TestDatabase } from '@geo-ie-accounting/db/testing';
+import { createNbgClient } from '@geo-ie-accounting/nbg';
+import { createFixtureFetch, type FixtureFetch } from '@geo-ie-accounting/nbg/testing';
 import { pino } from 'pino';
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
 import { startWorker, type RunningWorker } from '../../worker';

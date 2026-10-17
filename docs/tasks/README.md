@@ -68,7 +68,7 @@ These don't block Phase 0 or the BoG parsers. Add files to `fixtures/statements/
 
 - MVP: the bank GEL warnings (`bank_gel_mismatch`) come back only in the commit response, so they're gone once the import page reloads. If they should stay visible, store them on the batch.
 - MVP: on phones the import preview renders every row as a card with no virtualisation. That's fine for BoG statements (tens of lines). A statement with thousands of lines would need paging.
-- Web lint after `next dev`: the route types `next dev` writes to `.next/types` make `no-unnecessary-type-assertion` flag the 9 `as Route` casts. With the types from `next typegen`, which turbo runs before lint (and CI uses), the casts are needed and lint is clean. After a dev session, run `pnpm --filter @ie-ledger/web typegen` before linting, or find a cast-free way to build the hrefs.
+- Web lint after `next dev`: the route types `next dev` writes to `.next/types` make `no-unnecessary-type-assertion` flag the 9 `as Route` casts. With the types from `next typegen`, which turbo runs before lint (and CI uses), the casts are needed and lint is clean. After a dev session, run `pnpm --filter @geo-ie-accounting/web typegen` before linting, or find a cast-free way to build the hrefs.
 
 - WS-01: the Order N38 rule set starts 2026-03-01, but the order came into force around 2026-03-07/08 (30 days after publication on 06.02.2026). Confirm the exact date with the accountant (Q3) and adjust `effectiveFrom`. It only matters for SBS applications filed 1–7 March 2026.
 - WS-01: deadlines don't move when the 15th falls on a weekend or public holiday. Ask the accountant whether they should.
@@ -79,9 +79,9 @@ These don't block Phase 0 or the BoG parsers. Add files to `fixtures/statements/
 - WS-02: SPEC §2.3 asks to store the requested date as well as `valid_from`; v0 stores only `valid_from`. Proposed: an `exchange_rate_lookups(currency, requested_date, valid_from)` table, so gaps are found in the database rather than with an NBG call.
 - WS-02: worker `JobContext` has no db handle; the rates jobs open their own pool, which is never closed on shutdown. Add `db` to `JobContext` (WS-07 needs it too).
 - WS-02: WS-07 must call `resolveRate` before each chunk's DB transaction (it may call NBG) and store the row id as `postings.rate_id`.
-- CI: `@ie-ledger/worker#test` failed once under a full parallel turbo run, then passed alone and on re-run. Watch for flakiness.
+- CI: `@geo-ie-accounting/worker#test` failed once under a full parallel turbo run, then passed alone and on re-run. Watch for flakiness.
 - WS-05: add `users.is_admin` + `requireAdmin()` and replace WS-02's `x-admin-token` stub on `POST /v1/rates/backfill` (now `config: { tx: false }`, so it skips the request transaction and idempotency). Decide how global admin actions get audited (audit_log.org_id is NOT NULL).
 - WS-05: worker job to call `deleteExpiredIdempotencyKeys`; move Better Auth's in-memory rate limiter to the DB before running more than one API instance; member role change/removal with a last-owner guard; consider default-deny guards on every `/v1` route.
-- WS-04: CI needs a Storybook job (`pnpm exec playwright install --with-deps chromium`, then `pnpm --filter @ie-ledger/ui build-storybook` and `test:storybook`). The unit `test` script stays Node-only.
+- WS-04: CI needs a Storybook job (`pnpm exec playwright install --with-deps chromium`, then `pnpm --filter @geo-ie-accounting/ui build-storybook` and `test:storybook`). The unit `test` script stays Node-only.
 - WS-04: switch the web to real auth (`NEXT_PUBLIC_AUTH_MODE=api`, `NEXT_PUBLIC_API_URL`) and run the sign-in, invite and org-switch flow end to end against WS-05. Add password reset pages. After sign-in, return users to the page they asked for (needs `proxy.ts`).
 - Bundle: `/sign-in` ships 269 KB gzip (zod + full contracts + react-hook-form). Contracts subpath exports would save about 37 KB.

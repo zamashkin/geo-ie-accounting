@@ -1,5 +1,5 @@
-import { toDecimalString } from '@ie-ledger/domain';
-import { Badge, Card, PageContainer, PageHeader, cx } from '@ie-ledger/ui';
+import { toDecimalString } from '@geo-ie-accounting/domain';
+import { Badge, Card, PageContainer, PageHeader, cx } from '@geo-ie-accounting/ui';
 import { ArrowLeft } from 'lucide-react';
 import type { Metadata, Route } from 'next';
 import Link from 'next/link';

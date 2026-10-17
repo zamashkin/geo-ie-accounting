@@ -1,7 +1,14 @@
 'use client';
 
-import type { InvitationPreview } from '@ie-ledger/contracts';
-import { Badge, Button, ButtonLink, Card, LoadingRegion, SkeletonText } from '@ie-ledger/ui';
+import type { InvitationPreview } from '@geo-ie-accounting/contracts';
+import {
+  Badge,
+  Button,
+  ButtonLink,
+  Card,
+  LoadingRegion,
+  SkeletonText,
+} from '@geo-ie-accounting/ui';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import type { Route } from 'next';
 import { useRouter } from 'next/navigation';

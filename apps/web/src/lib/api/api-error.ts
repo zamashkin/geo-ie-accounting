@@ -1,4 +1,4 @@
-import type { Problem, ProblemCode } from '@ie-ledger/contracts';
+import type { Problem, ProblemCode } from '@geo-ie-accounting/contracts';
 
 // The error type itself, with no runtime dependency on Zod or the contracts bundle, so the
 // shell and forms can check errors without shipping every schema (bundle budget). Parsing

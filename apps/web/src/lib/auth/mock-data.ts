@@ -1,4 +1,4 @@
-import type { InvitationPreview, MeResponse } from '@ie-ledger/contracts';
+import type { InvitationPreview, MeResponse } from '@geo-ie-accounting/contracts';
 
 // Placeholder data for the mock auth mode and the org switcher until WS-05 lands.
 // The ids are stable so URLs like /o/<id> survive reloads.

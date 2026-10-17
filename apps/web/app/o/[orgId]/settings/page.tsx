@@ -1,4 +1,4 @@
-import { Card, PageContainer, PageHeader } from '@ie-ledger/ui';
+import { Card, PageContainer, PageHeader } from '@geo-ie-accounting/ui';
 import type { Metadata } from 'next';
 import { serverApi, serverRead } from '@/lib/api/server';
 import { formatIsoDate } from '@/lib/format';

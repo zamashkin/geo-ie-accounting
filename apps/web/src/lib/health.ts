@@ -1,4 +1,4 @@
-import type { HealthResponse } from '@ie-ledger/contracts';
+import type { HealthResponse } from '@geo-ie-accounting/contracts';
 
 export type HealthResult =
   | { kind: 'ok'; body: HealthResponse }
