@@ -2,6 +2,8 @@
 
 **[Architecture map](https://htmlpreview.github.io/?https://github.com/zamashkin/geo-ie-accounting/blob/main/docs/architecture-map.html)**: the parts of the app and how they fit together ([source](docs/architecture-map.html)).
 
+**[API reference (Swagger)](https://htmlpreview.github.io/?https://github.com/zamashkin/geo-ie-accounting/blob/main/docs/api.html)**: every endpoint, generated from the Zod contracts.
+
 Bookkeeping and tax figures for individual entrepreneurs in Georgia on the 1% small business regime. Import your TBC or Bank of Georgia statements, and the app converts foreign-currency income to GEL at the official NBG rate for each receipt date, keeps a double-entry ledger, and shows what to declare each month.
 
 Status: foundation (WS-00). The web app, API and worker boot and talk to each other; the features come next.
