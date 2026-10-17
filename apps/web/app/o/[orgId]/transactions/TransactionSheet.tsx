@@ -11,7 +11,9 @@ import {
   toast,
 } from '@ie-ledger/ui';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { Undo2 } from 'lucide-react';
+import { FileText, Link2, Undo2 } from 'lucide-react';
+import type { Route } from 'next';
+import Link from 'next/link';
 import { useState } from 'react';
 import { Amount } from '@/components/Amount';
 import { Notice } from '@/components/Notice';
@@ -23,7 +25,8 @@ import {
   transactionQuery,
   type TransactionView,
 } from '@/lib/api/ledger';
-import { formatIsoDate, formatMinor } from '@/lib/format';
+import { invoiceKeys, matchPayment, transactionInvoiceHintsQuery } from '@/lib/api/invoices';
+import { formatIsoDate, formatMinor, parseMinor } from '@/lib/format';
 import { PAYMENT_METHOD_LABELS, TRANSACTION_SOURCE_LABELS } from '@/lib/labels';
 import { orgHref } from '@/lib/nav';
 
@@ -76,6 +79,96 @@ function Postings({ tx }: { tx: TransactionView }) {
         Positive amounts are debits, negative are credits. Every transaction balances in each
         currency.
       </p>
+    </section>
+  );
+}
+
+/** Invoices an incoming imported payment pays, and open invoices it could pay. */
+function InvoiceHints({
+  orgId,
+  tx,
+  canWrite,
+}: {
+  orgId: string;
+  tx: TransactionView;
+  canWrite: boolean;
+}) {
+  const queryClient = useQueryClient();
+  const q = useQuery(transactionInvoiceHintsQuery(orgId, tx.id));
+  const match = useMutation({
+    mutationFn: (invoiceId: string) =>
+      matchPayment(orgId, invoiceId, { transactionId: tx.id }, newIdempotencyKey()),
+    onSuccess: async (invoice) => {
+      toast({
+        title:
+          invoice.status === 'paid' ? `${invoice.number ?? 'Invoice'} paid` : 'Payment matched',
+        tone: 'positive',
+      });
+      await queryClient.invalidateQueries({ queryKey: invoiceKeys.invoices(orgId) });
+    },
+    onError: (err) => {
+      toast({ title: 'Could not match', description: errorMessage(err), tone: 'negative' });
+    },
+  });
+  const data = q.data;
+  if (!data || (data.allocations.length === 0 && data.suggestions.length === 0)) return null;
+  const invoiceLink = (id: string) => orgHref(orgId, `/invoices/${id}`) as Route;
+  return (
+    <section aria-labelledby="invoice-hints-heading" className="flex flex-col gap-2">
+      <h3 id="invoice-hints-heading" className="text-sm font-semibold">
+        Invoices
+      </h3>
+      <ul className="flex flex-col gap-2">
+        {data.allocations.map((a) => (
+          <li
+            key={a.invoiceId}
+            className="flex items-center gap-2 rounded-md border border-line p-3 text-sm"
+          >
+            <FileText aria-hidden className="size-4 text-fg-muted" />
+            <span className="min-w-0 flex-1">
+              Pays{' '}
+              <Link
+                href={invoiceLink(a.invoiceId)}
+                className="font-medium underline underline-offset-4"
+              >
+                {a.number ?? 'an invoice'}
+              </Link>{' '}
+              ({a.clientName}): {formatMinor(a.amountMinor, a.currency)}
+            </span>
+          </li>
+        ))}
+        {data.suggestions.map((h) => (
+          <li
+            key={h.invoiceId}
+            className="flex flex-wrap items-center gap-2 rounded-md border border-dashed border-line p-3 text-sm"
+          >
+            <span className="min-w-0 flex-1">
+              <Badge tone="info">Possible invoice</Badge>{' '}
+              <Link
+                href={invoiceLink(h.invoiceId)}
+                className="font-medium underline underline-offset-4"
+              >
+                {h.number}
+              </Link>{' '}
+              · {h.clientName} · {formatMinor(h.outstandingMinor, h.currency)} owed
+            </span>
+            {canWrite ? (
+              <Button
+                size="sm"
+                variant="secondary"
+                isPending={match.isPending && match.variables === h.invoiceId}
+                isDisabled={match.isPending}
+                onPress={() => {
+                  match.mutate(h.invoiceId, { onSuccess: () => void q.refetch() });
+                }}
+              >
+                <Link2 aria-hidden />
+                Match {formatMinor(h.allocateMinor, h.currency)}
+              </Button>
+            ) : null}
+          </li>
+        ))}
+      </ul>
     </section>
   );
 }
@@ -226,6 +319,9 @@ export function TransactionSheet({
                 {tx.reversesId ? 'Open the original' : 'Open the reversal'}
               </Button>
             </Notice>
+          ) : null}
+          {tx.source === 'import' && leg && parseMinor(leg.amountMinor) > 0n ? (
+            <InvoiceHints orgId={orgId} tx={tx} canWrite={canWrite} />
           ) : null}
           <Postings tx={tx} />
           <div className="flex flex-wrap gap-2">

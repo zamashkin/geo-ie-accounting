@@ -22,6 +22,7 @@ import { Notice } from '@/components/Notice';
 import { RuleDialog } from '@/components/RuleDialog';
 import { type ApiError, errorMessage, isApiError } from '@/lib/api/api-error';
 import { newIdempotencyKey } from '@/lib/api/browser';
+import { importInvoiceHintsQuery, type InvoiceHint } from '@/lib/api/invoices';
 import type { Schemas } from '@/lib/api/client';
 import {
   type Account,
@@ -60,6 +61,8 @@ interface RowContext {
   committed: boolean;
   blocked: ReadonlySet<string>;
   rules: ReadonlyMap<string, Rule>;
+  /** Open invoices an incoming row could pay, by row id. */
+  invoiceHints: ReadonlyMap<string, readonly InvoiceHint[]>;
   selected: ReadonlySet<string>;
   /** Rows a bulk action can change (not duplicates). */
   selectable: readonly ImportRowView[];
@@ -118,6 +121,23 @@ function RuleNote({ row }: { row: ImportRowView }) {
   return (
     <span className="max-w-full truncate text-xs text-fg-muted" title={rule?.name}>
       Rule: {rule?.name ?? 'deleted rule'}
+    </span>
+  );
+}
+
+/** "Possible invoice" note on an incoming row that fits an open invoice. */
+function InvoiceHintNote({ row }: { row: ImportRowView }) {
+  const { invoiceHints } = useRowCtx();
+  const [best, ...rest] = invoiceHints.get(row.id) ?? [];
+  if (!best) return null;
+  const more = rest.length > 0 ? ` (+${rest.length} more)` : '';
+  return (
+    <span
+      className="max-w-full truncate text-xs text-info-fg"
+      title={`Match it from the invoice once the statement is committed.${more}`}
+    >
+      Possible invoice {best.number}, {best.clientName}
+      {more}
     </span>
   );
 }
@@ -237,6 +257,7 @@ const COLUMNS = [
         {row.original.counterparty ? (
           <span className="truncate text-xs text-fg-muted">{row.original.description}</span>
         ) : null}
+        <InvoiceHintNote row={row.original} />
       </span>
     ),
     meta: { width: 'minmax(8.5rem, 1fr)' },
@@ -300,6 +321,7 @@ function RowCard({ row }: { row: ImportRowView }) {
                 {row.description}
               </span>
             ) : null}
+            <InvoiceHintNote row={row} />
           </div>
         </div>
         <Amount
@@ -535,6 +557,7 @@ export function ImportPreview({
   const [bulkAccount, setBulkAccount] = useState<string | null>(null);
   const [ruleFrom, setRuleFrom] = useState<ImportRowView | null>(null);
   const rulesQ = useQuery(rulesQuery(orgId));
+  const hintsQ = useQuery(importInvoiceHintsQuery(orgId, batchId));
   const narrow = useMediaQuery(NARROW_SCREEN);
 
   const rowsKey = ledgerKeys.importRows(orgId, batchId);
@@ -673,6 +696,7 @@ export function ImportPreview({
             committed,
             blocked,
             rules: new Map((rulesQ.data ?? []).map((r) => [r.id, r])),
+            invoiceHints: new Map((hintsQ.data ?? []).map((h) => [h.rowId, h.invoices])),
             selected,
             selectable: (rowsQ.data ?? []).filter((r) => r.status !== 'duplicate'),
             onSelect: (list, on) => {
@@ -696,7 +720,17 @@ export function ImportPreview({
         : null,
     // patchRow.mutate is stable.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [detail, accountsQ.data, editable, committed, blocked, rulesQ.data, selected, rowsQ.data],
+    [
+      detail,
+      accountsQ.data,
+      editable,
+      committed,
+      blocked,
+      rulesQ.data,
+      hintsQ.data,
+      selected,
+      rowsQ.data,
+    ],
   );
 
   if (batchQ.isError) {

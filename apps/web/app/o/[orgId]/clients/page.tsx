@@ -1,15 +1,20 @@
+import { PageContainer, PageHeader } from '@ie-ledger/ui';
 import type { Metadata } from 'next';
-import { Placeholder } from '../_shell/Placeholder';
+import { canWrite, orgRole } from '@/lib/auth/role';
+import { ClientsView } from './ClientsView';
 
 export const metadata: Metadata = { title: 'Clients' };
 
-// Placeholder from WS-04 so the navigation has targets; WS-09 replaces this page.
-export default function Page() {
+export default async function ClientsPage({ params }: PageProps<'/o/[orgId]/clients'>) {
+  const { orgId } = await params;
+  const writable = canWrite(await orgRole(orgId));
   return (
-    <Placeholder
-      title="Clients"
-      description="The people and companies you invoice."
-      owner="WS-09"
-    />
+    <PageContainer className="max-w-4xl">
+      <PageHeader
+        title="Clients"
+        description="The people and companies you invoice, with what they still owe."
+      />
+      <ClientsView orgId={orgId} canWrite={writable} />
+    </PageContainer>
   );
 }

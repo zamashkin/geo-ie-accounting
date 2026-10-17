@@ -3,6 +3,7 @@ import type { Metadata } from 'next';
 import { serverApi, serverRead } from '@/lib/api/server';
 import { formatIsoDate } from '@/lib/format';
 import { orgHref } from '@/lib/nav';
+import { InvoiceProfileForm } from './InvoiceProfileForm';
 import { WorkspaceSbsForm } from './WorkspaceSbsForm';
 
 export const metadata: Metadata = { title: 'Workspace settings' };
@@ -17,7 +18,10 @@ export default async function WorkspaceSettingsPage({ params }: PageProps<'/o/[o
 
   return (
     <PageContainer className="max-w-3xl">
-      <PageHeader title="Workspace" description="Details the declarations depend on." />
+      <PageHeader
+        title="Workspace"
+        description="Details the declarations depend on, and what your invoices print."
+      />
       <Card className="flex flex-col gap-5 p-5 sm:p-6">
         <dl className="grid gap-4 text-sm sm:grid-cols-2">
           <div>
@@ -51,6 +55,39 @@ export default async function WorkspaceSettingsPage({ params }: PageProps<'/o/[o
                 : 'No start date set.'}{' '}
               <span className="text-fg-muted">Only the owner can change it.</span>
             </p>
+          )}
+        </section>
+      </Card>
+      <Card className="mt-6 flex flex-col gap-4 p-5 sm:p-6">
+        <section aria-labelledby="invoice-heading" className="flex flex-col gap-3">
+          <div>
+            <h2 id="invoice-heading" className="text-base font-semibold">
+              Invoice details
+            </h2>
+            <p className="text-sm text-fg-muted">
+              Printed on every invoice as the seller. The bank details come from the account you
+              pick on each invoice.
+            </p>
+          </div>
+          {org.role === 'owner' ? (
+            <InvoiceProfileForm org={org} />
+          ) : (
+            <dl className="grid gap-3 text-sm sm:grid-cols-2">
+              {[
+                ['Tax ID', org.taxId],
+                ['Address', org.address],
+                ['Email', org.email],
+                ['Phone', org.phone],
+                ['Number prefix', org.invoicePrefix],
+                ['Payment terms', `${org.invoiceDueDays} days`],
+                ['Invoice note', org.invoiceNote],
+              ].map(([label, value]) => (
+                <div key={label}>
+                  <dt className="text-fg-muted">{label}</dt>
+                  <dd className="font-medium">{value ?? '—'}</dd>
+                </div>
+              ))}
+            </dl>
           )}
         </section>
       </Card>
