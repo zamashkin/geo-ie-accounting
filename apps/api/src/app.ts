@@ -1,6 +1,7 @@
 import { randomUUID } from 'node:crypto';
 import cors from '@fastify/cors';
 import swagger from '@fastify/swagger';
+import swaggerUi from '@fastify/swagger-ui';
 import Fastify, { LogController, type FastifyServerOptions } from 'fastify';
 import {
   serializerCompiler,
@@ -32,6 +33,8 @@ export interface AppConfig {
   logger: NonNullable<FastifyServerOptions['logger']>;
   /** Better Auth settings; local-dev defaults when omitted (OpenAPI script, unit tests). */
   auth?: Partial<AuthSettings>;
+  /** Serve Swagger UI at `/docs` and the spec at `/docs/json`. Off unless asked for. */
+  docs?: boolean;
 }
 
 /** External dependencies, injected so tests and the OpenAPI script can run without a database. */
@@ -115,6 +118,14 @@ export async function buildApp(config: AppConfig, deps: AppDeps) {
     transform: jsonSchemaTransform,
     transformObject: jsonSchemaTransformObject,
   });
+
+  if (config.docs) {
+    // Reads the spec @fastify/swagger builds once every route is registered.
+    await app.register(swaggerUi, {
+      routePrefix: '/docs',
+      uiConfig: { docExpansion: 'none', deepLinking: true, withCredentials: true },
+    });
+  }
 
   await registerPlatform(app, {
     webOrigin: config.webOrigin,

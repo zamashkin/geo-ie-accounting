@@ -23,6 +23,7 @@ const app = await buildApp(
   {
     version: env.APP_VERSION,
     webOrigin: env.WEB_ORIGIN,
+    docs: env.API_DOCS ?? env.NODE_ENV !== 'production',
     logger: {
       level: env.LOG_LEVEL,
       redact: LOG_REDACT_PATHS,
