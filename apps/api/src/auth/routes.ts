@@ -4,6 +4,7 @@ import { fromNodeHeaders } from 'better-auth/node';
 import type { FastifyPluginAsync } from 'fastify';
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod';
 import { requireAuth } from '../plugins/authz';
+import { guardAuthRequest } from '../plugins/read-only';
 import { problemResponse } from '../problem';
 import { AUTH_BASE_PATH } from './better-auth';
 
@@ -34,6 +35,7 @@ export const betterAuthRoutes: FastifyPluginAsync<{ baseUrl: string }> = async (
     logLevel: 'warn',
     handler: async (req, reply) => {
       const url = new URL(req.url, opts.baseUrl);
+      await guardAuthRequest(req, url.pathname.slice(AUTH_BASE_PATH.length));
       const init: RequestInit = { method: req.method, headers: fromNodeHeaders(req.headers) };
       if (req.method === 'POST' && typeof req.body === 'string') init.body = req.body;
       const response = await app.auth.handler(new Request(url, init));
@@ -71,6 +73,7 @@ export const meRoutes: FastifyPluginAsyncZod = async (app) => {
           email: user.email,
           name: user.name,
           emailVerified: user.emailVerified,
+          readOnly: user.readOnly === true,
           createdAt: user.createdAt.toISOString(),
         },
         memberships: orgs.map((o) => ({ orgId: o.id, orgName: o.name, role: o.role })),

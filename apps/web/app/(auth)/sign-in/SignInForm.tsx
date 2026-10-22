@@ -131,19 +131,23 @@ function MagicLinkForm({ next }: { next: string }) {
   );
 }
 
-export function SignInForm({ next }: { next: string }) {
+export function SignInForm({ next, signUpEnabled }: { next: string; signUpEnabled: boolean }) {
   return (
     <Card className="p-5 sm:p-6">
       <h1 className="mb-1 text-xl font-semibold tracking-tight">Sign in</h1>
-      <p className="mb-5 text-sm text-fg-muted">
-        No account yet?{' '}
-        <Link
-          href="/sign-up"
-          className="font-medium text-accent underline-offset-4 hover:underline"
-        >
-          Create one
-        </Link>
-      </p>
+      {signUpEnabled ? (
+        <p className="mb-5 text-sm text-fg-muted">
+          No account yet?{' '}
+          <Link
+            href="/sign-up"
+            className="font-medium text-accent underline-offset-4 hover:underline"
+          >
+            Create one
+          </Link>
+        </p>
+      ) : (
+        <p className="mb-5 text-sm text-fg-muted">New accounts are closed on this server.</p>
+      )}
       <Tabs>
         <TabList aria-label="Sign-in method">
           <Tab id="password">Password</Tab>

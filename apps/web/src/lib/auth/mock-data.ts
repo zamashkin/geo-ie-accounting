@@ -21,6 +21,7 @@ export function demoSession(user: { email: string; name: string }): MeResponse {
       id: '0199f2a0-0000-7000-8000-0000000000aa',
       ...user,
       emailVerified: true,
+      readOnly: false,
       createdAt: '2026-10-01T10:00:00.000Z',
     },
     memberships: [...DEMO_ORGS],

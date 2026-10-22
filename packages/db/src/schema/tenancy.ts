@@ -23,6 +23,11 @@ export const organizations = pgTable(
     /** Issue → due date when an invoice is issued without one. */
     invoiceDueDays: integer('invoice_due_days').notNull().default(14),
     invoiceNote: text('invoice_note'),
+    /**
+     * Set on workspaces made by `pnpm db:seed:demo`: which generator run built it (profile,
+     * version, "today"). A re-run with the same value leaves the workspace alone.
+     */
+    demoSeed: text('demo_seed'),
     createdAt: createdAt(),
   },
   (t) => [

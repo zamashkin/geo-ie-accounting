@@ -12,6 +12,7 @@ import { jsonSchemaTransform, jsonSchemaTransformObject } from './openapi';
 import type { Db } from '@geo-ie-accounting/db';
 import type { AuthSettings } from './auth/better-auth';
 import type { Mailer } from './auth/mailer';
+import type { DemoSettings } from './plugins/read-only';
 import { DEV_AUTH_SETTINGS, registerPlatform } from './plugins/index';
 import { REPLAYED_HEADER } from './plugins/mutations';
 import { registerProblemHandlers } from './problem';
@@ -35,6 +36,8 @@ export interface AppConfig {
   auth?: Partial<AuthSettings>;
   /** Serve Swagger UI at `/docs` and the spec at `/docs/json`. Off unless asked for. */
   docs?: boolean;
+  /** Public demo (`DEMO_MODE`): off when omitted. */
+  demo?: DemoSettings;
 }
 
 /** External dependencies, injected so tests and the OpenAPI script can run without a database. */
@@ -132,6 +135,7 @@ export async function buildApp(config: AppConfig, deps: AppDeps) {
     auth: { ...DEV_AUTH_SETTINGS, trustedOrigins: [config.webOrigin], ...config.auth },
     db: deps.db,
     mailer: deps.mailer,
+    demo: config.demo ?? { enabled: false },
   });
 
   await app.register(healthRoutes, {

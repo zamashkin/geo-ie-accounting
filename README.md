@@ -25,13 +25,34 @@ pnpm install
 pnpm env:init                # copies each .env.example to .env (skips existing files)
 docker compose up -d --wait  # postgres :5432, S3 (RustFS) :9000/:9001, mailpit :1025/:8025
 pnpm db:migrate
-pnpm db:seed                 # demo user, demo org, default chart of accounts
+pnpm db:seed                 # dev login, an empty dev workspace, default chart of accounts
 pnpm dev                     # web :3000, api :4000, worker
 ```
 
 Open http://localhost:3000. The home page asks the API for `/healthz` and shows its status. The API's OpenAPI spec is in `apps/api/openapi.json`, and Swagger UI runs at http://localhost:4000/docs (on by default outside production; set `API_DOCS=true` or `false` to choose). Sign in on the web app first and "Try it out" sends your session cookie. Reads work from there; changes are refused by the CSRF origin check, so make them from the web app.
 
 `docker compose down` stops the services. Add `-v` to delete the database and bucket volumes too.
+
+The dev login is `dev@geo-ie-accounting.local` / `dev-password-2026`, owner of an empty workspace.
+
+## Try the demo
+
+The demo has two made-up workspaces with almost two years of bookkeeping each, and a read-only login that can open both.
+
+```sh
+pnpm db:migrate
+pnpm db:seed:demo            # builds the demo workspaces and the read-only login
+DEMO_MODE=true pnpm dev      # or set DEMO_MODE=true in apps/api/.env
+```
+
+On the sign-in page, press **Try the demo**, or sign in as `demo@geo-ie-accounting.local` / `try-the-demo-2026`.
+
+- `Demo: IT freelancer` is a Georgian IE with five foreign clients paying in USD, EUR and GBP. Income arrives through monthly Bank of Georgia statement imports, gets converted to GEL, and goes out again as expenses, owner draws and the monthly tax. The workspace has returns filed for every month, one correction (a statement imported late), one filed month changed by a reversal, one overdue month, invoices in every status, categorisation rules and an unfinished import.
+- `Demo: high earner` passes the GEL 500,000 annual limit in mid-2025, so you can see the 3% rate for the rest of that year.
+
+The data runs up to yesterday. Run `pnpm db:seed:demo` again on another day to move it along: the old demo workspaces are retired and new ones built. Set `DEMO_TODAY=YYYY-MM-DD` to pin the date (the output is the same on every run), or pass `--force` to rebuild anyway. The NBG rates are real, recorded in `fixtures/nbg/demo-rates.json`. Every name, company and IBAN is fictional.
+
+The API refuses every change by the demo login with 403 `demo_read_only`, including password and email changes. To host the demo publicly, run the API with `DEMO_MODE=true`, and with `DEMO_SIGNUP=false` if strangers shouldn't be able to create accounts. Details: [ADR 0016](docs/adr/0016-public-demo.md).
 
 ### Checks
 

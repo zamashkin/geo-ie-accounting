@@ -42,7 +42,8 @@
               "payload_too_large",
               "rate_limited",
               "internal_error",
-              "service_unavailable"
+              "service_unavailable",
+              "demo_read_only"
             ]
           },
           "requestId": {
@@ -2833,6 +2834,9 @@
           },
           "emailVerified": {
             "type": "boolean"
+          },
+          "readOnly": {
+            "type": "boolean"
           }
         },
         "required": [
@@ -2840,7 +2844,8 @@
           "email",
           "name",
           "createdAt",
-          "emailVerified"
+          "emailVerified",
+          "readOnly"
         ]
       },
       "MembershipSummaryInput": {
@@ -3402,6 +3407,45 @@
         },
         "required": [
           "email"
+        ]
+      },
+      "DemoLoginInput": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email",
+            "pattern": "^(?:[A-Za-z0-9_'+\\-]+\\.)*[A-Za-z0-9_'+\\-]*[A-Za-z0-9_+-]@(?:[A-Za-z0-9][A-Za-z0-9\\-]*\\.)+[A-Za-z]{2,}$"
+          },
+          "password": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "email",
+          "password"
+        ]
+      },
+      "PublicConfigInput": {
+        "type": "object",
+        "properties": {
+          "demo": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/DemoLoginInput"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "signUpEnabled": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "demo",
+          "signUpEnabled"
         ]
       },
       "AccountListInput": {
@@ -8384,7 +8428,8 @@
               "payload_too_large",
               "rate_limited",
               "internal_error",
-              "service_unavailable"
+              "service_unavailable",
+              "demo_read_only"
             ]
           },
           "requestId": {
@@ -11221,6 +11266,9 @@
           },
           "emailVerified": {
             "type": "boolean"
+          },
+          "readOnly": {
+            "type": "boolean"
           }
         },
         "required": [
@@ -11228,7 +11276,8 @@
           "email",
           "name",
           "createdAt",
-          "emailVerified"
+          "emailVerified",
+          "readOnly"
         ],
         "additionalProperties": false
       },
@@ -11781,6 +11830,47 @@
         },
         "required": [
           "email"
+        ],
+        "additionalProperties": false
+      },
+      "DemoLogin": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email",
+            "pattern": "^(?:[A-Za-z0-9_'+\\-]+\\.)*[A-Za-z0-9_'+\\-]*[A-Za-z0-9_+-]@(?:[A-Za-z0-9][A-Za-z0-9\\-]*\\.)+[A-Za-z]{2,}$"
+          },
+          "password": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "email",
+          "password"
+        ],
+        "additionalProperties": false
+      },
+      "PublicConfig": {
+        "type": "object",
+        "properties": {
+          "demo": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/DemoLogin"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "signUpEnabled": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "demo",
+          "signUpEnabled"
         ],
         "additionalProperties": false
       },
@@ -16726,6 +16816,37 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/MeResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error (RFC 9457 problem details)",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/public-config": {
+      "get": {
+        "operationId": "getPublicConfig",
+        "summary": "Settings the sign-in and sign-up pages need: demo login, sign-up open",
+        "tags": [
+          "auth"
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PublicConfig"
                 }
               }
             }

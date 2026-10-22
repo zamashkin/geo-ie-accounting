@@ -9,6 +9,7 @@ import type {
   RouteOptions,
 } from 'fastify';
 import { HttpProblem } from '../problem';
+import { assertMayAct } from './read-only';
 
 // Authentication and authorization for /v1 routes.
 //
@@ -91,6 +92,7 @@ async function authenticate(req: FastifyRequest, reply: FastifyReply) {
   // Better Auth may refresh the session (updateAge) and re-issue the cookie.
   const setCookie = headers.getSetCookie();
   if (setCookie.length > 0) reply.header('set-cookie', setCookie);
+  assertMayAct(req, response.user);
   req.ctx.session = response;
 }
 

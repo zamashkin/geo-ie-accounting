@@ -3,7 +3,7 @@ import { uuidv7 } from 'uuidv7';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { seedChartOfAccounts } from './chart-of-accounts';
 import { accounts, organizations, postings, transactions } from './schema/index';
-import { DEMO, seedDemo } from './seed';
+import { DEV, seedDev } from './seed';
 import { startTestDatabase, type TestDatabase } from './testing/index';
 
 let tdb: TestDatabase;
@@ -39,7 +39,7 @@ async function post(
   lines: PostingInput[],
   opts: { paymentMethod?: 'bank' | null; orgId?: string } = {},
 ) {
-  const orgId = opts.orgId ?? DEMO.orgId;
+  const orgId = opts.orgId ?? DEV.orgId;
   return tdb.db.transaction(async (tx) => {
     const [t] = await tx
       .insert(transactions)
@@ -49,7 +49,7 @@ async function post(
         description: 'test',
         source: 'manual',
         paymentMethod: opts.paymentMethod === undefined ? 'bank' : opts.paymentMethod,
-        createdBy: DEMO.userId,
+        createdBy: DEV.userId,
       })
       .returning();
     if (lines.length > 0) {
@@ -70,8 +70,8 @@ async function post(
 
 beforeAll(async () => {
   tdb = await startTestDatabase();
-  await seedDemo(tdb.db);
-  const rows = await tdb.db.select().from(accounts).where(eq(accounts.orgId, DEMO.orgId));
+  await seedDev(tdb.db);
+  const rows = await tdb.db.select().from(accounts).where(eq(accounts.orgId, DEV.orgId));
   account = Object.fromEntries(rows.map((a) => [a.name, a.id]));
 });
 
@@ -82,11 +82,11 @@ afterAll(async () => {
 
 describe('seed', () => {
   it('creates one user, one org and the chart of accounts, and is idempotent', async () => {
-    const again = await seedDemo(tdb.db);
+    const again = await seedDev(tdb.db);
     expect(again.createdOrg).toBe(false);
     const [{ count }] = (
       await tdb.db.execute<{ count: string }>(
-        sql`select count(*)::text as count from accounts where org_id = ${DEMO.orgId}`,
+        sql`select count(*)::text as count from accounts where org_id = ${DEV.orgId}`,
       )
     ).rows as [{ count: string }];
     expect(Number(count)).toBe(12);
@@ -244,7 +244,7 @@ describe('immutability triggers', () => {
     await expectPgError(
       tdb.db
         .delete(transactions)
-        .where(and(eq(transactions.id, txId), eq(transactions.orgId, DEMO.orgId))),
+        .where(and(eq(transactions.id, txId), eq(transactions.orgId, DEV.orgId))),
       '23001',
       'ledger_immutable',
     );
@@ -255,18 +255,18 @@ describe('immutability triggers', () => {
       const [r] = await tx
         .insert(transactions)
         .values({
-          orgId: DEMO.orgId,
+          orgId: DEV.orgId,
           occurredOn: '2025-06-05',
           description: 'Reversal',
           source: 'reversal',
           reversesId: txId,
-          createdBy: DEMO.userId,
+          createdBy: DEV.userId,
         })
         .returning();
       await tx.insert(postings).values([
         {
           transactionId: r!.id,
-          orgId: DEMO.orgId,
+          orgId: DEV.orgId,
           accountId: account['Bank GEL']!,
           amountMinor: -5000n,
           currency: 'GEL',
@@ -274,7 +274,7 @@ describe('immutability triggers', () => {
         },
         {
           transactionId: r!.id,
-          orgId: DEMO.orgId,
+          orgId: DEV.orgId,
           accountId: account['Owner Equity']!,
           amountMinor: 5000n,
           currency: 'GEL',
@@ -292,12 +292,12 @@ describe('immutability triggers', () => {
   it('rejects reversing the same transaction twice', async () => {
     await expectPgError(
       tdb.db.insert(transactions).values({
-        orgId: DEMO.orgId,
+        orgId: DEV.orgId,
         occurredOn: '2025-06-06',
         description: 'Second reversal',
         source: 'reversal',
         reversesId: txId,
-        createdBy: DEMO.userId,
+        createdBy: DEV.userId,
       }),
       '23505',
       'transactions_reverses_id_uq',

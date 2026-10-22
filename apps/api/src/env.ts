@@ -36,6 +36,14 @@ export const ApiEnv = z
     /** Swagger UI at /docs. Defaults to on outside production. */
     API_DOCS: booleanString.optional(),
     MAIL_FROM: z.string().min(3).default('geo-ie-accounting <no-reply@geo-ie-accounting.local>'),
+    /**
+     * Public demo (ADR 0016): the sign-in page offers the read-only demo login made by
+     * `pnpm db:seed:demo`. Off: read-only logins cannot sign in. Read-only logins can never
+     * change anything, whatever this says.
+     */
+    DEMO_MODE: booleanString.default(false),
+    /** `false` turns off sign-up (email+password and magic link), e.g. on a public demo. */
+    DEMO_SIGNUP: booleanString.default(true),
   })
   .refine((env) => env.NODE_ENV !== 'production' || env.BETTER_AUTH_SECRET !== undefined, {
     path: ['BETTER_AUTH_SECRET'],

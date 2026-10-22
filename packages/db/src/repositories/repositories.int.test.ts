@@ -4,7 +4,7 @@ import { uuidv7 } from 'uuidv7';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { DEFAULT_CHART_OF_ACCOUNTS } from '../chart-of-accounts';
 import { accounts, authAccounts, idempotencyKeys, users } from '../schema/index';
-import { DEMO, seedDemo } from '../seed';
+import { DEV, seedDev } from '../seed';
 import { startTestDatabase, type TestDatabase } from '../testing/index';
 import { insertAuditEntry, listAuditEntries } from './audit';
 import { claimIdempotencyKey, completeIdempotencyKey, IDEMPOTENCY_TTL_MS } from './idempotency';
@@ -32,19 +32,19 @@ afterAll(async () => {
   await (tdb as TestDatabase | undefined)?.close();
 });
 
-describe('seedDemo', () => {
+describe('seedDev', () => {
   it('creates a credential login once, with a hash Better Auth can verify', async () => {
-    const first = await seedDemo(tdb.db);
-    const second = await seedDemo(tdb.db);
+    const first = await seedDev(tdb.db);
+    const second = await seedDev(tdb.db);
     expect(first.createdLogin).toBe(true);
     expect(second.createdLogin).toBe(false);
     const creds = await tdb.db
       .select()
       .from(authAccounts)
-      .where(and(eq(authAccounts.userId, DEMO.userId), eq(authAccounts.providerId, 'credential')));
+      .where(and(eq(authAccounts.userId, DEV.userId), eq(authAccounts.providerId, 'credential')));
     expect(creds).toHaveLength(1);
-    expect(creds[0]!.accountId).toBe(DEMO.userId);
-    expect(await verifyPassword(creds[0]!.password!, DEMO.password)).toBe(true);
+    expect(creds[0]!.accountId).toBe(DEV.userId);
+    expect(await verifyPassword(creds[0]!.password!, DEV.password)).toBe(true);
   });
 });
 

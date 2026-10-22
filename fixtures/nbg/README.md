@@ -37,3 +37,13 @@ File names are `<codes joined by ->_<requested date>.json`. Each body is NBG's J
 
 To re-record, run `pnpm --filter @geo-ie-accounting/nbg record-fixtures` and review the diff. Rates for past
 dates should not change.
+
+## Demo rates
+
+`demo-rates.json` holds every EUR, GBP and USD rate NBG published from 1 January 2025 to the
+recording date: real data, recorded with
+`pnpm --filter @geo-ie-accounting/nbg record-demo-rates [from] [to]`, which asks NBG for every
+calendar day of the range and keeps each `validFromDate` once. `pnpm db:seed:demo` stores them and
+books the demo workspaces with them, so seeding needs no network for dates up to `requestedTo`.
+Fields: `rate` is NBG's `rateFormated`, `setAt` its `date` (Tbilisi wall-clock time with a `Z`).
+To extend the demo past `requestedTo`, re-record with a later end date.

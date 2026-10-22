@@ -14,6 +14,7 @@ import { Suspense, type ReactNode } from 'react';
 import { Notice } from '@/components/Notice';
 import type { Schemas } from '@/lib/api/client';
 import { serverApi, serverRead } from '@/lib/api/server';
+import { canWrite, orgRole } from '@/lib/auth/role';
 import { formatBp, formatIsoDate, formatMinor, formatPeriod, parseMinor } from '@/lib/format';
 import { orgHref } from '@/lib/nav';
 import { parseYearParam, yearOptions } from '@/lib/years';
@@ -65,15 +66,25 @@ function Figure({ children }: { children: ReactNode }) {
 
 const link = 'font-medium text-accent underline-offset-4 hover:underline';
 
-async function HeaderActions({ data, orgId }: { data: DashboardPromise; orgId: string }) {
+async function HeaderActions({
+  data,
+  orgId,
+  writable,
+}: {
+  data: DashboardPromise;
+  orgId: string;
+  writable: boolean;
+}) {
   const dash = await data;
   return (
     <>
       <YearPicker year={dash.year} years={yearOptions(dash.year, dash.sbsEffectiveFrom)} />
-      <ButtonLink href={orgHref(orgId, '/imports')} variant="secondary">
-        <Upload aria-hidden />
-        Import statement
-      </ButtonLink>
+      {writable ? (
+        <ButtonLink href={orgHref(orgId, '/imports')} variant="secondary">
+          <Upload aria-hidden />
+          Import statement
+        </ButtonLink>
+      ) : null}
     </>
   );
 }
@@ -370,7 +381,7 @@ export default async function DashboardPage({ params, searchParams }: PageProps<
         }
         actions={
           <Suspense fallback={<Skeleton className="h-10 w-48" />}>
-            <HeaderActions data={data} orgId={orgId} />
+            <HeaderActions data={data} orgId={orgId} writable={canWrite(await orgRole(orgId))} />
           </Suspense>
         }
       />

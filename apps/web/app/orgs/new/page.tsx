@@ -14,6 +14,8 @@ export const metadata: Metadata = { title: 'New workspace' };
 export default async function NewOrgPage({ searchParams }: PageProps<'/orgs/new'>) {
   const session = await getSession();
   if (!session) redirect(`/sign-in?next=${encodeURIComponent(NEW_ORG_PATH)}`);
+  // The read-only demo login cannot create workspaces.
+  if (session.user.readOnly) redirect('/');
   const { org } = await searchParams;
   const membership =
     typeof org === 'string' ? session.memberships.find((m) => m.orgId === org) : undefined;

@@ -14,6 +14,8 @@ export const users = pgTable('users', {
   name: text('name').notNull(),
   emailVerified: boolean('email_verified').notNull().default(false),
   image: text('image'),
+  /** Read-only login (the public demo): every mutation is refused with 403 `demo_read_only`. */
+  readOnly: boolean('read_only').notNull().default(false),
   createdAt: createdAt(),
   updatedAt: timestamptz('updated_at').notNull().defaultNow(),
 });

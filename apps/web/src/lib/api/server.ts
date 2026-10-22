@@ -1,4 +1,5 @@
 import 'server-only';
+import type { PublicConfig } from '@geo-ie-accounting/contracts';
 import { cookies } from 'next/headers';
 import { notFound, redirect } from 'next/navigation';
 import { serverEnv } from '@/env';
@@ -6,6 +7,7 @@ import type { HealthResult } from '@/lib/health';
 import { isApiError } from './api-error';
 import { createApiClient } from './client';
 import { unwrap } from './errors';
+import { publicEnv } from '../public-env';
 
 const api = createApiClient(serverEnv().API_URL);
 
@@ -23,6 +25,23 @@ export async function getHealth(): Promise<HealthResult> {
     return { kind: 'unreachable', reason: `HTTP ${response.status}` };
   } catch (err) {
     return { kind: 'unreachable', reason: err instanceof Error ? err.message : 'request failed' };
+  }
+}
+
+/**
+ * `GET /v1/public-config`: the demo login (when the API runs with `DEMO_MODE=true`) and whether
+ * sign-up is open. Never throws: without the API there is no demo and sign-up stays on.
+ */
+export async function getPublicConfig(): Promise<PublicConfig> {
+  if (publicEnv().authMode === 'mock') return { demo: null, signUpEnabled: true };
+  try {
+    const { data } = await api.GET('/v1/public-config', {
+      cache: 'no-store',
+      signal: AbortSignal.timeout(3_000),
+    });
+    return data ?? { demo: null, signUpEnabled: true };
+  } catch {
+    return { demo: null, signUpEnabled: true };
   }
 }
 
