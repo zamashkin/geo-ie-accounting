@@ -146,6 +146,7 @@ export function OrgShell({
           theme={theme}
           onThemeChange={setTheme}
           onSignOut={() => void signOut()}
+          accountHref="/account"
         />
       }
     >

@@ -107,6 +107,12 @@ describe('safeNextPath', () => {
     ['//evil.example', '/fallback'],
     ['/\\evil.example', '/fallback'],
     ['https://evil.example', '/fallback'],
+    ['javascript:alert(1)', '/fallback'],
+    ['/\t/evil.example', '/fallback'],
+    ['/o/1\n', '/fallback'],
+    ['/o/1?year=2025#top', '/o/1?year=2025#top'],
+    ['/../../etc', '/etc'],
+    ['', '/fallback'],
     [null, '/fallback'],
   ])('%j -> %s', (next, expected) => {
     expect(safeNextPath(next, '/fallback')).toBe(expected);

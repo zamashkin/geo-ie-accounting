@@ -72,6 +72,14 @@ function PasswordForm({ next }: { next: string }) {
       <Button type="submit" isPending={formState.isSubmitting} className="w-full">
         Sign in
       </Button>
+      <Link
+        href={
+          next === '/' ? '/forgot-password' : `/forgot-password?next=${encodeURIComponent(next)}`
+        }
+        className="self-start text-sm font-medium text-accent underline-offset-4 hover:underline"
+      >
+        Forgot password?
+      </Link>
     </form>
   );
 }
@@ -131,10 +139,24 @@ function MagicLinkForm({ next }: { next: string }) {
   );
 }
 
-export function SignInForm({ next, signUpEnabled }: { next: string; signUpEnabled: boolean }) {
+export function SignInForm({
+  next,
+  signUpEnabled,
+  notice,
+}: {
+  next: string;
+  signUpEnabled: boolean;
+  /** Shown above the form, e.g. after a password reset. */
+  notice?: string | undefined;
+}) {
   return (
     <Card className="p-5 sm:p-6">
       <h1 className="mb-1 text-xl font-semibold tracking-tight">Sign in</h1>
+      {notice ? (
+        <div className="mb-4">
+          <FormAlert tone="success">{notice}</FormAlert>
+        </div>
+      ) : null}
       {signUpEnabled ? (
         <p className="mb-5 text-sm text-fg-muted">
           No account yet?{' '}
