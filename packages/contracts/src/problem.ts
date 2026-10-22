@@ -16,6 +16,8 @@ export const PROBLEM_CODES = [
   'service_unavailable',
   /** A read-only (demo) login tried to change something. */
   'demo_read_only',
+  /** The change would leave a workspace without an owner. */
+  'last_owner',
 ] as const;
 export const ProblemCode = z.enum(PROBLEM_CODES);
 export type ProblemCode = z.output<typeof ProblemCode>;

@@ -27,6 +27,12 @@ export type OrgParams = z.output<typeof OrgParams>;
 export const InvitationParams = OrgParams.extend({ invitationId: Uuid });
 export type InvitationParams = z.output<typeof InvitationParams>;
 
+export const MemberParams = OrgParams.extend({ userId: Uuid });
+export type MemberParams = z.output<typeof MemberParams>;
+
+export const SessionParams = z.object({ sessionId: Uuid });
+export type SessionParams = z.output<typeof SessionParams>;
+
 // ── Session ─────────────────────────────────────────────────────────────────────────────
 
 export const SessionUser = User.extend({
@@ -119,6 +125,33 @@ export type Member = z.output<typeof Member>;
 
 export const MemberList = paginated(Member).meta({ id: 'MemberList' });
 export type MemberList = z.output<typeof MemberList>;
+
+/** `PATCH /v1/orgs/:orgId/members/:userId` (owner). A workspace always keeps one owner. */
+export const UpdateMemberRequest = z.object({ role: Role }).meta({ id: 'UpdateMemberRequest' });
+export type UpdateMemberRequest = z.output<typeof UpdateMemberRequest>;
+
+// ── Account sessions ────────────────────────────────────────────────────────────────────
+
+/** One signed-in device of the current user. The session token is never exposed. */
+export const AccountSession = z
+  .object({
+    id: Uuid,
+    createdAt: Timestamp,
+    /** Last refresh of the session (Better Auth refreshes it at most once a day). */
+    updatedAt: Timestamp,
+    expiresAt: Timestamp,
+    userAgent: z.string().nullable(),
+    ipAddress: z.string().nullable(),
+    /** The session this request was made with. */
+    current: z.boolean(),
+  })
+  .meta({ id: 'AccountSession' });
+export type AccountSession = z.output<typeof AccountSession>;
+
+export const AccountSessionList = z
+  .object({ items: z.array(AccountSession) })
+  .meta({ id: 'AccountSessionList' });
+export type AccountSessionList = z.output<typeof AccountSessionList>;
 
 // ── Invitations ─────────────────────────────────────────────────────────────────────────
 

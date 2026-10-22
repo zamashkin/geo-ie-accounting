@@ -18,6 +18,7 @@ export {
 export * from './repositories/rates';
 export * from './repositories/orgs';
 export * from './repositories/members';
+export * from './repositories/sessions';
 export * from './repositories/audit';
 export * from './repositories/idempotency';
 export * from './repositories/accounts';

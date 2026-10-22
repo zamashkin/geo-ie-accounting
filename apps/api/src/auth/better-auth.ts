@@ -4,7 +4,13 @@ import { drizzleAdapter } from 'better-auth/adapters/drizzle';
 import { magicLink } from 'better-auth/plugins/magic-link';
 import type { FastifyBaseLogger } from 'fastify';
 import { uuidv7 } from 'uuidv7';
-import { magicLinkMail, resetPasswordMail, verifyEmailMail } from './emails';
+import {
+  changeEmailMail,
+  magicLinkMail,
+  resetPasswordMail,
+  verifyEmailMail,
+  withWebCallback,
+} from './emails';
 import type { Mailer } from './mailer';
 
 /** Better Auth's endpoints live under the API's versioned base path. */
@@ -30,6 +36,8 @@ export interface AuthSettings {
 }
 
 export interface CreateAuthOptions extends AuthSettings {
+  /** The web app's origin: where every emailed link lands after the API has checked it. */
+  webOrigin: string;
   db: Db;
   mailer: Mailer;
   log: FastifyBaseLogger;
@@ -37,8 +45,13 @@ export interface CreateAuthOptions extends AuthSettings {
 
 const DAY = 24 * 60 * 60;
 
+/** Lifetime of a password-reset link (Better Auth's default, stated because the email says it). */
+export const RESET_PASSWORD_TTL_SECONDS = 60 * 60;
+
 export function createAuth(opts: CreateAuthOptions) {
   const disableSignUp = opts.signUpEnabled === false;
+  const link = (url: string, fallbackPath = '/') =>
+    withWebCallback(url, opts.webOrigin, fallbackPath);
   return betterAuth({
     appName: 'geo-ie-accounting',
     baseURL: opts.baseUrl,
@@ -59,6 +72,14 @@ export function createAuth(opts: CreateAuthOptions) {
         // users.read_only (ADR 0016). Not settable through sign-up or update-user.
         readOnly: { type: 'boolean', required: false, defaultValue: false, input: false },
       },
+      // Two steps: a confirmation link to the current address, then a verification link to the
+      // new one. The email changes only when the second link is opened.
+      changeEmail: {
+        enabled: true,
+        sendChangeEmailConfirmation: async ({ user, newEmail, url }) => {
+          await opts.mailer.send(changeEmailMail(user.email, newEmail, link(url, '/account')));
+        },
+      },
     },
     emailAndPassword: {
       enabled: true,
@@ -68,15 +89,23 @@ export function createAuth(opts: CreateAuthOptions) {
       minPasswordLength: 12,
       maxPasswordLength: 128,
       revokeSessionsOnPasswordReset: true,
-      sendResetPassword: async ({ user, url }) => {
-        await opts.mailer.send(resetPasswordMail(user.email, url));
+      resetPasswordTokenExpiresIn: RESET_PASSWORD_TTL_SECONDS,
+      sendResetPassword: ({ user, url }) => {
+        // Not awaited: an SMTP round-trip only for known addresses would let response times
+        // tell which emails have an account. The answer is the same either way.
+        opts.mailer
+          .send(resetPasswordMail(user.email, link(url, '/reset-password')))
+          .catch((err: unknown) => {
+            opts.log.error({ err, component: 'better-auth' }, 'password reset mail failed');
+          });
+        return Promise.resolve();
       },
     },
     emailVerification: {
       sendOnSignUp: true,
       autoSignInAfterVerification: true,
       sendVerificationEmail: async ({ user, url }) => {
-        await opts.mailer.send(verifyEmailMail(user.email, url));
+        await opts.mailer.send(verifyEmailMail(user.email, link(url)));
       },
     },
     session: {
@@ -89,7 +118,7 @@ export function createAuth(opts: CreateAuthOptions) {
         storeToken: 'hashed',
         disableSignUp,
         sendMagicLink: async ({ email, url }) => {
-          await opts.mailer.send(magicLinkMail(email, url));
+          await opts.mailer.send(magicLinkMail(email, link(url)));
         },
       }),
     ],
