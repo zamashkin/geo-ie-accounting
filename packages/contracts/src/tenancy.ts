@@ -29,7 +29,11 @@ export type InvitationParams = z.output<typeof InvitationParams>;
 
 // ── Session ─────────────────────────────────────────────────────────────────────────────
 
-export const SessionUser = User.extend({ emailVerified: z.boolean() }).meta({ id: 'SessionUser' });
+export const SessionUser = User.extend({
+  emailVerified: z.boolean(),
+  /** A read-only login (the public demo): the API refuses every change with `demo_read_only`. */
+  readOnly: z.boolean(),
+}).meta({ id: 'SessionUser' });
 export type SessionUser = z.output<typeof SessionUser>;
 
 export const MembershipSummary = z

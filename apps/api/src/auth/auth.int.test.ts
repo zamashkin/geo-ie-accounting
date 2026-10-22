@@ -1,4 +1,4 @@
-import { DEMO, seedDemo } from '@geo-ie-accounting/db';
+import { DEV, seedDev } from '@geo-ie-accounting/db';
 import { uuidv7 } from 'uuidv7';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import {
@@ -79,9 +79,9 @@ describe('email + password', () => {
     expect((await signIn(user.email, 'wrong-password-123')).statusCode).toBe(401);
   });
 
-  it('signs in the seeded demo user with the documented password', async () => {
-    await seedDemo(env.tdb.db);
-    const res = await signIn(DEMO.userEmail, DEMO.password);
+  it('signs in the seeded dev user with the documented password', async () => {
+    await seedDev(env.tdb.db);
+    const res = await signIn(DEV.userEmail, DEV.password);
     expect(res.statusCode).toBe(200);
     const me = await env.app.inject({
       method: 'GET',
@@ -89,7 +89,7 @@ describe('email + password', () => {
       headers: { cookie: cookieFrom(res) },
     });
     expect(me.json()).toMatchObject({
-      memberships: [{ orgId: DEMO.orgId, orgName: DEMO.orgName, role: 'owner' }],
+      memberships: [{ orgId: DEV.orgId, orgName: DEV.orgName, role: 'owner' }],
     });
   });
 

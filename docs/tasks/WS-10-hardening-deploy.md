@@ -10,5 +10,5 @@
 - OpenTelemetry traces web → api → worker (trace context passed through job payloads), Sentry in all three apps, dashboards documented.
 - Perf: Lighthouse CI budgets enforced; bundle analysis report in CI artifacts.
 - Production Dockerfiles (multi-stage, non-root), deploy per SPEC Q4, backups for Postgres, HTTPS.
-- Public demo: seed script generating a realistic anonymised year, read-only demo login.
+- Public demo: done, see ADR 0016 (`pnpm db:seed:demo`, `DEMO_MODE`). Left: host it and re-seed it on a schedule.
 - README for reviewers: architecture diagram, ADR index, screenshots, "trade-offs and next steps".

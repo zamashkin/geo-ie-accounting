@@ -18,6 +18,7 @@ Read `SPEC.md` first. Decisions with alternatives considered live in `docs/adr/`
 | Object storage | S3-compatible (RustFS locally), server-side encryption | 0006 |
 | Validation / contracts | Zod schemas in `packages/contracts`, shared by api, web, worker | — |
 | PDF | `@react-pdf/renderer` in the API, rendered on request | 0015 |
+| Public demo | Generated through the API in process, read-only login | 0016 |
 | Testing | Vitest (unit + integration with Testcontainers Postgres), Playwright (e2e), Storybook (UI) | — |
 | Observability | OpenTelemetry (traces), pino (logs), Sentry (errors, web + api + worker) | — |
 | CI | GitHub Actions | — |

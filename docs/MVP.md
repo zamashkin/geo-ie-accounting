@@ -4,7 +4,7 @@
 
 ## The demo path (acceptance)
 
-1. Sign in with the seeded demo login or sign up, through the **real** auth API (no mock).
+1. Sign in with the seeded dev login or sign up, through the **real** auth API (no mock).
 2. Create a workspace and set the small-business status start date.
 3. Upload a BoG statement (XLSX or CSV). The bank account is matched or created from IBAN + currency.
 4. Preview: every row shows date, amount, type and a suggested classification. The user can change the classification or skip a row, then commits.
@@ -55,7 +55,7 @@ Starts after MVP-A is merged. Owns `apps/web/**` pages for the demo path.
 cd geo-ie-accounting   # your clone
 pnpm env:init   # first time only
 docker compose up -d --wait && pnpm db:migrate && pnpm db:seed && pnpm dev
-# open http://localhost:3000, sign in as demo@geo-ie-accounting.local / demo-password-2026
+# open http://localhost:3000, sign in as dev@geo-ie-accounting.local / dev-password-2026
 # upload fixtures/statements/bog/bog-gbp-2025-06.xlsx, or a real statement from fixtures/statements/raw/
 ```
 

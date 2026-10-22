@@ -21,6 +21,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/public-config": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Settings the sign-in and sign-up pages need: demo login, sign-up open */
+        get: operations["getPublicConfig"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/orgs": {
         parameters: {
             query?: never;
@@ -926,7 +943,7 @@ export interface components {
             detail?: string;
             instance?: string;
             /** @enum {string} */
-            code: "bad_request" | "validation_failed" | "unauthenticated" | "forbidden" | "not_found" | "conflict" | "idempotency_key_reused" | "rate_unavailable" | "payload_too_large" | "rate_limited" | "internal_error" | "service_unavailable";
+            code: "bad_request" | "validation_failed" | "unauthenticated" | "forbidden" | "not_found" | "conflict" | "idempotency_key_reused" | "rate_unavailable" | "payload_too_large" | "rate_limited" | "internal_error" | "service_unavailable" | "demo_read_only";
             requestId: string;
             errors?: {
                 path: string;
@@ -1567,6 +1584,7 @@ export interface components {
             /** Format: date-time */
             createdAt: string;
             emailVerified: boolean;
+            readOnly: boolean;
         };
         MembershipSummaryInput: {
             /** Format: uuid */
@@ -1686,6 +1704,15 @@ export interface components {
             name?: string;
             /** Format: starts_with */
             callbackURL?: string;
+        };
+        DemoLoginInput: {
+            /** Format: email */
+            email: string;
+            password: string;
+        };
+        PublicConfigInput: {
+            demo: components["schemas"]["DemoLoginInput"] | null;
+            signUpEnabled: boolean;
         };
         AccountListInput: {
             items: components["schemas"]["AccountInput"][];
@@ -2994,7 +3021,7 @@ export interface components {
             detail?: string;
             instance?: string;
             /** @enum {string} */
-            code: "bad_request" | "validation_failed" | "unauthenticated" | "forbidden" | "not_found" | "conflict" | "idempotency_key_reused" | "rate_unavailable" | "payload_too_large" | "rate_limited" | "internal_error" | "service_unavailable";
+            code: "bad_request" | "validation_failed" | "unauthenticated" | "forbidden" | "not_found" | "conflict" | "idempotency_key_reused" | "rate_unavailable" | "payload_too_large" | "rate_limited" | "internal_error" | "service_unavailable" | "demo_read_only";
             requestId: string;
             errors?: {
                 path: string;
@@ -3635,6 +3662,7 @@ export interface components {
             /** Format: date-time */
             createdAt: string;
             emailVerified: boolean;
+            readOnly: boolean;
         };
         MembershipSummary: {
             /** Format: uuid */
@@ -3754,6 +3782,15 @@ export interface components {
             name?: string;
             /** Format: starts_with */
             callbackURL?: string;
+        };
+        DemoLogin: {
+            /** Format: email */
+            email: string;
+            password: string;
+        };
+        PublicConfig: {
+            demo: components["schemas"]["DemoLogin"] | null;
+            signUpEnabled: boolean;
         };
         AccountList: {
             items: components["schemas"]["Account"][];
@@ -5116,6 +5153,35 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["MeResponse"];
+                };
+            };
+            /** @description Error (RFC 9457 problem details) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    getPublicConfig: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Default Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PublicConfig"];
                 };
             };
             /** @description Error (RFC 9457 problem details) */

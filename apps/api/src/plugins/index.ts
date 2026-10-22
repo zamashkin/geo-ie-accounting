@@ -9,6 +9,7 @@ import { registerAudit } from './audit';
 import { registerAuthz } from './authz';
 import { registerRequestContext } from './context';
 import { registerMutations } from './mutations';
+import { publicConfigRoutes, registerReadOnly, type DemoSettings } from './read-only';
 
 export { requireAuth, requireRole, ORG_NOT_FOUND_DETAIL, ROLE_RANK } from './authz';
 export type { OrgMembership } from './context';
@@ -19,6 +20,8 @@ export interface PlatformOptions {
   /** Omitted by the OpenAPI script and unit tests: a pool that is never connected. */
   db?: Db | undefined;
   mailer?: Mailer | undefined;
+  /** Public demo settings (`DEMO_MODE`); off when omitted. */
+  demo?: DemoSettings | undefined;
 }
 
 /** Local-dev defaults so `buildApp` works without auth settings (OpenAPI script, unit tests). */
@@ -45,12 +48,14 @@ export async function registerPlatform(app: FastifyInstance, opts: PlatformOptio
   const auth = createAuth({ ...opts.auth, db, mailer, log: app.log });
 
   registerRequestContext(app, { db, auth });
+  registerReadOnly(app, opts.demo ?? { enabled: false });
   registerAuthz(app, { trustedOrigins: opts.auth.trustedOrigins });
   registerAudit(app);
   registerMutations(app);
 
   await app.register(betterAuthRoutes, { baseUrl: opts.auth.baseUrl });
   await app.register(meRoutes);
+  await app.register(publicConfigRoutes, { signUpEnabled: opts.auth.signUpEnabled !== false });
   await app.register(orgRoutes);
   await app.register(memberRoutes, { webOrigin: opts.webOrigin, mailer });
 }

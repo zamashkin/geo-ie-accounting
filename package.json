@@ -19,6 +19,7 @@
     "db:generate": "pnpm --filter @geo-ie-accounting/db db:generate",
     "db:migrate": "pnpm --filter @geo-ie-accounting/db db:migrate",
     "db:seed": "pnpm --filter @geo-ie-accounting/db db:seed",
+    "db:seed:demo": "pnpm --filter @geo-ie-accounting/api seed:demo",
     "gen:api": "pnpm --filter @geo-ie-accounting/api openapi && pnpm --filter @geo-ie-accounting/web gen:api",
     "e2e": "pnpm --filter @geo-ie-accounting/web e2e"
   },

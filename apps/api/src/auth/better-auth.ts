@@ -25,6 +25,8 @@ export interface AuthSettings {
   cookieDomain?: string | undefined;
   /** Better Auth's own rate limiter (memory store). Off in tests. */
   rateLimit: boolean;
+  /** False turns off sign-up by password and by magic link (`DEMO_SIGNUP=false`). Default on. */
+  signUpEnabled?: boolean | undefined;
 }
 
 export interface CreateAuthOptions extends AuthSettings {
@@ -36,6 +38,7 @@ export interface CreateAuthOptions extends AuthSettings {
 const DAY = 24 * 60 * 60;
 
 export function createAuth(opts: CreateAuthOptions) {
+  const disableSignUp = opts.signUpEnabled === false;
   return betterAuth({
     appName: 'geo-ie-accounting',
     baseURL: opts.baseUrl,
@@ -51,8 +54,15 @@ export function createAuth(opts: CreateAuthOptions) {
         verification: schema.authVerifications,
       },
     }),
+    user: {
+      additionalFields: {
+        // users.read_only (ADR 0016). Not settable through sign-up or update-user.
+        readOnly: { type: 'boolean', required: false, defaultValue: false, input: false },
+      },
+    },
     emailAndPassword: {
       enabled: true,
+      disableSignUp,
       // Financial data: an address must be proven before a password login works.
       requireEmailVerification: true,
       minPasswordLength: 12,
@@ -77,6 +87,7 @@ export function createAuth(opts: CreateAuthOptions) {
       magicLink({
         expiresIn: 10 * 60,
         storeToken: 'hashed',
+        disableSignUp,
         sendMagicLink: async ({ email, url }) => {
           await opts.mailer.send(magicLinkMail(email, url));
         },

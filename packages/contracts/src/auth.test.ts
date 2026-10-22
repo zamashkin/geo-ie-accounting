@@ -26,6 +26,7 @@ describe('auth contracts', () => {
         email: 'nino@example.ge',
         name: 'Nino',
         emailVerified: true,
+        readOnly: false,
         createdAt: '2026-10-01T10:00:00.000Z',
       },
       memberships: [

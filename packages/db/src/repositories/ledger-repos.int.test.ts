@@ -3,7 +3,7 @@ import { eq } from 'drizzle-orm';
 import { uuidv7 } from 'uuidv7';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { exchangeRates, organizations, users } from '../schema/index';
-import { DEMO, readRateFixture, seedDemo, seedDemoRates } from '../seed';
+import { DEV, readRateFixture, seedDev, seedDevRates } from '../seed';
 import { startTestDatabase, type TestDatabase } from '../testing/index';
 import { getDefaultSbsIncomeAccount, listAccounts, matchOrCreateBankAccount } from './accounts';
 import { createOrganization } from './orgs';
@@ -30,7 +30,7 @@ async function newOrg() {
   return { userId: user!.id, orgId: org.id };
 }
 
-describe('seedDemoRates', () => {
+describe('seedDevRates', () => {
   it('stores the three GBP rates of the BoG fixture, idempotently', async () => {
     expect(readRateFixture('GBP_2025-06-04.json')).toEqual([
       {
@@ -41,26 +41,26 @@ describe('seedDemoRates', () => {
         setAt: new Date('2025-06-03T13:01:09.015Z'),
       },
     ]);
-    const first = await seedDemoRates(tdb.db);
-    const second = await seedDemoRates(tdb.db);
+    const first = await seedDevRates(tdb.db);
+    const second = await seedDevRates(tdb.db);
     expect(first.inserted + first.unchanged).toBe(3);
     expect(second).toMatchObject({ inserted: 0, unchanged: 3, conflicts: [] });
     expect((await getRateFor(tdb.db, 'GBP', '2025-06-11'))?.rate).toBe('3.685800');
   });
 
-  it('gives the demo org an SBS start before the fixture dates', async () => {
-    await seedDemo(tdb.db);
+  it('gives the dev org an SBS start before the fixture dates', async () => {
+    await seedDev(tdb.db);
     const [org] = await tdb.db
       .select({ from: organizations.sbsEffectiveFrom })
       .from(organizations)
-      .where(eq(organizations.id, DEMO.orgId));
+      .where(eq(organizations.id, DEV.orgId));
     expect(org?.from).toBe('2025-01-01');
   });
 });
 
 describe('resolveRate', () => {
   it('uses a row that starts on the date without asking the source', async () => {
-    await seedDemoRates(tdb.db);
+    await seedDevRates(tdb.db);
     const calls: string[] = [];
     const source: RateSource = {
       getRates: (date) => {
@@ -122,7 +122,7 @@ describe('matchOrCreateBankAccount', () => {
 
 describe('transactions', () => {
   it('inserts a balanced draft, reads it back with rate and lists SBS income', async () => {
-    await seedDemoRates(tdb.db);
+    await seedDevRates(tdb.db);
     const { orgId, userId } = await newOrg();
     const { account: bank } = await tdb.db.transaction((tx) =>
       matchOrCreateBankAccount(tx, orgId, { iban: 'GE00TEST', currency: 'GBP' }, 'bog'),
