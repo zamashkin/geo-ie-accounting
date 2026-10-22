@@ -33,6 +33,8 @@ export const ApiEnv = z
       .string()
       .regex(/^smtps?:\/\//)
       .default('smtp://localhost:1025'),
+    /** Swagger UI at /docs. Defaults to on outside production. */
+    API_DOCS: booleanString.optional(),
     MAIL_FROM: z.string().min(3).default('geo-ie-accounting <no-reply@geo-ie-accounting.local>'),
     /**
      * Public demo (ADR 0016): the sign-in page offers the read-only demo login made by

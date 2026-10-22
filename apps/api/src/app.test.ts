@@ -6,9 +6,9 @@ import { HttpProblem } from './problem';
 
 let app: App | undefined;
 
-async function makeApp(dbOk = true) {
+async function makeApp(dbOk = true, docs = false) {
   app = await buildApp(
-    { version: 'test', webOrigin: 'http://localhost:3000', logger: false },
+    { version: 'test', webOrigin: 'http://localhost:3000', logger: false, docs },
     { checkDatabase: () => Promise.resolve(dbOk) },
   );
   return app;
@@ -30,6 +30,23 @@ describe('GET /healthz', () => {
     const res = await (await makeApp(false)).inject({ method: 'GET', url: '/healthz' });
     expect(res.statusCode).toBe(503);
     expect(res.json()).toMatchObject({ status: 'degraded', checks: { database: 'fail' } });
+  });
+});
+
+describe('Swagger UI', () => {
+  it('serves /docs and the spec when enabled', async () => {
+    const a = await makeApp(true, true);
+    expect((await a.inject({ method: 'GET', url: '/docs/' })).statusCode).toBe(200);
+    const spec = await a.inject({ method: 'GET', url: '/docs/json' });
+    expect(spec.json()).toMatchObject({
+      openapi: '3.1.0',
+      info: { title: 'geo-ie-accounting API' },
+    });
+  });
+
+  it('is not served by default', async () => {
+    const res = await (await makeApp()).inject({ method: 'GET', url: '/docs/json' });
+    expect(res.statusCode).toBe(404);
   });
 });
 

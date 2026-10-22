@@ -29,7 +29,7 @@ pnpm db:seed                 # dev login, an empty dev workspace, default chart 
 pnpm dev                     # web :3000, api :4000, worker
 ```
 
-Open http://localhost:3000. The home page asks the API for `/healthz` and shows its status. The API's OpenAPI spec is in `apps/api/openapi.json`.
+Open http://localhost:3000. The home page asks the API for `/healthz` and shows its status. The API's OpenAPI spec is in `apps/api/openapi.json`, and Swagger UI runs at http://localhost:4000/docs (on by default outside production; set `API_DOCS=true` or `false` to choose). Sign in on the web app first and "Try it out" sends your session cookie. Reads work from there; changes are refused by the CSRF origin check, so make them from the web app.
 
 `docker compose down` stops the services. Add `-v` to delete the database and bucket volumes too.
 
