@@ -7,12 +7,16 @@ import {
   InvitationParams,
   InvitationPreview,
   InvitationTokenRequest,
+  Member,
   MemberList,
+  MemberParams,
   MutationHeaders,
   OrgParams,
   PaginationQuery,
+  UpdateMemberRequest,
   Uuid,
   type InvitationStatus,
+  type Role,
 } from '@geo-ie-accounting/contracts';
 import {
   addMember,
@@ -21,15 +25,22 @@ import {
   findMemberByEmail,
   findPendingInvitationForEmail,
   getInvitation,
+  getMember,
   getMembership,
   getOrganizationForUser,
   listMembers,
   listPendingInvitations,
+  lockOrgMemberships,
   markInvitationAccepted,
   normaliseEmail,
+  removeMember,
+  renewInvitation,
   revokeInvitation,
+  setMemberRole,
   type InvitationRow,
+  type MemberRow,
 } from '@geo-ie-accounting/db';
+import type { FastifyRequest } from 'fastify';
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod';
 import { invitationMail } from '../../auth/emails';
 import type { Mailer } from '../../auth/mailer';
@@ -69,6 +80,36 @@ const NOT_PENDING_DETAIL: Record<Exclude<InvitationStatus, 'pending'>, string> =
   expired: 'This invitation has expired. Ask for a new one.',
 };
 
+const toMemberDto = (m: MemberRow): Member => ({ ...m, createdAt: m.createdAt.toISOString() });
+
+export const LAST_OWNER_DETAIL =
+  'A workspace needs at least one owner. Make another member an owner first.';
+
+/**
+ * Locks the org's membership rows and checks a change to `userId` (a new role, or `null` for
+ * removal) against them: the member must exist, at least one owner must remain, and only an
+ * owner may change someone else. The lock is held until the request's transaction ends, so two
+ * concurrent changes (two owners demoting each other) run one after the other and the second
+ * sees the first one's result.
+ */
+async function checkMembershipChange(req: FastifyRequest, userId: string, role: Role | null) {
+  const { orgId } = req.membership;
+  const rows = await lockOrgMemberships(req.tx, orgId);
+  // The guard checked the caller's role before the lock; check it again under the lock (an
+  // owner demoted a moment ago by another owner is no longer one).
+  const actor = rows.find((r) => r.userId === req.user.id);
+  if (userId !== req.user.id && actor?.role !== 'owner') {
+    throw new HttpProblem(403, 'forbidden', 'Only an owner can change other members.');
+  }
+  const target = rows.find((r) => r.userId === userId);
+  if (!target) throw new HttpProblem(404, 'not_found', 'Member not found.');
+  const ownersLeft = rows.filter((r) =>
+    r.userId === userId ? role === 'owner' : r.role === 'owner',
+  ).length;
+  if (ownersLeft === 0) throw new HttpProblem(409, 'last_owner', LAST_OWNER_DETAIL);
+  return target;
+}
+
 export interface MemberRoutesOptions {
   /** Base of the invite link: `${webOrigin}/invite/${token}`. */
   webOrigin: string;
@@ -99,9 +140,70 @@ export const memberRoutes: FastifyPluginAsyncZod<MemberRoutesOptions> = async (a
       const rows = await listMembers(app.db, req.membership.orgId, { cursor, limit: limit + 1 });
       const page = rows.slice(0, limit);
       return {
-        items: page.map((m) => ({ ...m, createdAt: m.createdAt.toISOString() })),
+        items: page.map(toMemberDto),
         nextCursor: rows.length > limit ? (page.at(-1)?.userId ?? null) : null,
       };
+    },
+  );
+
+  app.patch(
+    '/v1/orgs/:orgId/members/:userId',
+    {
+      onRequest: requireRole('owner'),
+      schema: {
+        operationId: 'updateMember',
+        tags: ['members'],
+        summary: 'Change a member’s role (owner)',
+        description:
+          'Owners may change any role, their own included, as long as the workspace keeps at ' +
+          'least one owner; otherwise 409 `last_owner`.',
+        params: MemberParams,
+        headers: MutationHeaders,
+        body: UpdateMemberRequest,
+        response: { 200: Member, default: problemResponse },
+      },
+    },
+    async (req) => {
+      const { orgId } = req.membership;
+      const { userId } = req.params;
+      await checkMembershipChange(req, userId, req.body.role);
+      const before = await getMember(req.tx, orgId, userId);
+      if (!before) throw new HttpProblem(404, 'not_found', 'Member not found.');
+      await setMemberRole(req.tx, orgId, userId, req.body.role);
+      const after = toMemberDto({ ...before, role: req.body.role });
+      await req.audit('membership', userId, toMemberDto(before), after, { action: 'role.change' });
+      return after;
+    },
+  );
+
+  app.delete(
+    '/v1/orgs/:orgId/members/:userId',
+    {
+      // Any member may remove themselves (leave); removing someone else needs the owner role.
+      onRequest: requireRole('viewer'),
+      schema: {
+        operationId: 'removeMember',
+        tags: ['members'],
+        summary: 'Remove a member (owner), or leave the workspace (any member, own user id)',
+        description:
+          'The last owner cannot leave or be removed: 409 `last_owner`. Returns the removed member.',
+        params: MemberParams,
+        headers: MutationHeaders,
+        response: { 200: Member, default: problemResponse },
+      },
+    },
+    async (req) => {
+      const { orgId } = req.membership;
+      const { userId } = req.params;
+      await checkMembershipChange(req, userId, null);
+      const before = await getMember(req.tx, orgId, userId);
+      if (!before) throw new HttpProblem(404, 'not_found', 'Member not found.');
+      await removeMember(req.tx, orgId, userId);
+      const dto = toMemberDto(before);
+      await req.audit('membership', userId, dto, null, {
+        action: userId === req.user.id ? 'leave' : 'remove',
+      });
+      return dto;
     },
   );
 
@@ -199,6 +301,60 @@ export const memberRoutes: FastifyPluginAsyncZod<MemberRoutesOptions> = async (a
       await req.audit('invitation', current.id, toInvitationDto(current), after, {
         action: 'revoke',
       });
+      return after;
+    },
+  );
+
+  app.post(
+    '/v1/orgs/:orgId/invitations/:invitationId/resend',
+    {
+      onRequest: requireRole('owner'),
+      schema: {
+        operationId: 'resendInvitation',
+        tags: ['members'],
+        summary: 'Email a pending or expired invitation again',
+        description: 'Makes a new link valid for 7 days from now; the previous link stops working.',
+        params: InvitationParams,
+        headers: MutationHeaders,
+        response: { 200: Invitation, default: problemResponse },
+      },
+    },
+    async (req) => {
+      const { orgId } = req.membership;
+      const current = await getInvitation(req.tx, orgId, req.params.invitationId, {
+        forUpdate: true,
+      });
+      if (!current) throw new HttpProblem(404, 'not_found', 'Invitation not found.');
+      const status = invitationStatus(current);
+      if (status === 'accepted' || status === 'revoked') {
+        throw new HttpProblem(409, 'conflict', NOT_PENDING_DETAIL[status]);
+      }
+      if (await findMemberByEmail(req.tx, orgId, current.email)) {
+        throw new HttpProblem(409, 'conflict', 'This person is already a member.');
+      }
+      const other = await findPendingInvitationForEmail(req.tx, orgId, current.email);
+      if (other && other.id !== current.id) {
+        throw new HttpProblem(
+          409,
+          'conflict',
+          'This email already has a newer pending invitation.',
+        );
+      }
+      const org = await getOrganizationForUser(req.tx, orgId, req.user.id);
+      if (!org) throw new HttpProblem(404, 'not_found', 'Organization not found.');
+
+      const token = randomBytes(32).toString('base64url');
+      const renewed = await renewInvitation(req.tx, orgId, current.id, {
+        tokenHash: hashInvitationToken(token),
+        expiresAt: new Date(Date.now() + INVITATION_TTL_MS),
+      });
+      const after = toInvitationDto(renewed);
+      await req.audit('invitation', current.id, toInvitationDto(current), after, {
+        action: 'resend',
+      });
+      await opts.mailer.send(
+        invitationMail(current.email, org.name, current.role, `${opts.webOrigin}/invite/${token}`),
+      );
       return after;
     },
   );

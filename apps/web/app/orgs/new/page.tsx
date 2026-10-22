@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { redirect } from 'next/navigation';
 import { BrandMark } from '@/components/BrandMark';
-import { getSession } from '@/lib/auth/server';
+import { requireSession } from '@/lib/auth/require-session';
 import { NEW_ORG_PATH } from '@/lib/nav';
 import { NewOrgFlow } from './NewOrgFlow';
 
@@ -12,8 +12,7 @@ export const metadata: Metadata = { title: 'New workspace' };
  * then set the small-business status start date. `?org=` resumes at step two after a reload.
  */
 export default async function NewOrgPage({ searchParams }: PageProps<'/orgs/new'>) {
-  const session = await getSession();
-  if (!session) redirect(`/sign-in?next=${encodeURIComponent(NEW_ORG_PATH)}`);
+  const session = await requireSession(NEW_ORG_PATH);
   // The read-only demo login cannot create workspaces.
   if (session.user.readOnly) redirect('/');
   const { org } = await searchParams;

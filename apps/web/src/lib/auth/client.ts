@@ -14,9 +14,4 @@ export function authClient(): AuthClient {
   return instance;
 }
 
-/** Only same-site paths are allowed as post-sign-in targets (no open redirects). */
-export function safeNextPath(next: string | null | undefined, fallback: string): string {
-  if (!next || !next.startsWith('/') || next.startsWith('//') || next.startsWith('/\\'))
-    return fallback;
-  return next;
-}
+export { safeNextPath } from './next-path';

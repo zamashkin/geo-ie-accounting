@@ -23,6 +23,10 @@ describe('cross-tenant harness', () => {
         'GET /v1/orgs/:orgId/invitations',
         'POST /v1/orgs/:orgId/invitations',
         'POST /v1/orgs/:orgId/invitations/:invitationId/revoke',
+        // Account and member management.
+        'PATCH /v1/orgs/:orgId/members/:userId',
+        'DELETE /v1/orgs/:orgId/members/:userId',
+        'POST /v1/orgs/:orgId/invitations/:invitationId/resend',
         // MVP-A ledger routes.
         'PATCH /v1/orgs/:orgId',
         'GET /v1/orgs/:orgId/accounts',
