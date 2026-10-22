@@ -43,6 +43,13 @@ export interface CreateAuthOptions extends AuthSettings {
   log: FastifyBaseLogger;
 }
 
+/**
+ * Set by the Fastify passthrough to the request's IP (auth/routes.ts), overwriting anything the
+ * client sent. Without it Better Auth finds no client IP behind Fastify and, in production,
+ * puts every caller in one rate-limit bucket per endpoint (3 sign-ins per 10 s for everyone).
+ */
+export const CLIENT_IP_HEADER = 'x-geo-ie-client-ip';
+
 const DAY = 24 * 60 * 60;
 
 /** Lifetime of a password-reset link (Better Auth's default, stated because the email says it). */
@@ -129,6 +136,7 @@ export function createAuth(opts: CreateAuthOptions) {
       disableOriginCheck: false,
       disableCSRFCheck: false,
       cookiePrefix: COOKIE_PREFIX,
+      ipAddress: { ipAddressHeaders: [CLIENT_IP_HEADER] },
       useSecureCookies: opts.secureCookies,
       // Better Auth's defaults are already httpOnly + SameSite=Lax; stated here because the
       // CSRF defence of the /v1 API relies on them (see plugins/authz.ts).

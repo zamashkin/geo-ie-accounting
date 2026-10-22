@@ -17,7 +17,7 @@ import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod';
 import { requireAuth } from '../plugins/authz';
 import { guardAuthRequest } from '../plugins/read-only';
 import { HttpProblem, problemResponse } from '../problem';
-import { AUTH_BASE_PATH } from './better-auth';
+import { AUTH_BASE_PATH, CLIENT_IP_HEADER } from './better-auth';
 
 // Response headers not copied from Better Auth's Response: Fastify sets its own framing.
 const SKIP_HEADERS = new Set([
@@ -47,7 +47,11 @@ export const betterAuthRoutes: FastifyPluginAsync<{ baseUrl: string }> = async (
     handler: async (req, reply) => {
       const url = new URL(req.url, opts.baseUrl);
       await guardAuthRequest(req, url.pathname.slice(AUTH_BASE_PATH.length));
-      const init: RequestInit = { method: req.method, headers: fromNodeHeaders(req.headers) };
+      const headers = fromNodeHeaders(req.headers);
+      // Better Auth keys its rate limits and session IPs on this header (see better-auth.ts);
+      // a client cannot set it, the socket address (or trusted proxy chain) decides.
+      headers.set(CLIENT_IP_HEADER, req.ip);
+      const init: RequestInit = { method: req.method, headers };
       if (req.method === 'POST' && typeof req.body === 'string') init.body = req.body;
       const response = await app.auth.handler(new Request(url, init));
       reply.status(response.status);
