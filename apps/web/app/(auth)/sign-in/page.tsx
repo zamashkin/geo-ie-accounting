@@ -11,13 +11,21 @@ export const metadata: Metadata = { title: 'Sign in' };
 const DEFAULT_TARGET = '/';
 
 export default async function SignInPage({ searchParams }: PageProps<'/sign-in'>) {
-  const { next } = await searchParams;
+  const { next, reset } = await searchParams;
   const target = safeNextPath(typeof next === 'string' ? next : null, DEFAULT_TARGET);
   const mock = publicEnv().authMode === 'mock';
   const config = await getPublicConfig();
   return (
     <>
-      <SignInForm next={target} signUpEnabled={config.signUpEnabled} />
+      <SignInForm
+        next={target}
+        signUpEnabled={config.signUpEnabled}
+        notice={
+          reset === '1'
+            ? 'Your password is changed and every session is signed out. Sign in with the new one.'
+            : undefined
+        }
+      />
       {config.demo ? <DemoSignIn login={config.demo} next={target} /> : null}
       {mock ? (
         <p className="text-center text-xs text-fg-muted">

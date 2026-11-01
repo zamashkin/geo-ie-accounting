@@ -7,7 +7,7 @@
 Done since the MVP: polish pass, declarations filing and dashboard widgets, accounts / manual transactions / rules, invoices, CI.
 
 1. **Public demo:** done (2026-10-17, [ADR 0016](../adr/0016-public-demo.md)): `pnpm db:seed:demo` builds two generated workspaces and a read-only demo login; `DEMO_MODE` and `DEMO_SIGNUP` switch it on for a hosted server. Hosting it is part of deployment below.
-2. **Account and member management:** password reset pages, return to the requested page after sign-in, and member role change/removal with a last-owner guard.
+2. **Account and member management:** done (2026-10-22): password reset (`/forgot-password`, `/reset-password`), an account page (name, email change, password change, signed-in sessions), `proxy.ts` returning signed-out visits to the page asked for, and a members page with role changes, removal, leaving and invitation resend/revoke. A row lock on the org's memberships keeps at least one owner under concurrency (409 `last_owner`).
 3. **Smaller items:** keep bank-GEL warnings on the batch, multi-line address fields, client list paging, PDF page numbers, and an automatic rate backfill when a manual transaction's rate is missing.
 4. **Exports:** ledger CSV and a declaration summary PDF.
 5. **Behind the scenes (order not set yet):** reviewer README, real e2e/Storybook jobs in CI, deployment and hosting the public demo (needs SPEC Q4), Sentry/tracing, background import pipeline (S3, worker jobs, SSE), Postgres RLS, admin role for rate backfill.
@@ -93,7 +93,10 @@ These don't block Phase 0 or the BoG parsers. Add files to `fixtures/statements/
 - WS-02: WS-07 must call `resolveRate` before each chunk's DB transaction (it may call NBG) and store the row id as `postings.rate_id`.
 - CI: `@geo-ie-accounting/worker#test` failed once under a full parallel turbo run, then passed alone and on re-run. Watch for flakiness.
 - WS-05: add `users.is_admin` + `requireAdmin()` and replace WS-02's `x-admin-token` stub on `POST /v1/rates/backfill` (now `config: { tx: false }`, so it skips the request transaction and idempotency). Decide how global admin actions get audited (audit_log.org_id is NOT NULL).
-- WS-05: worker job to call `deleteExpiredIdempotencyKeys`; move Better Auth's in-memory rate limiter to the DB before running more than one API instance; member role change/removal with a last-owner guard; consider default-deny guards on every `/v1` route.
+- WS-05: worker job to call `deleteExpiredIdempotencyKeys`; move Better Auth's in-memory rate limiter to the DB before running more than one API instance; consider default-deny guards on every `/v1` route.
+- Accounts: Better Auth's limits are now keyed on `req.ip` (`x-geo-ie-client-ip`). Behind a reverse proxy that is the proxy's address, so set Fastify `trustProxy` when deploying, or every user shares one bucket again.
+- Accounts: name, email and password changes and session revokes have no audit row, because `audit_log.org_id` is NOT NULL. Same open question as global admin actions.
+- Accounts: e2e coverage for reset, the account page and members (kept out on purpose for now; an ad-hoc browser run passed).
 - WS-04: CI needs a Storybook job (`pnpm exec playwright install --with-deps chromium`, then `pnpm --filter @geo-ie-accounting/ui build-storybook` and `test:storybook`). The unit `test` script stays Node-only.
-- WS-04: switch the web to real auth (`NEXT_PUBLIC_AUTH_MODE=api`, `NEXT_PUBLIC_API_URL`) and run the sign-in, invite and org-switch flow end to end against WS-05. Add password reset pages. After sign-in, return users to the page they asked for (needs `proxy.ts`).
+- WS-04: run the invite-and-accept flow end to end (sign-in and org switching already have e2e specs).
 - Bundle: `/sign-in` ships 269 KB gzip (zod + full contracts + react-hook-form). Contracts subpath exports would save about 37 KB.

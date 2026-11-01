@@ -1,12 +1,23 @@
-import { MeResponse } from '@geo-ie-accounting/contracts';
-import { listOrganizationsForUser } from '@geo-ie-accounting/db';
+import {
+  AccountSession,
+  AccountSessionList,
+  MeResponse,
+  MutationHeaders,
+  SessionParams,
+} from '@geo-ie-accounting/contracts';
+import {
+  deleteUserSession,
+  listActiveSessions,
+  listOrganizationsForUser,
+  type SessionRow,
+} from '@geo-ie-accounting/db';
 import { fromNodeHeaders } from 'better-auth/node';
 import type { FastifyPluginAsync } from 'fastify';
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod';
 import { requireAuth } from '../plugins/authz';
 import { guardAuthRequest } from '../plugins/read-only';
-import { problemResponse } from '../problem';
-import { AUTH_BASE_PATH } from './better-auth';
+import { HttpProblem, problemResponse } from '../problem';
+import { AUTH_BASE_PATH, CLIENT_IP_HEADER } from './better-auth';
 
 // Response headers not copied from Better Auth's Response: Fastify sets its own framing.
 const SKIP_HEADERS = new Set([
@@ -36,7 +47,11 @@ export const betterAuthRoutes: FastifyPluginAsync<{ baseUrl: string }> = async (
     handler: async (req, reply) => {
       const url = new URL(req.url, opts.baseUrl);
       await guardAuthRequest(req, url.pathname.slice(AUTH_BASE_PATH.length));
-      const init: RequestInit = { method: req.method, headers: fromNodeHeaders(req.headers) };
+      const headers = fromNodeHeaders(req.headers);
+      // Better Auth keys its rate limits and session IPs on this header (see better-auth.ts);
+      // a client cannot set it, the socket address (or trusted proxy chain) decides.
+      headers.set(CLIENT_IP_HEADER, req.ip);
+      const init: RequestInit = { method: req.method, headers };
       if (req.method === 'POST' && typeof req.body === 'string') init.body = req.body;
       const response = await app.auth.handler(new Request(url, init));
       reply.status(response.status);
@@ -78,6 +93,70 @@ export const meRoutes: FastifyPluginAsyncZod = async (app) => {
         },
         memberships: orgs.map((o) => ({ orgId: o.id, orgName: o.name, role: o.role })),
       };
+    },
+  );
+};
+
+const toSessionDto = (row: SessionRow, currentId: string): AccountSession => ({
+  id: row.id,
+  createdAt: row.createdAt.toISOString(),
+  updatedAt: row.updatedAt.toISOString(),
+  expiresAt: row.expiresAt.toISOString(),
+  userAgent: row.userAgent,
+  ipAddress: row.ipAddress,
+  current: row.id === currentId,
+});
+
+/**
+ * The signed-in user's sessions, for the account page. Better Auth's own `list-sessions`
+ * returns every session's token to the browser (and needs a session younger than a day), so
+ * these routes list and revoke by id instead. They are not org-scoped, so no audit row
+ * (audit_log is per org); `Idempotency-Key` works as on every `/v1` mutation.
+ */
+export const accountSessionRoutes: FastifyPluginAsyncZod = async (app) => {
+  app.get(
+    '/v1/me/sessions',
+    {
+      onRequest: requireAuth(),
+      schema: {
+        operationId: 'listMySessions',
+        tags: ['auth'],
+        summary: 'Active sessions of the signed-in user',
+        response: { 200: AccountSessionList, default: problemResponse },
+      },
+    },
+    async (req) => {
+      const rows = await listActiveSessions(app.db, req.user.id);
+      const currentId = req.ctx.session?.session.id ?? '';
+      return { items: rows.map((r) => toSessionDto(r, currentId)) };
+    },
+  );
+
+  app.post(
+    '/v1/me/sessions/:sessionId/revoke',
+    {
+      onRequest: requireAuth(),
+      schema: {
+        operationId: 'revokeMySession',
+        tags: ['auth'],
+        summary: 'Sign out one of your other sessions',
+        description: 'The current session cannot be revoked here: sign out instead.',
+        params: SessionParams,
+        headers: MutationHeaders,
+        response: { 200: AccountSession, default: problemResponse },
+      },
+    },
+    async (req) => {
+      if (req.params.sessionId === req.ctx.session?.session.id) {
+        throw new HttpProblem(
+          409,
+          'conflict',
+          'This is the session you are using. Sign out instead.',
+        );
+      }
+      const revoked = await deleteUserSession(req.tx, req.user.id, req.params.sessionId);
+      if (!revoked) throw new HttpProblem(404, 'not_found', 'Session not found.');
+      return toSessionDto(revoked, '');
     },
   );
 };

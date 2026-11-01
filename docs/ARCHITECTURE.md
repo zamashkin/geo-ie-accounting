@@ -220,6 +220,8 @@ POST   /v1/orgs/:orgId/declarations/:period/file
 GET    /v1/orgs/:orgId/dashboard?year=
 CRUD   /v1/orgs/:orgId/clients, /invoices     POST /v1/orgs/:orgId/invoices/:id/match-payment
 GET|POST /v1/orgs/:orgId/members, /invitations
+PATCH|DELETE /v1/orgs/:orgId/members/:userId   POST /v1/orgs/:orgId/invitations/:id/(revoke|resend)
+GET    /v1/me/sessions                        POST /v1/me/sessions/:sessionId/revoke
 GET    /v1/orgs/:orgId/audit-log
 ```
 
@@ -241,7 +243,8 @@ All job payloads are Zod schemas in `contracts/jobs.ts`. Retries with exponentia
 Routes:
 
 ```
-/(auth)/sign-in, /sign-up, /invite/[token]
+/(auth)/sign-in, /sign-up, /forgot-password, /reset-password, /invite/[token]
+/account                       your name, email, password, sessions
 /o/[orgId]/                    dashboard
 /o/[orgId]/transactions        virtualised table, filters in URL search params
 /o/[orgId]/transactions/new

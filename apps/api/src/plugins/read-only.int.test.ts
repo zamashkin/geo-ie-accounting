@@ -76,9 +76,13 @@ describe('read-only login, DEMO_MODE on, sign-up off', () => {
     ['POST', '/v1/orgs', { name: 'Another' }],
     ['POST', '/v1/auth/change-password', { currentPassword: 'a', newPassword: 'b' }],
     ['POST', '/v1/auth/update-user', { name: 'Hacker' }],
+    ['POST', '/v1/auth/change-email', { newEmail: 'taken-over@example.test' }],
+    ['POST', '/v1/auth/revoke-other-sessions', {}],
+    ['POST', '/v1/me/sessions/:org/revoke', {}],
+    ['DELETE', '/v1/orgs/:org/members/:demo', undefined],
   ] as const)('refuses %s %s with 403 demo_read_only', async (method, path, payload) => {
-    const url = path.replace(':org', orgId);
-    const res = await as(env, demo, { method, url, payload });
+    const url = path.replace(':org', orgId).replace(':demo', demo.id);
+    const res = await as(env, demo, { method, url, ...(payload ? { payload } : {}) });
     expect(res.statusCode).toBe(403);
     expect(res.headers['content-type']).toContain('application/problem+json');
     expect(res.json()).toMatchObject({ code: 'demo_read_only', status: 403 });
@@ -92,6 +96,19 @@ describe('read-only login, DEMO_MODE on, sign-up off', () => {
       payload: { email: DEMO.email, redirectTo: `${WEB_ORIGIN}/reset-password` },
     });
     expect(res.statusCode).toBe(403);
+    // Nor through a magic link or a new verification mail.
+    for (const [url, payload] of [
+      ['/v1/auth/sign-in/magic-link', { email: DEMO.email, callbackURL: `${WEB_ORIGIN}/` }],
+      ['/v1/auth/send-verification-email', { email: DEMO.email }],
+    ] as const) {
+      const other = await env.app.inject({
+        method: 'POST',
+        url,
+        headers: { origin: WEB_ORIGIN },
+        payload,
+      });
+      expect(other.statusCode).toBe(403);
+    }
     expect(env.mailer.outbox.filter((m) => m.to === DEMO.email)).toEqual([]);
   });
 

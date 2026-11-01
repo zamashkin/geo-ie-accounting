@@ -21,6 +21,43 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/me/sessions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Active sessions of the signed-in user */
+        get: operations["listMySessions"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/me/sessions/{sessionId}/revoke": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Sign out one of your other sessions
+         * @description The current session cannot be revoked here: sign out instead.
+         */
+        post: operations["revokeMySession"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/public-config": {
         parameters: {
             query?: never;
@@ -97,6 +134,30 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/orgs/{orgId}/members/{userId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /**
+         * Remove a member (owner), or leave the workspace (any member, own user id)
+         * @description The last owner cannot leave or be removed: 409 `last_owner`. Returns the removed member.
+         */
+        delete: operations["removeMember"];
+        options?: never;
+        head?: never;
+        /**
+         * Change a member’s role (owner)
+         * @description Owners may change any role, their own included, as long as the workspace keeps at least one owner; otherwise 409 `last_owner`.
+         */
+        patch: operations["updateMember"];
+        trace?: never;
+    };
     "/v1/orgs/{orgId}/invitations": {
         parameters: {
             query?: never;
@@ -129,6 +190,26 @@ export interface paths {
         put?: never;
         /** Revoke a pending invitation */
         post: operations["revokeInvitation"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/orgs/{orgId}/invitations/{invitationId}/resend": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Email a pending or expired invitation again
+         * @description Makes a new link valid for 7 days from now; the previous link stops working.
+         */
+        post: operations["resendInvitation"];
         delete?: never;
         options?: never;
         head?: never;
@@ -943,7 +1024,7 @@ export interface components {
             detail?: string;
             instance?: string;
             /** @enum {string} */
-            code: "bad_request" | "validation_failed" | "unauthenticated" | "forbidden" | "not_found" | "conflict" | "idempotency_key_reused" | "rate_unavailable" | "payload_too_large" | "rate_limited" | "internal_error" | "service_unavailable" | "demo_read_only";
+            code: "bad_request" | "validation_failed" | "unauthenticated" | "forbidden" | "not_found" | "conflict" | "idempotency_key_reused" | "rate_unavailable" | "payload_too_large" | "rate_limited" | "internal_error" | "service_unavailable" | "demo_read_only" | "last_owner";
             requestId: string;
             errors?: {
                 path: string;
@@ -1653,6 +1734,26 @@ export interface components {
             items: components["schemas"]["MemberInput"][];
             nextCursor: string | null;
         };
+        UpdateMemberRequestInput: {
+            /** @enum {string} */
+            role: "owner" | "accountant" | "viewer";
+        };
+        AccountSessionInput: {
+            /** Format: uuid */
+            id: string;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+            /** Format: date-time */
+            expiresAt: string;
+            userAgent: string | null;
+            ipAddress: string | null;
+            current: boolean;
+        };
+        AccountSessionListInput: {
+            items: components["schemas"]["AccountSessionInput"][];
+        };
         CreateInvitationRequestInput: {
             /** Format: email */
             email: string;
@@ -1704,6 +1805,17 @@ export interface components {
             name?: string;
             /** Format: starts_with */
             callbackURL?: string;
+        };
+        ForgotPasswordBodyInput: {
+            /** Format: email */
+            email: string;
+        };
+        UpdateNameBodyInput: {
+            name: string;
+        };
+        ChangeEmailBodyInput: {
+            /** Format: email */
+            newEmail: string;
         };
         DemoLoginInput: {
             /** Format: email */
@@ -3021,7 +3133,7 @@ export interface components {
             detail?: string;
             instance?: string;
             /** @enum {string} */
-            code: "bad_request" | "validation_failed" | "unauthenticated" | "forbidden" | "not_found" | "conflict" | "idempotency_key_reused" | "rate_unavailable" | "payload_too_large" | "rate_limited" | "internal_error" | "service_unavailable" | "demo_read_only";
+            code: "bad_request" | "validation_failed" | "unauthenticated" | "forbidden" | "not_found" | "conflict" | "idempotency_key_reused" | "rate_unavailable" | "payload_too_large" | "rate_limited" | "internal_error" | "service_unavailable" | "demo_read_only" | "last_owner";
             requestId: string;
             errors?: {
                 path: string;
@@ -3731,6 +3843,26 @@ export interface components {
             items: components["schemas"]["Member"][];
             nextCursor: string | null;
         };
+        UpdateMemberRequest: {
+            /** @enum {string} */
+            role: "owner" | "accountant" | "viewer";
+        };
+        AccountSession: {
+            /** Format: uuid */
+            id: string;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+            /** Format: date-time */
+            expiresAt: string;
+            userAgent: string | null;
+            ipAddress: string | null;
+            current: boolean;
+        };
+        AccountSessionList: {
+            items: components["schemas"]["AccountSession"][];
+        };
         CreateInvitationRequest: {
             /** Format: email */
             email: string;
@@ -3782,6 +3914,17 @@ export interface components {
             name?: string;
             /** Format: starts_with */
             callbackURL?: string;
+        };
+        ForgotPasswordBody: {
+            /** Format: email */
+            email: string;
+        };
+        UpdateNameBody: {
+            name: string;
+        };
+        ChangeEmailBody: {
+            /** Format: email */
+            newEmail: string;
         };
         DemoLogin: {
             /** Format: email */
@@ -5166,6 +5309,69 @@ export interface operations {
             };
         };
     };
+    listMySessions: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Default Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AccountSessionList"];
+                };
+            };
+            /** @description Error (RFC 9457 problem details) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    revokeMySession: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description Client-chosen key; replays return the stored response for 24 h. */
+                "idempotency-key"?: string;
+            };
+            path: {
+                sessionId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Default Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AccountSession"];
+                };
+            };
+            /** @description Error (RFC 9457 problem details) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
     getPublicConfig: {
         parameters: {
             query?: never;
@@ -5366,6 +5572,80 @@ export interface operations {
             };
         };
     };
+    removeMember: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description Client-chosen key; replays return the stored response for 24 h. */
+                "idempotency-key"?: string;
+            };
+            path: {
+                orgId: string;
+                userId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Default Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Member"];
+                };
+            };
+            /** @description Error (RFC 9457 problem details) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    updateMember: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description Client-chosen key; replays return the stored response for 24 h. */
+                "idempotency-key"?: string;
+            };
+            path: {
+                orgId: string;
+                userId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateMemberRequestInput"];
+            };
+        };
+        responses: {
+            /** @description Default Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Member"];
+                };
+            };
+            /** @description Error (RFC 9457 problem details) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
     listInvitations: {
         parameters: {
             query?: never;
@@ -5436,6 +5716,41 @@ export interface operations {
         };
     };
     revokeInvitation: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description Client-chosen key; replays return the stored response for 24 h. */
+                "idempotency-key"?: string;
+            };
+            path: {
+                orgId: string;
+                invitationId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Default Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Invitation"];
+                };
+            };
+            /** @description Error (RFC 9457 problem details) */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    resendInvitation: {
         parameters: {
             query?: never;
             header?: {

@@ -2,7 +2,7 @@ import { createDb, type Db } from '@geo-ie-accounting/db';
 import type { FastifyInstance } from 'fastify';
 import { createAuth, type AuthSettings } from '../auth/better-auth';
 import { unconfiguredMailer, type Mailer } from '../auth/mailer';
-import { betterAuthRoutes, meRoutes } from '../auth/routes';
+import { accountSessionRoutes, betterAuthRoutes, meRoutes } from '../auth/routes';
 import { memberRoutes } from '../routes/members/index';
 import { orgRoutes } from '../routes/orgs/index';
 import { registerAudit } from './audit';
@@ -45,7 +45,7 @@ export async function registerPlatform(app: FastifyInstance, opts: PlatformOptio
     db = detached.db;
   }
   const mailer = opts.mailer ?? unconfiguredMailer;
-  const auth = createAuth({ ...opts.auth, db, mailer, log: app.log });
+  const auth = createAuth({ ...opts.auth, webOrigin: opts.webOrigin, db, mailer, log: app.log });
 
   registerRequestContext(app, { db, auth });
   registerReadOnly(app, opts.demo ?? { enabled: false });
@@ -55,6 +55,7 @@ export async function registerPlatform(app: FastifyInstance, opts: PlatformOptio
 
   await app.register(betterAuthRoutes, { baseUrl: opts.auth.baseUrl });
   await app.register(meRoutes);
+  await app.register(accountSessionRoutes);
   await app.register(publicConfigRoutes, { signUpEnabled: opts.auth.signUpEnabled !== false });
   await app.register(orgRoutes);
   await app.register(memberRoutes, { webOrigin: opts.webOrigin, mailer });

@@ -1,7 +1,7 @@
 import { Uuid } from '@geo-ie-accounting/contracts';
-import { notFound, redirect } from 'next/navigation';
+import { notFound } from 'next/navigation';
 import { RememberWorkspace } from '@/components/workspace/RememberWorkspace';
-import { getSession } from '@/lib/auth/server';
+import { requireSession } from '@/lib/auth/require-session';
 import { OrgShell } from './_shell/OrgShell';
 
 /**
@@ -12,8 +12,8 @@ export default async function OrgLayout({ params, children }: LayoutProps<'/o/[o
   const { orgId } = await params;
   if (!Uuid.safeParse(orgId).success) notFound();
 
-  const session = await getSession();
-  if (!session) redirect(`/sign-in?next=${encodeURIComponent(`/o/${orgId}`)}`);
+  // Signed out: back to this page (with its query) after sign-in.
+  const session = await requireSession(`/o/${orgId}`);
   if (!session.memberships.some((m) => m.orgId === orgId)) notFound();
 
   return (

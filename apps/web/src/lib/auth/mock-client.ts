@@ -121,6 +121,40 @@ export class MockAuthClient implements AuthClient {
     this.setUser(null);
   }
 
+  async requestPasswordReset(): Promise<void> {
+    await this.wait();
+  }
+
+  /** Token `expired` shows the invalid-link state; anything else works. */
+  async resetPassword(token: string): Promise<void> {
+    await this.wait();
+    if (token === 'expired') {
+      throw problem(
+        400,
+        'bad_request',
+        'Invalid token',
+        'This reset link is invalid or has expired. Ask for a new one.',
+      );
+    }
+  }
+
+  async changePassword(currentPassword: string): Promise<void> {
+    await this.wait();
+    if (currentPassword === 'wrong-password') {
+      throw problem(400, 'bad_request', 'Invalid password', 'Your current password is not right.');
+    }
+  }
+
+  async updateName(name: string): Promise<void> {
+    await this.wait();
+    const current = await this.getSession();
+    if (current) this.setUser({ email: current.user.email, name });
+  }
+
+  async changeEmail(): Promise<void> {
+    await this.wait();
+  }
+
   async getSession(): Promise<MeResponse | null> {
     const raw = this.cookies
       .get()

@@ -27,6 +27,10 @@ Keep the two hosts same-site so `SameSite=Lax` keeps working. Third-party-cookie
 
 **Tenant guards.** `requireRole(min)` runs in `onRequest`, before body parsing and validation. A non-member gets the same 404 (`Organization not found.`) for any org id, whether it exists or not. A member below `min` gets 403. An `onRoute` hook refuses to start the app if a `/v1/orgs/:orgId/*` route has no `requireRole`, or if it names the org parameter anything other than `:orgId`. The cross-tenant harness then probes every such route from the route table.
 
+**Rate limits and client IP** (2026-10-22). The Fastify passthrough sets `x-geo-ie-client-ip` to `req.ip`, overwriting anything the client sent, and Better Auth reads only that header (`advanced.ipAddress.ipAddressHeaders`). Without it Better Auth sees no client IP and, in production, puts every caller in one bucket per endpoint. Behind a reverse proxy, `req.ip` needs Fastify's `trustProxy`.
+
+**Sessions on the account page.** Better Auth's `list-sessions` returns every session token to the browser, which undoes the point of an httpOnly cookie. `GET /v1/me/sessions` and `POST /v1/me/sessions/:sessionId/revoke` list and revoke by id instead.
+
 ## Alternatives
 - **Double-submit CSRF token**: an extra round-trip and more client code. It adds little over Origin checking plus SameSite for an API that only one first-party origin calls.
 - **Bearer tokens in localStorage**: readable by any XSS. httpOnly cookies are not.

@@ -77,6 +77,64 @@ export async function findMemberByEmail(
   return row ?? null;
 }
 
+/** One member of the org with their name and email, or null. */
+export async function getMember(
+  db: DbOrTx,
+  orgId: string,
+  userId: string,
+): Promise<MemberRow | null> {
+  const [row] = await db
+    .select({
+      userId: memberships.userId,
+      email: users.email,
+      name: users.name,
+      role: memberships.role,
+      createdAt: memberships.createdAt,
+    })
+    .from(memberships)
+    .innerJoin(users, eq(users.id, memberships.userId))
+    .where(and(eq(memberships.orgId, orgId), eq(memberships.userId, userId)));
+  return row ?? null;
+}
+
+/**
+ * Locks every membership row of the org (in user id order, so concurrent callers queue instead
+ * of deadlocking) and returns them. Role changes and removals take this lock first, so the
+ * "at least one owner" check and the write see the same membership set.
+ */
+export async function lockOrgMemberships(
+  tx: DbOrTx,
+  orgId: string,
+): Promise<Pick<MembershipRow, 'userId' | 'role'>[]> {
+  return tx
+    .select({ userId: memberships.userId, role: memberships.role })
+    .from(memberships)
+    .where(eq(memberships.orgId, orgId))
+    .orderBy(asc(memberships.userId))
+    .for('update');
+}
+
+export async function setMemberRole(
+  db: DbOrTx,
+  orgId: string,
+  userId: string,
+  role: Role,
+): Promise<MembershipRow> {
+  const [row] = await db
+    .update(memberships)
+    .set({ role })
+    .where(and(eq(memberships.orgId, orgId), eq(memberships.userId, userId)))
+    .returning();
+  if (!row) throw new Error('membership to update not found');
+  return row;
+}
+
+export async function removeMember(db: DbOrTx, orgId: string, userId: string): Promise<void> {
+  await db
+    .delete(memberships)
+    .where(and(eq(memberships.orgId, orgId), eq(memberships.userId, userId)));
+}
+
 export async function addMember(
   db: DbOrTx,
   orgId: string,
@@ -160,11 +218,13 @@ export async function getInvitation(
   db: DbOrTx,
   orgId: string,
   invitationId: string,
+  opts: { forUpdate?: boolean } = {},
 ): Promise<InvitationRow | null> {
-  const [row] = await db
+  const query = db
     .select()
     .from(invitations)
     .where(and(eq(invitations.orgId, orgId), eq(invitations.id, invitationId)));
+  const [row] = opts.forUpdate ? await query.for('update') : await query;
   return row ?? null;
 }
 
@@ -199,6 +259,22 @@ export async function markInvitationAccepted(
     .where(and(eq(invitations.orgId, orgId), eq(invitations.id, invitationId)))
     .returning();
   if (!row) throw new Error('invitation to accept not found');
+  return row;
+}
+
+/** A new token and expiry for a pending or expired invitation (resend). The old link stops working. */
+export async function renewInvitation(
+  db: DbOrTx,
+  orgId: string,
+  invitationId: string,
+  input: { tokenHash: string; expiresAt: Date },
+): Promise<InvitationRow> {
+  const [row] = await db
+    .update(invitations)
+    .set(input)
+    .where(and(eq(invitations.orgId, orgId), eq(invitations.id, invitationId)))
+    .returning();
+  if (!row) throw new Error('invitation to renew not found');
   return row;
 }
 
