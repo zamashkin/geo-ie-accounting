@@ -106,3 +106,7 @@ packages/config  Shared tsconfig, ESLint (including the package dependency rules
 ```
 
 Workspace packages are consumed as TypeScript source. The apps compile them: Next.js through `transpilePackages`, the API and worker through an esbuild bundle (`pnpm build`).
+
+## License
+
+[MIT](LICENSE). The bundled Noto fonts are under the SIL Open Font License (`apps/api/assets/fonts/OFL.txt`).
