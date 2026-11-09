@@ -29,3 +29,8 @@ minimumReleaseAgeExclude:
   - '@vitest/pretty-format@5.0.5'
   - '@vitest/ui@5.0.5'
   - '@vitest/utils@5.0.5'
+# Patched versions of transitive dependencies whose parents still resolve a vulnerable one.
+overrides:
+  'fast-uri@>=3.0.0 <3.1.9': 3.1.9
+  # @esbuild-kit (drizzle-kit's config loader) pins 0.18; GHSA-67mh-4wv8-2f99.
+  'esbuild@<=0.24.2': 0.25.12

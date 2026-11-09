@@ -4,11 +4,24 @@
 
 **[API reference (Swagger)](https://htmlpreview.github.io/?https://github.com/zamashkin/geo-ie-accounting/blob/main/docs/api.html)**: every endpoint, generated from the Zod contracts.
 
-Bookkeeping and tax figures for individual entrepreneurs in Georgia on the 1% small business regime. Import your TBC or Bank of Georgia statements, and the app converts foreign-currency income to GEL at the official NBG rate for each receipt date, keeps a double-entry ledger, and shows what to declare each month.
+Bookkeeping and tax figures for individual entrepreneurs in Georgia on the 1% small business regime. Import your Bank of Georgia statements, and the app converts foreign-currency income to GEL at the official NBG rate for each receipt date, keeps a double-entry ledger, and shows what to declare each month.
 
-Status: foundation (WS-00). The web app, API and worker boot and talk to each other; the features come next.
+![Dashboard with year-to-date income, the next return and the annual limit](docs/screenshots/dashboard-1280.png)
 
-- [MVP plan (current focus)](docs/MVP.md)
+## What works today
+
+- Statement import from Bank of Georgia XLSX and CSV exports. You get a preview with duplicates marked before anything is booked.
+- A double-entry ledger with manual transactions, categorisation rules and reversals. Postings are never edited or deleted.
+- Monthly declaration figures with deadlines, the 3% rate after the annual limit, filing snapshots, and a warning when a filed month changes afterwards.
+- Clients and invoices with PDF output, and matching of incoming payments to open invoices.
+- Workspaces with owner, accountant and viewer roles and invitations. Every change writes an audit row.
+- A [read-only demo](#try-the-demo) with two generated workspaces.
+
+Still to come: TBC Bank statements (waiting for sample exports), CSV and PDF exports, a page for the audit log, a hosted demo, and moving imports to background jobs. The [work plan](docs/tasks/README.md) has the order.
+
+More screenshots are in [docs/screenshots](docs/screenshots), each at 1280px and 360px.
+
+- [MVP plan](docs/MVP.md)
 - [Product spec](docs/SPEC.md)
 - [Architecture](docs/ARCHITECTURE.md)
 - [Decision records](docs/adr/)
@@ -29,7 +42,7 @@ pnpm db:seed                 # dev login, an empty dev workspace, default chart 
 pnpm dev                     # web :3000, api :4000, worker
 ```
 
-Open http://localhost:3000. The home page asks the API for `/healthz` and shows its status. The API's OpenAPI spec is in `apps/api/openapi.json`, and Swagger UI runs at http://localhost:4000/docs (on by default outside production; set `API_DOCS=true` or `false` to choose). Sign in on the web app first and "Try it out" sends your session cookie. Reads work from there; changes are refused by the CSRF origin check, so make them from the web app.
+Open http://localhost:3000 and sign in. The API's OpenAPI spec is in `apps/api/openapi.json`, and Swagger UI runs at http://localhost:4000/docs (on by default outside production; set `API_DOCS=true` or `false` to choose). Sign in on the web app first and "Try it out" sends your session cookie. Reads work from there; changes are refused by the CSRF origin check, so make them from the web app.
 
 `docker compose down` stops the services. Add `-v` to delete the database and bucket volumes too.
 
@@ -60,6 +73,7 @@ The API refuses every change by the demo login with 403 `demo_read_only`, includ
 pnpm turbo typecheck lint test   # what CI runs per package
 pnpm format:check
 pnpm test:integration            # real Postgres, see below
+pnpm e2e                         # Playwright, needs the stack from "Getting started" running
 pnpm gen:api                     # regenerate openapi.json and the web client types after API changes
 pnpm db:generate                 # new migration after a schema change in packages/db/src/schema
 ```
@@ -73,6 +87,8 @@ export DOCKER_HOST=unix://$HOME/.orbstack/run/docker.sock
 ```
 
 You can also skip containers and use the compose database: `TEST_DATABASE_URL=postgres://geo_ie_accounting:geo_ie_accounting@localhost:5432/postgres pnpm test:integration`.
+
+CI also runs the Playwright suite against production builds of the web app and API, and every Storybook story as a browser test with an accessibility check.
 
 ### Layout
 
@@ -90,3 +106,7 @@ packages/config  Shared tsconfig, ESLint (including the package dependency rules
 ```
 
 Workspace packages are consumed as TypeScript source. The apps compile them: Next.js through `transpilePackages`, the API and worker through an esbuild bundle (`pnpm build`).
+
+## License
+
+[MIT](LICENSE). The bundled Noto fonts are under the SIL Open Font License (`apps/api/assets/fonts/OFL.txt`).

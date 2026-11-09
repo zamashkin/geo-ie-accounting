@@ -10,7 +10,7 @@ Done since the MVP: polish pass, declarations filing and dashboard widgets, acco
 2. **Account and member management:** done (2026-10-22): password reset (`/forgot-password`, `/reset-password`), an account page (name, email change, password change, signed-in sessions), `proxy.ts` returning signed-out visits to the page asked for, and a members page with role changes, removal, leaving and invitation resend/revoke. A row lock on the org's memberships keeps at least one owner under concurrency (409 `last_owner`).
 3. **Smaller items:** keep bank-GEL warnings on the batch, multi-line address fields, client list paging, PDF page numbers, and an automatic rate backfill when a manual transaction's rate is missing.
 4. **Exports:** ledger CSV and a declaration summary PDF.
-5. **Behind the scenes (order not set yet):** reviewer README, real e2e/Storybook jobs in CI, deployment and hosting the public demo (needs SPEC Q4), Sentry/tracing, background import pipeline (S3, worker jobs, SSE), Postgres RLS, admin role for rate backfill.
+5. **Behind the scenes (order not set yet):** reviewer README, deployment and hosting the public demo (needs SPEC Q4), Sentry/tracing, background import pipeline (S3, worker jobs, SSE), Postgres RLS, admin role for rate backfill.
 6. **Blocked: TBC Bank statements.** Wanted, but there are no TBC exports to build from yet.
 7. **Last:** accountant mode, then the audit log UI.
 
@@ -60,11 +60,11 @@ Phase 1 and later briefs are written against the contracts produced in WS-00. Co
 | 03 | Statement parsers | merged for BoG + generic CSV; TBC waits for fixtures | ws/03-importers |
 | 04 | Web shell + UI kit | merged | ws/04-web-shell |
 | 05 | Auth + tenancy | merged | ws/05-auth-tenancy |
-| 06 | Ledger API + UI | todo | |
-| 07 | Import pipeline | todo | |
+| 06 | Ledger API + UI | done on the MVP model: accounts, manual transactions, reversals, rules | |
+| 07 | Import pipeline | synchronous import done (ADR 0012); background jobs, S3 and SSE todo | |
 | 08 | Declarations + dashboard | done on the MVP model (ADR 0013): filing, drift, period page, dashboard aggregates | |
-| 09 | Invoices | todo | |
-| 10 | Hardening + deploy | todo | |
+| 09 | Invoices | done (ADR 0015) | |
+| 10 | Hardening + deploy | CI done, including e2e and Storybook; perf budget, RLS and deploy todo | |
 
 ## Inputs needed from Aleksandr (later)
 
@@ -97,6 +97,5 @@ These don't block Phase 0 or the BoG parsers. Add files to `fixtures/statements/
 - Accounts: Better Auth's limits are now keyed on `req.ip` (`x-geo-ie-client-ip`). Behind a reverse proxy that is the proxy's address, so set Fastify `trustProxy` when deploying, or every user shares one bucket again.
 - Accounts: name, email and password changes and session revokes have no audit row, because `audit_log.org_id` is NOT NULL. Same open question as global admin actions.
 - Accounts: e2e coverage for reset, the account page and members (kept out on purpose for now; an ad-hoc browser run passed).
-- WS-04: CI needs a Storybook job (`pnpm exec playwright install --with-deps chromium`, then `pnpm --filter @geo-ie-accounting/ui build-storybook` and `test:storybook`). The unit `test` script stays Node-only.
 - WS-04: run the invite-and-accept flow end to end (sign-in and org switching already have e2e specs).
 - Bundle: `/sign-in` ships 269 KB gzip (zod + full contracts + react-hook-form). Contracts subpath exports would save about 37 KB.
