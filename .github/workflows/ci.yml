@@ -110,21 +110,49 @@ jobs:
       - uses: ./.github/actions/setup
       - run: pnpm turbo run build
 
-  # Placeholder until the Playwright suite lands (WS-04/WS-06): boots the compose stack.
-  e2e:
-    needs: [build]
+  # Every story as a test in headless Chromium: render, play function, axe (packages/ui).
+  storybook:
+    needs: install
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v7.0.1
+      - uses: ./.github/actions/setup
+      - run: pnpm --filter @geo-ie-accounting/ui exec playwright install --with-deps chromium
+      - run: pnpm --filter @geo-ie-accounting/ui build-storybook
+      - run: pnpm --filter @geo-ie-accounting/ui test:storybook
+
+  # Playwright against the production builds of web and api, with compose Postgres and Mailpit.
+  # `pnpm db:seed` stores the NBG rates the statement fixtures need, so nothing calls NBG.
+  e2e:
+    needs: install
+    runs-on: ubuntu-24.04
+    env:
+      LOG_PRETTY: 'false'
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - uses: ./.github/actions/setup
       - name: Start services
-        run: docker compose up -d --wait
-      - run: echo "e2e suite not implemented yet (placeholder)"
+        run: docker compose up -d --wait postgres mailpit
+      # Before the build: NEXT_PUBLIC_* from apps/web/.env is inlined into the web bundle.
+      - run: pnpm env:init
+      - run: pnpm db:migrate
+      - run: pnpm db:seed
+      - run: pnpm turbo run build --filter=@geo-ie-accounting/api --filter=@geo-ie-accounting/web
+      - run: pnpm --filter @geo-ie-accounting/web exec playwright install --with-deps chromium
+      - name: Start api and web
+        run: |
+          pnpm --filter @geo-ie-accounting/api start > api.log 2>&1 &
+          pnpm --filter @geo-ie-accounting/web start > web.log 2>&1 &
+          timeout 60 sh -c 'until curl -fs http://localhost:4000/healthz && curl -fs http://localhost:3000/sign-in; do sleep 1; done' > /dev/null
+      - run: pnpm e2e
+      - name: Server logs
+        if: failure()
+        run: tail -n 200 api.log web.log
+      - if: failure()
+        uses: actions/upload-artifact@v7.0.2
+        with:
+          name: playwright-results
+          path: apps/web/e2e/.results
+          retention-days: 7
       - if: always()
         run: docker compose down -v
-
-  # Placeholder until Lighthouse CI and bundle budgets land (WS-10).
-  perf:
-    needs: [build]
-    runs-on: ubuntu-24.04
-    steps:
-      - run: echo "perf budget check not implemented yet (placeholder)"

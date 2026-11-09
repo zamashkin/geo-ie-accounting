@@ -276,7 +276,7 @@ Routes:
 
 ## 11. CI (GitHub Actions)
 
-Jobs on PR: `install` (pnpm cache) → parallel `typecheck`, `lint`, `unit`, `integration` (service container Postgres), `openapi-drift`, `migration-check` (generate and diff), `build` → `e2e` (compose stack) → `perf`. Turborepo remote cache optional.
+Jobs on PR: `install` (pnpm cache) → parallel `typecheck`, `lint`, `unit`, `integration` (service container Postgres), `openapi-drift`, `migration-check` (generate and diff), `build`, `storybook`, `e2e` (compose Postgres and Mailpit, production builds). The `perf` job is not built yet. Turborepo remote cache optional.
 
 ## 12. Local dev
 
